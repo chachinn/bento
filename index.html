@@ -19,18 +19,59 @@
 <body>
   <div id="app" class="app-shell">
     <header class="topbar">
-      <button class="brand-button" id="brandButton" aria-label="About Bento">
-        <img src="icon/icon-96.png" class="brand-icon" alt="" />
-        <span><strong>Bento</strong><small>弁当</small></span>
-      </button>
+      <div class="topbar-left">
+        <button class="icon-btn menu-trigger" id="menuButton" aria-label="Open Bento menu" aria-controls="appMenu" aria-expanded="false">☰</button>
+        <button class="brand-button" id="brandButton" aria-label="About Bento">
+          <img src="icon/icon-96.png" class="brand-icon" alt="" />
+          <span><strong>Bento</strong><small>弁当</small></span>
+        </button>
+      </div>
       <div class="top-actions">
-        <button class="icon-btn" id="searchButton" aria-label="Search">⌕</button>
+        <button class="icon-btn" id="searchButton" aria-label="Search recipes">⌕</button>
         <button class="icon-btn" id="quickAddButton" aria-label="Quick add">＋</button>
       </div>
     </header>
 
+    <div id="menuBackdrop" class="menu-backdrop" hidden></div>
+    <aside id="appMenu" class="app-menu" aria-hidden="true" aria-label="Bento menu">
+      <div class="app-menu-head">
+        <div class="menu-brand"><img src="icon/icon-96.png" alt="" /><div><b>Bento</b><small>Your kitchen, organized.</small></div></div>
+        <button id="menuCloseButton" class="icon-btn" aria-label="Close menu">×</button>
+      </div>
+      <div class="app-menu-scroll">
+        <p class="menu-section-label">Kitchen tools</p>
+        <div class="menu-list menu-list-compact">
+          <button data-view-link="smart"><span>✨</span><div><b>Kitchen Magic</b><small>Rescue, roulette, deadline & prep</small></div><i>›</i></button>
+          <button data-view-link="cookwith"><span>🍳</span><div><b>What Can I Cook?</b><small>Match recipes with your pantry</small></div><i>›</i></button>
+          <button data-view-link="bentobox"><span>🍱</span><div><b>Bento Box Builder</b><small>Build reusable lunchbox combinations</small></div><i>›</i></button>
+          <button data-view-link="leftovers"><span>♻️</span><div><b>Leftovers</b><small>Use, freeze and remix extras</small></div><i>›</i></button>
+          <button data-view-link="templates"><span>🗓️</span><div><b>Meal Templates</b><small>Reuse weeks that worked well</small></div><i>›</i></button>
+        </div>
+        <p class="menu-section-label">Library & tracking</p>
+        <div class="menu-list menu-list-compact">
+          <button data-view-link="ideas"><span>💭</span><div><b>Ideas & Cravings</b><small>Capture meals you want to try</small></div><i>›</i></button>
+          <button data-view-link="collections"><span>📚</span><div><b>Collections</b><small>Browse recipe groups and rotations</small></div><i>›</i></button>
+          <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
+          <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
+          <button data-view-link="waste"><span>🌱</span><div><b>Food Waste Log</b><small>Notice what gets wasted and why</small></div><i>›</i></button>
+          <button data-view-link="insights"><span>📊</span><div><b>Kitchen Insights</b><small>Cooking patterns and goals</small></div><i>›</i></button>
+        </div>
+        <p class="menu-section-label">Bento</p>
+        <div class="menu-list menu-list-compact">
+          <button data-view-link="settings"><span>🎨</span><div><b>Settings</b><small>Customize Bento for your kitchen</small></div><i>›</i></button>
+          <button data-view-link="about"><span>🌸</span><div><b>About Bento</b><small>The story behind the name</small></div><i>›</i></button>
+        </div>
+        <button id="installButton" class="install-card hidden"><span>📲</span><div><b>Install Bento</b><small>Add Bento to your Home Screen</small></div></button>
+      </div>
+    </aside>
+
     <main id="mainContent" tabindex="-1">
       <section class="view active" data-view="home" aria-labelledby="homeTitle">
+        <div id="firstRunWelcome" class="welcome-card hidden">
+          <div><span class="welcome-icon">🍱</span><div><p class="eyebrow">Welcome to Bento</p><h2>Your kitchen starts empty — exactly as it should.</h2><p class="muted">Nothing is pre-filled. Add only what belongs in your kitchen, and Bento will grow with you.</p></div></div>
+          <div class="action-row"><button class="primary-btn" data-action="add-recipe">Add first recipe</button><button class="soft-btn" data-action="add-pantry">Add pantry item</button><button class="soft-btn" data-view-link="settings">Customize</button></div>
+        </div>
+
         <div class="hero-card">
           <div>
             <p class="eyebrow" id="greetingText">Good morning ✿</p>
@@ -50,13 +91,13 @@
           <button class="quick-card" data-view-link="smart"><span>✨</span><b>Kitchen Magic</b><small>Smart meal tools</small></button>
         </div>
 
-        <div class="section-heading"><h2>Kitchen snapshot</h2><button class="text-btn" data-view-link="insights">Insights</button></div>
+        <div class="section-heading" id="homeStatsHeading"><h2>Kitchen snapshot</h2><button class="text-btn" data-view-link="insights">Insights</button></div>
         <div id="homeStats" class="stat-grid"></div>
 
         <div class="section-heading"><h2>Needs attention</h2></div>
         <div id="attentionCards" class="card-list"></div>
 
-        <div class="section-heading"><h2>Favorites</h2><button class="text-btn" data-view-link="favorites">See all</button></div>
+        <div class="section-heading" id="homeFavoritesHeading"><h2>Favorites</h2><button class="text-btn" data-view-link="favorites">See all</button></div>
         <div id="homeFavorites" class="recipe-strip"></div>
       </section>
 
@@ -74,7 +115,7 @@
         <div class="plan-toolbar">
           <button class="soft-btn" id="copyWeekButton">Copy week</button>
           <button class="soft-btn" id="clearWeekButton">Clear week</button>
-          <button class="soft-btn" data-view-link="smart">✨ Smart fill</button>
+          <button class="soft-btn" data-view-link="smart">✨ Smart fill</button><button class="soft-btn" data-view-link="templates">🗓️ Templates</button>
         </div>
         <div id="mealPlanGrid" class="meal-plan-grid"></div>
       </section>
@@ -108,22 +149,28 @@
         <div id="pantryList" class="card-list"></div>
       </section>
 
-      <section class="view" data-view="more" aria-labelledby="moreTitle">
-        <div class="page-title-row"><div><p class="eyebrow">Your Bento</p><h1 id="moreTitle">More</h1></div></div>
-        <div class="menu-list">
-          <button data-view-link="smart"><span>✨</span><div><b>Kitchen Magic</b><small>Deadline, rescue, roulette & more</small></div><i>›</i></button>
-          <button data-view-link="bentobox"><span>🍱</span><div><b>Bento Box Builder</b><small>Build and save lunchbox combinations</small></div><i>›</i></button>
-          <button data-view-link="leftovers"><span>♻️</span><div><b>Leftovers</b><small>Plan, use and rescue leftovers</small></div><i>›</i></button>
-          <button data-view-link="grocery"><span>🛒</span><div><b>Grocery List</b><small>Shop from one organized list</small></div><i>›</i></button>
-          <button data-view-link="cookwith"><span>🍳</span><div><b>What Can I Cook?</b><small>Match recipes with your pantry</small></div><i>›</i></button>
-          <button data-view-link="collections"><span>📚</span><div><b>Collections</b><small>Browse recipe groups & rotations</small></div><i>›</i></button>
-          <button data-view-link="insights"><span>📊</span><div><b>Kitchen Insights</b><small>Your cooking patterns & goals</small></div><i>›</i></button>
-          <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
-          <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
-          <button data-view-link="settings"><span>🎨</span><div><b>Settings</b><small>Themes, units, reminders & data</small></div><i>›</i></button>
-          <button data-view-link="about"><span>🌸</span><div><b>About Bento</b><small>The story behind the name</small></div><i>›</i></button>
+      <section class="view subview" data-view="ideas" aria-labelledby="ideasTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Capture it before you forget</p><h1 id="ideasTitle">Ideas & Cravings</h1></div><button class="primary-round" data-action="add-idea" aria-label="Add idea">＋</button></div>
+        <div class="info-card">Save a craving, a meal idea, something you saw online, or a dish you want to try later. Nothing gets added until you create it.</div>
+        <div id="ideasList" class="card-list"></div>
+      </section>
+
+      <section class="view subview" data-view="templates" aria-labelledby="templatesTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Reuse what works</p><h1 id="templatesTitle">Meal Templates</h1></div></div>
+        <div class="settings-card">
+          <label>Template name<input id="templateNameInput" maxlength="60" placeholder="e.g. Busy Work Week" /></label>
+          <button class="primary-btn" id="saveWeekTemplateButton">Save visible week as template</button>
+          <small class="muted">Templates are created only when you save one. Applying a template fills empty meal slots and leaves existing plans alone.</small>
         </div>
-        <button id="installButton" class="install-card hidden"><span>📲</span><div><b>Install Bento</b><small>Add Bento to your Home Screen</small></div></button>
+        <div class="section-heading"><h2>Saved templates</h2></div>
+        <div id="templatesList" class="card-list"></div>
+      </section>
+
+      <section class="view subview" data-view="waste" aria-labelledby="wasteTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Learn, don't judge</p><h1 id="wasteTitle">Food Waste Log</h1></div><button class="primary-round" data-action="add-waste" aria-label="Log food waste">＋</button></div>
+        <div id="wasteSummary" class="stat-grid"></div>
+        <div class="info-card">This is optional. Use it only if you want Bento to help you notice patterns like food expiring before you use it or buying more than you need.</div>
+        <div id="wasteList" class="card-list"></div>
       </section>
 
       <section class="view subview" data-view="smart" aria-labelledby="smartTitle">
@@ -170,8 +217,8 @@
         <div id="leftoversList" class="card-list"></div>
       </section>
 
-      <section class="view subview" data-view="grocery" aria-labelledby="groceryTitle">
-        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton">◉</button></div>
+      <section class="view" data-view="grocery" aria-labelledby="groceryTitle">
+        <div class="page-title-row"><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton" aria-label="Shopping mode">◉</button></div>
         <div class="summary-card"><div><small>Unchecked</small><strong id="groceryUnchecked">0</strong></div><div><small>Checked</small><strong id="groceryChecked">0</strong></div><div><small>Est.</small><strong id="groceryEstimate">—</strong></div></div>
         <div class="inline-add"><input id="groceryAddInput" placeholder="Add grocery item…" /><button id="groceryAddButton">Add</button></div>
         <div class="action-row"><button class="soft-btn" id="groceryFromPlanButton">Generate from this week</button><button class="soft-btn" id="checkedToPantryButton">Checked → Pantry</button><button class="soft-btn" id="clearCheckedButton">Clear checked</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>
@@ -221,6 +268,22 @@
           <label>Allergies / avoid<input id="allergyInput" type="text" placeholder="comma separated" /></label>
           <label>Kitchen equipment<input id="equipmentInput" type="text" placeholder="e.g. oven, air fryer, rice cooker" /></label>
           <label>Weekly home-cooked goal<input id="weeklyGoalInput" type="number" min="0" max="28" /></label>
+          <label>Expiry warning<select id="expiryWindowSelect"><option value="1">1 day before</option><option value="3">3 days before</option><option value="5">5 days before</option><option value="7">7 days before</option></select></label>
+          <label>Default pantry location<select id="defaultPantryLocationSelect"><option>Pantry</option><option>Fridge</option><option>Freezer</option><option>Spice Rack</option><option>Other</option></select></label>
+          <label>Grocery currency<select id="currencySelect"><option value="PHP">PHP — Philippine peso</option><option value="JPY">JPY — Japanese yen</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — British pound</option><option value="SGD">SGD — Singapore dollar</option><option value="HKD">HKD — Hong Kong dollar</option></select></label>
+          <label>Interface density<select id="densitySelect"><option value="cozy">Cozy</option><option value="compact">Compact</option></select></label>
+        </div>
+        <div class="section-heading"><h2>Meal slots</h2></div>
+        <div class="settings-card settings-toggle-grid">
+          <label class="toggle-line"><span>Breakfast</span><input id="slotBreakfastInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Lunch</span><input id="slotLunchInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Dinner</span><input id="slotDinnerInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Snack</span><input id="slotSnackInput" type="checkbox" /></label>
+        </div>
+        <div class="section-heading"><h2>Home screen</h2></div>
+        <div class="settings-card settings-toggle-grid">
+          <label class="toggle-line"><span>Show kitchen snapshot</span><input id="showHomeStatsInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Show favorites</span><input id="showHomeFavoritesInput" type="checkbox" /></label>
         </div>
         <div class="section-heading"><h2>Theme</h2></div>
         <div id="themePicker" class="theme-picker"></div>
@@ -238,7 +301,6 @@
           <img src="icon/icon-192.png" alt="Bento app icon" />
           <p><strong>Bento (弁当) means “boxed meal” or “lunchbox” in Japanese.</strong> Just like a bento brings different little dishes together in one organized box, Bento brings your recipes, meal plans, grocery lists, and food ideas together in one place—making everyday meals easier to plan and enjoy.</p>
         </div>
-        <div class="info-card"><b>Build 0.2 — Mega Kitchen</b><br />Local-first recipes, weekly planning, pantry, grocery list, ingredient matching, cooking mode, leftovers, Bento Box Builder, Kitchen Magic, collections, insights, goals, themes, backups and offline installability.</div>
       </section>
     </main>
 
@@ -247,7 +309,7 @@
       <button data-nav="plan"><span>▣</span><small>Plan</small></button>
       <button data-nav="recipes"><span>▤</span><small>Recipes</small></button>
       <button data-nav="pantry"><span>▥</span><small>Pantry</small></button>
-      <button data-nav="more"><span>•••</span><small>More</small></button>
+      <button data-nav="grocery" class="nav-with-badge"><span>🛒</span><small>Grocery</small><em id="groceryNavBadge" class="nav-badge hidden">0</em></button>
     </nav>
   </div>
 
@@ -323,6 +385,30 @@
     </form>
   </dialog>
 
+  <dialog id="ideaDialog" class="sheet-dialog compact-dialog">
+    <form id="ideaForm">
+      <div class="sheet-handle"></div>
+      <div class="dialog-title"><div><p class="eyebrow">Ideas & cravings</p><h2>Add an idea</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <label>What sounds good?<input id="ideaTitleInput" required maxlength="100" placeholder="e.g. Try a soba salad" /></label>
+      <label>Type<select id="ideaTypeInput"><option>Craving</option><option>Meal idea</option><option>Try soon</option><option>Restaurant inspiration</option><option>Seasonal idea</option><option>Other</option></select></label>
+      <label>Notes<textarea id="ideaNotesInput" rows="3" placeholder="Where you saw it, ingredients, why you want to try it…"></textarea></label>
+      <label>For a date (optional)<input id="ideaDateInput" type="date" /></label>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save idea</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="wasteDialog" class="sheet-dialog compact-dialog">
+    <form id="wasteForm">
+      <div class="sheet-handle"></div>
+      <div class="dialog-title"><div><p class="eyebrow">Optional tracking</p><h2>Log food waste</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <label>Food / ingredient<input id="wasteItemInput" required maxlength="100" placeholder="e.g. Spinach" /></label>
+      <div class="two-col"><label>Amount<input id="wasteAmountInput" maxlength="50" placeholder="e.g. half a bag" /></label><label>Date<input id="wasteDateInput" type="date" /></label></div>
+      <label>Reason<select id="wasteReasonInput"><option>Expired</option><option>Spoiled</option><option>Forgotten</option><option>Cooked too much</option><option>Didn't like it</option><option>Plans changed</option><option>Other</option></select></label>
+      <label>Note<textarea id="wasteNoteInput" rows="3" placeholder="Optional note"></textarea></label>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save log</button></div>
+    </form>
+  </dialog>
+
   <dialog id="recipeDetailDialog" class="sheet-dialog detail-dialog"><div id="recipeDetailContent"></div></dialog>
 
   <dialog id="quickAddDialog" class="sheet-dialog compact-dialog">
@@ -333,6 +419,8 @@
       <button data-action="add-pantry"><span>🫙</span><div><b>Pantry item</b><small>Add what you have</small></div></button>
       <button data-action="add-grocery"><span>🛒</span><div><b>Grocery item</b><small>Add to shopping list</small></div></button>
       <button data-action="add-leftover"><span>♻️</span><div><b>Leftover</b><small>Save remaining portions</small></div></button>
+      <button data-action="add-idea"><span>💭</span><div><b>Idea / craving</b><small>Remember something to try</small></div></button>
+      <button data-action="add-waste"><span>🌱</span><div><b>Waste log</b><small>Optional food waste tracking</small></div></button>
     </div>
   </dialog>
 

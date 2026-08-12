@@ -1,7 +1,7 @@
 {
   "name": "Bento — Meal Planner & Recipes",
   "short_name": "Bento",
-  "description": "A local-first meal planner, recipe library, pantry, grocery list, leftovers tracker, Bento Box Builder and smart kitchen companion.",
+  "description": "A local-first meal planner and recipe app with pantry tracking, grocery lists, leftovers, meal templates, ideas, food-waste insights and smart kitchen tools.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -114,9 +114,9 @@
       ]
     },
     {
-      "name": "Kitchen Magic",
-      "short_name": "Magic",
-      "url": "./index.html#smart",
+      "name": "Pantry",
+      "short_name": "Pantry",
+      "url": "./index.html#pantry",
       "icons": [
         {
           "src": "icon/icon-192.png",

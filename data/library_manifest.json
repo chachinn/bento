@@ -1,39 +1,56 @@
 {
-  "libraryVersion": 16,
-  "recipeCount": 341,
-  "newRecipesThisBuild": 46,
+  "libraryVersion": 17,
+  "recipeCount": 520,
+  "newRecipesThisBuild": 179,
   "cuisineCount": 1,
   "verifiedCuisineLibraries": [
     "Japanese"
   ],
   "gameLibraries": {
     "Genshin Impact": {
-      "recipeRecords": 193,
+      "recipeRecords": 372,
       "linkedCuisineRecipeAppearances": 10,
-      "discoveryEntries": 203,
+      "discoveryEntries": 382,
       "regions": {
         "Mondstadt": 62,
         "Liyue": 85,
-        "Inazuma": 56
+        "Inazuma": 55,
+        "Sumeru": 41,
+        "Fontaine": 51,
+        "Natlan": 44,
+        "Nod-Krai": 44
       },
-      "inazumaBaseArchiveFoods": 39,
-      "inazumaCharacterDishRecords": 17,
-      "status": "Mondstadt, Liyue, and Inazuma game identities reviewed for 2026; home recipes are Bento recreations."
+      "regionalBaseArchiveFoods": {
+        "Mondstadt": 39,
+        "Liyue": 69,
+        "Inazuma": 39,
+        "Sumeru": 27,
+        "Fontaine": 38,
+        "Natlan": 33,
+        "Nod-Krai": 35
+      },
+      "characterDishRecords": {
+        "Sumeru": 14,
+        "Fontaine": 13,
+        "Natlan": 11,
+        "Nod-Krai": 9
+      },
+      "status": "All currently planned Bento Genshin regions through Nod-Krai are represented; game content is isolated behind the Games browser."
     }
   },
-  "dishImageCount": 341,
+  "dishImageCount": 520,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 11,
+  "instructionVersion": 12,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 341,
+  "detailedInstructionRecipeCount": 520,
   "japaneseRecipeCount": 148,
-  "gameRecipeCount": 203,
+  "gameRecipeCount": 382,
   "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
-  "releaseUi": "Game content remains behind the icon-only Games browser; no update/build/status banners are shown in the consumer UI.",
+  "gameIsolation": "Game/anime recipes are excluded from Cuisines, Meals, Desserts, Drinks, their counts, and automatic Kitchen Magic/Cook With discovery. They remain usable when deliberately opened from Games.",
   "cacheFix": "Versioned core assets + network-first app/data fetching retained to prevent mixed stale PWA builds.",
-  "generatedAt": "2026-08-12T22:52:00+08:00"
+  "generatedAt": "2026-08-12T23:35:00+08:00"
 }

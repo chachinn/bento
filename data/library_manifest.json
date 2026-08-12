@@ -1,5 +1,5 @@
 {
-  "libraryVersion": 11,
+  "libraryVersion": 12,
   "recipeCount": 148,
   "curatedClassicCount": 148,
   "bentoOriginalCount": 0,
@@ -17,7 +17,7 @@
   "photoPlanCount": 148,
   "ingredientPhotoPlanCount": 0,
   "photoMode": "online-only",
-  "instructionVersion": 7,
+  "instructionVersion": 8,
   "instructionStyle": "detailed-concise",
   "fixedStepTarget": false,
   "minimumStepsPerRecipe": 4,
@@ -34,9 +34,10 @@
   },
   "reviewedAt": "2026-08-12",
   "reviewBasis": [
-    "MAFF Our Regional Cuisines / Traditional Foods in Japan",
-    "Kikkoman Global Cookbook and Washoku guidance",
-    "Japan National Tourism Organization food-culture references"
+    "MAFF Our Regional Cuisines (current 2026 site)",
+    "MAFF Traditional Foods in Japan (current 2026 site)",
+    "Kikkoman Washoku Lesson / Cookbook (current 2026 site)",
+    "Japan National Tourism Organization food-culture references (current 2026 site)"
   ],
   "qualityModel": {
     "cuisineByCuisineRebuild": true,
@@ -49,7 +50,7 @@
     "clearIngredientChecksEnabled": true,
     "currentSourceReviewYear": 2026
   },
-  "uiVersion": "recipe-library-v3",
+  "uiVersion": "recipe-library-v4-japanese-final-qa",
   "browseModel": [
     "cuisines",
     "meals",
@@ -84,5 +85,29 @@
       "Tea",
       "Traditional"
     ]
-  }
+  },
+  "japaneseV1Status": "QA complete",
+  "qa2026": {
+    "uniqueIds": true,
+    "uniqueTitles": true,
+    "timingConsistency": true,
+    "allRecipesHaveIngredients": true,
+    "allRecipesHaveSteps": true,
+    "allRecipesHaveJapaneseNames": true,
+    "allRecipesHaveRomanization": true,
+    "allergenMetadataNormalized": true,
+    "inactiveTimeTracked": true,
+    "photoQueryMappings": 148,
+    "ingredientPhotosDisabled": true
+  },
+  "v12Features": [
+    "serving scaler in recipe detail and cooking mode",
+    "ingredient checkbox state carried into cooking mode",
+    "step timer suggestions",
+    "screen wake lock with graceful fallback",
+    "reload-safe recipe detail",
+    "browser back/forward navigation support",
+    "photo retry control and stronger Wikimedia scoring",
+    "cache migration and shell-cache isolation"
+  ]
 }

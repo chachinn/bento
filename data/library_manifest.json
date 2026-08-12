@@ -1,115 +1,39 @@
 {
-  "libraryVersion": 13,
-  "recipeCount": 148,
-  "curatedClassicCount": 148,
-  "bentoOriginalCount": 0,
+  "libraryVersion": 14,
+  "recipeCount": 248,
+  "newRecipesThisBuild": 0,
   "cuisineCount": 1,
-  "verifiedCuisines": [
+  "verifiedCuisineLibraries": [
     "Japanese"
   ],
-  "dishImageCount": 148,
+  "specialCollections": {
+    "Genshin Impact": {
+      "realWorldRecreations": 100,
+      "regions": {
+        "Mondstadt": 38,
+        "Liyue": 62
+      },
+      "archiveFoodCounts": {
+        "Mondstadt": 39,
+        "Liyue": 69
+      },
+      "linkedVariantCount": 8,
+      "status": "Inventory verified 2026; Bento real-world recreations"
+    }
+  },
+  "dishImageCount": 248,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
-  "recipeData": "data/recipes-data.js",
-  "imageLoading": "on-demand square online dish photos from Wikimedia Commons",
-  "photoStrategy": "Per-recipe Japanese + English Wikimedia Commons searches; square 1:1 display crop; no ingredient photos",
-  "photoPlanCount": 148,
-  "ingredientPhotoPlanCount": 0,
+  "photoStrategy": "Real online food photography from Wikimedia Commons using practical real-world inspiration queries; no game screenshots or bundled ingredient photos.",
   "photoMode": "online-only",
-  "instructionVersion": 8,
+  "instructionVersion": 9,
   "instructionStyle": "detailed-concise",
-  "fixedStepTarget": false,
-  "minimumStepsPerRecipe": 4,
-  "maximumStepsPerRecipe": 8,
-  "averageStepsPerRecipe": 5.65,
-  "averageIngredientCountPerRecipe": 8.91,
-  "averageInstructionWordsPerRecipe": 106.1,
-  "stepCountDistribution": {
-    "4": 10,
-    "5": 53,
-    "6": 65,
-    "7": 19,
-    "8": 1
-  },
-  "reviewedAt": "2026-08-12",
-  "reviewBasis": [
-    "MAFF Our Regional Cuisines (current 2026 site)",
-    "MAFF Traditional Foods in Japan (current 2026 site)",
-    "Kikkoman Washoku Lesson / Cookbook (current 2026 site)",
-    "Japan National Tourism Organization food-culture references (current 2026 site)"
-  ],
-  "qualityModel": {
-    "cuisineByCuisineRebuild": true,
-    "recipeAccuracyAudit2026": true,
-    "imageQueryAuditRequired": true,
-    "ingredientMethodConsistencyPass": true,
-    "noFixedStepCount": true,
-    "ingredientPhotosDisabledInRecipeDetail": true,
-    "ingredientChecklistEnabled": true,
-    "clearIngredientChecksEnabled": true,
-    "currentSourceReviewYear": 2026
-  },
-  "uiVersion": "recipe-library-v4-japanese-final-qa",
-  "browseModel": [
-    "cuisines",
-    "meals",
-    "desserts",
-    "drinks",
-    "collections"
-  ],
-  "specialCollectionsPlanned": [
-    "Anime Kitchen",
-    "Genshin Impact"
-  ],
-  "japaneseExpansion": {
-    "previousCount": 128,
-    "newRecipesThisBuild": 20,
-    "currentCount": 148,
-    "dessertCount": 25,
-    "drinkCount": 9,
-    "breakfastCount": 4,
-    "regionalOrNicheCount": 76
-  },
-  "dedicatedSections": {
-    "desserts": true,
-    "drinks": true,
-    "dessertStyles": [
-      "Cakes & griddled",
-      "Chilled & café",
-      "Regional sweets",
-      "Wagashi & mochi"
-    ],
-    "drinkStyles": [
-      "Café",
-      "Tea",
-      "Traditional"
-    ]
-  },
-  "japaneseV1Status": "QA complete",
-  "qa2026": {
-    "uniqueIds": true,
-    "uniqueTitles": true,
-    "timingConsistency": true,
-    "allRecipesHaveIngredients": true,
-    "allRecipesHaveSteps": true,
-    "allRecipesHaveJapaneseNames": true,
-    "allRecipesHaveRomanization": true,
-    "allergenMetadataNormalized": true,
-    "inactiveTimeTracked": true,
-    "photoQueryMappings": 148,
-    "ingredientPhotosDisabled": true
-  },
-  "v12Features": [
-    "serving scaler in recipe detail and cooking mode",
-    "ingredient checkbox state carried into cooking mode",
-    "step timer suggestions",
-    "screen wake lock with graceful fallback",
-    "reload-safe recipe detail",
-    "browser back/forward navigation support",
-    "photo retry control and stronger Wikimedia scoring",
-    "cache migration and shell-cache isolation"
-  ],
-  "build": "v12.1-navigation-repair",
-  "navigationRepair": true
+  "detailedInstructionRecipeCount": 248,
+  "japaneseRecipeCount": 148,
+  "genshinRecipeCount": 100,
+  "navigationFix": "Recipe renderer made defensive; recipe grid no longer blanks if browse panel fails.",
+  "gameDataReview": "Genshin regional inventory checked against current 2026 Mondstadt/Liyue category listings and HoYoLAB Version 6.7-era recipe tracker.",
+  "generatedAt": "2026-08-12T21:50:00+08:00",
+  "cacheFix": "Versioned core assets + network-first app/data fetching prevent mixed stale PWA builds."
 }

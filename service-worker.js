@@ -1,7 +1,7 @@
-const CACHE = 'bento-shell-v0.9.1-navigation-repair';
+const CACHE = 'bento-shell-v0.5.4-recipes-cache-stability';
 const SHELL_PREFIX = 'bento-shell-';
 const ASSETS = [
-  './','./index.html','./style.css','./data/recipes-data.js','./data/photo-index.js','./data/library_manifest.json','./app.js','./manifest.json',
+  './','./index.html','./style.css?v=14','./data/recipes-data.js?v=14','./data/photo-index.js?v=14','./data/library_manifest.json','./app.js?v=14','./manifest.json',
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',
   './icon/icon-144.png','./icon/icon-152.png','./icon/icon-180.png','./icon/icon-192.png',
   './icon/icon-384.png','./icon/icon-512.png','./icon/icon-maskable-192.png','./icon/icon-maskable-512.png'
@@ -12,8 +12,9 @@ self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
   const url=new URL(event.request.url);
   if(url.origin!==self.location.origin)return;
-  if(event.request.mode==='navigate'){
-    event.respondWith(fetch(event.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put('./index.html',copy));return r}).catch(()=>caches.match('./index.html')));
+  const isCore=/\/(?:app\.js|style\.css|data\/(?:recipes-data|photo-index)\.js)$/.test(url.pathname);
+  if(event.request.mode==='navigate'||isCore){
+    event.respondWith(fetch(event.request,{cache:'no-store'}).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(event.request.mode==='navigate'?'./index.html':event.request,copy))}return r}).catch(()=>event.request.mode==='navigate'?caches.match('./index.html'):caches.match(event.request)));
     return;
   }
   event.respondWith(caches.open(CACHE).then(cache=>cache.match(event.request).then(cached=>{

@@ -1,7 +1,7 @@
 {
   "name": "Bento — Meal Planner & Recipes",
   "short_name": "Bento",
-  "description": "Bento is a local-first kitchen companion with a verified Japanese recipe library, meal planning, pantry, groceries, cooking mode, desserts and drinks.",
+  "description": "Bento is a local-first meal planner and researched recipe library with Japanese cuisine plus Genshin Impact real-world recreations.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

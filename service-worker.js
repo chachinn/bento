@@ -1,7 +1,7 @@
-const CACHE = 'bento-shell-v0.5.8-filipino';
+const CACHE = 'bento-shell-v0.5.9-korean';
 const SHELL_PREFIX = 'bento-shell-';
 const CORE = [
-  './','./index.html','./style.css?v=18','./data/recipes-data.js?v=18','./data/photo-index.js?v=18','./data/library_manifest.json','./app.js?v=18','./manifest.json'
+  './','./index.html','./style.css?v=19','./data/recipes-data.js?v=19','./data/photo-index.js?v=19','./data/library_manifest.json','./app.js?v=19','./manifest.json','./data/korean-runtime.js?v=19','./data/korean-recipes.js?v=19'
 ];
 const OPTIONAL_ICONS = [
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',

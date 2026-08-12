@@ -1,4 +1,4 @@
-const CACHE = 'bento-shell-v0.5.9-korean';
+const CACHE = 'bento-shell-v0.5.9-korean-repair1';
 const SHELL_PREFIX = 'bento-shell-';
 const CORE = [
   './style.css?v=19','./data/recipes-data.js?v=19','./data/photo-index.js?v=19','./data/library_manifest.json','./app.js?v=19','./manifest.json',
@@ -26,8 +26,8 @@ function htmlResponse(html,response){const headers=new Headers(response?.headers
 function jsResponse(js,response){const headers=new Headers(response?.headers||{});headers.set('content-type','application/javascript; charset=utf-8');headers.delete('content-length');return new Response(js,{status:response?.status||200,statusText:response?.statusText||'OK',headers})}
 async function cacheUpgradedApp(cache){try{const response=await fetch('./app.js?v=19',{cache:'no-store'});if(!response.ok)return;await cache.put('./app.js?v=19',jsResponse(upgradeApp(await response.text()),response))}catch{}}
 async function cacheUpgradedIndex(cache){try{const response=await fetch('./index.html',{cache:'no-store'});if(!response.ok)return;const upgraded=htmlResponse(upgradeHtml(await response.text()),response);await cache.put('./index.html',upgraded)}catch{}}
-self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(CORE);await cacheUpgradedApp(cache);await cacheUpgradedIndex(cache);await Promise.allSettled(OPTIONAL_ICONS.map(asset=>cache.add(asset)))})());self.skipWaiting()});
-self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(SHELL_PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})())});
+self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await Promise.all(CORE.map(async asset=>{try{const response=await fetch(asset,{cache:'no-store'});if(response.ok)await cache.put(asset,response.clone())}catch{}}));await cacheUpgradedApp(cache);await cacheUpgradedIndex(cache);await Promise.allSettled(OPTIONAL_ICONS.map(asset=>cache.add(asset)))})());self.skipWaiting()});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(SHELL_PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});await Promise.allSettled(windows.map(async client=>{try{const url=new URL(client.url);if(url.origin===self.location.origin)await client.navigate(client.url)}catch{}}))})())});
 function fetchWithTimeout(request,ms=2500){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);return fetch(request,{cache:'no-store',signal:controller.signal}).finally(()=>clearTimeout(timer))}
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;const url=new URL(event.request.url);if(url.origin!==self.location.origin)return;

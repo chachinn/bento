@@ -21,9 +21,12 @@ function upgradeHtml(html){
   else if(!out.includes('v19-ui.js?v=19'))out=out.replace('</body>','  <script src="v19-ui.js?v=19" defer></script>\n</body>');
   return out;
 }
+function upgradeApp(js){return String(js||'').replace(/const VERSION = \d+;/,'const VERSION = 19;')}
 function htmlResponse(html,response){const headers=new Headers(response?.headers||{});headers.set('content-type','text/html; charset=utf-8');headers.delete('content-length');return new Response(html,{status:response?.status||200,statusText:response?.statusText||'OK',headers})}
+function jsResponse(js,response){const headers=new Headers(response?.headers||{});headers.set('content-type','application/javascript; charset=utf-8');headers.delete('content-length');return new Response(js,{status:response?.status||200,statusText:response?.statusText||'OK',headers})}
+async function cacheUpgradedApp(cache){try{const response=await fetch('./app.js?v=19',{cache:'no-store'});if(!response.ok)return;await cache.put('./app.js?v=19',jsResponse(upgradeApp(await response.text()),response))}catch{}}
 async function cacheUpgradedIndex(cache){try{const response=await fetch('./index.html',{cache:'no-store'});if(!response.ok)return;const upgraded=htmlResponse(upgradeHtml(await response.text()),response);await cache.put('./index.html',upgraded)}catch{}}
-self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(CORE);await cacheUpgradedIndex(cache);await Promise.allSettled(OPTIONAL_ICONS.map(asset=>cache.add(asset)))})());self.skipWaiting()});
+self.addEventListener('install',event=>{event.waitUntil((async()=>{const cache=await caches.open(CACHE);await cache.addAll(CORE);await cacheUpgradedApp(cache);await cacheUpgradedIndex(cache);await Promise.allSettled(OPTIONAL_ICONS.map(asset=>cache.add(asset)))})());self.skipWaiting()});
 self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith(SHELL_PREFIX)&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim()})())});
 function fetchWithTimeout(request,ms=2500){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);return fetch(request,{cache:'no-store',signal:controller.signal}).finally(()=>clearTimeout(timer))}
 self.addEventListener('fetch',event=>{

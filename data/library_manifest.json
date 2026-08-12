@@ -1,36 +1,39 @@
 {
-  "libraryVersion": 15,
-  "recipeCount": 295,
-  "newRecipesThisBuild": 47,
+  "libraryVersion": 16,
+  "recipeCount": 341,
+  "newRecipesThisBuild": 46,
   "cuisineCount": 1,
   "verifiedCuisineLibraries": [
     "Japanese"
   ],
   "gameLibraries": {
     "Genshin Impact": {
-      "recipeRecords": 147,
+      "recipeRecords": 193,
+      "linkedCuisineRecipeAppearances": 10,
+      "discoveryEntries": 203,
       "regions": {
         "Mondstadt": 62,
-        "Liyue": 85
+        "Liyue": 85,
+        "Inazuma": 56
       },
-      "characterDishRecords": 46,
-      "linkedQuestEventVariants": 53,
-      "status": "Current Mondstadt/Liyue game identities reviewed for 2026; home recipes are Bento recreations."
+      "inazumaBaseArchiveFoods": 39,
+      "inazumaCharacterDishRecords": 17,
+      "status": "Mondstadt, Liyue, and Inazuma game identities reviewed for 2026; home recipes are Bento recreations."
     }
   },
-  "dishImageCount": 295,
+  "dishImageCount": 341,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 10,
+  "instructionVersion": 11,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 295,
+  "detailedInstructionRecipeCount": 341,
   "japaneseRecipeCount": 148,
-  "gameRecipeCount": 147,
+  "gameRecipeCount": 203,
   "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
-  "releaseUi": "Development/version banners removed from recipe landing page; game collections are disclosed only inside the Games browser.",
+  "releaseUi": "Game content remains behind the icon-only Games browser; no update/build/status banners are shown in the consumer UI.",
   "cacheFix": "Versioned core assets + network-first app/data fetching retained to prevent mixed stale PWA builds.",
-  "generatedAt": "2026-08-12T22:15:00+08:00"
+  "generatedAt": "2026-08-12T22:52:00+08:00"
 }

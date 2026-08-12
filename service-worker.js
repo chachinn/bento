@@ -1,4 +1,4 @@
-const CACHE = 'bento-shell-v0.9.0-japanese-v1-final-qa';
+const CACHE = 'bento-shell-v0.9.1-navigation-repair';
 const SHELL_PREFIX = 'bento-shell-';
 const ASSETS = [
   './','./index.html','./style.css','./data/recipes-data.js','./data/photo-index.js','./data/library_manifest.json','./app.js','./manifest.json',

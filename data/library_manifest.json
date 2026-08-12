@@ -1,5 +1,5 @@
 {
-  "libraryVersion": 12,
+  "libraryVersion": 13,
   "recipeCount": 148,
   "curatedClassicCount": 148,
   "bentoOriginalCount": 0,
@@ -109,5 +109,7 @@
     "browser back/forward navigation support",
     "photo retry control and stronger Wikimedia scoring",
     "cache migration and shell-cache isolation"
-  ]
+  ],
+  "build": "v12.1-navigation-repair",
+  "navigationRepair": true
 }

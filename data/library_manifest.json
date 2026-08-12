@@ -1,5 +1,5 @@
 {
-  "libraryVersion": 3,
+  "libraryVersion": 4,
   "recipeCount": 2480,
   "newRecipesThisBuild": 1000,
   "cuisineCount": 47,
@@ -8,6 +8,13 @@
   "hasRecipeImages": true,
   "hasIngredientImages": true,
   "recipeData": "data/recipes-data.js",
-  "ingredientData": "data/ingredient-image-map.js",
-  "imageLoading": "lazy; images cached on demand rather than all pre-cached"
+  "imageLoading": "lazy; images cached on demand rather than all pre-cached",
+  "photoStrategy": "Real online photos from Wikimedia Commons; no bundled recipe or ingredient photos",
+  "generatedRecipeImages": false,
+  "generatedIngredientImages": false,
+  "curatedRecipeOverrides": 0,
+  "photoPlanCount": 2480,
+  "ingredientPhotoPlanCount": 585,
+  "photoMode": "online-only",
+  "curatedLocalPhotoCount": 0
 }

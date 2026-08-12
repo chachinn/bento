@@ -312,6 +312,17 @@
           <label class="toggle-line"><span>Suggest low-stock staples in Grocery</span><input id="autoStapleGroceriesInput" type="checkbox" /></label>
           <label class="toggle-line"><span>Ask to update Pantry after cooking</span><input id="askPantryDeductInput" type="checkbox" /></label>
         </div>
+        <div class="section-heading"><h2>Real food photos</h2></div>
+        <div class="settings-card photo-library-card">
+          <p class="muted recipe-library-note">Bento uses real photographs from Wikimedia Commons and stores viewed photos in your device cache. No AI-generated recipe or ingredient images are used.</p>
+          <div class="photo-cache-meter"><div><b id="photoCacheCount">0</b><small> recipe photos cached for offline use</small></div><span id="photoCacheProgress">On demand</span></div>
+          <div class="action-grid photo-actions">
+            <button class="soft-btn" id="downloadPhotoLibraryButton">Download all recipe photos</button>
+            <button class="soft-btn" id="refreshPhotoStatusButton">Refresh photo count</button>
+            <button class="danger-btn" id="clearPhotoCacheButton">Clear photo cache</button>
+          </div>
+          <p class="muted photo-library-warning">Downloading the whole library is optional and can use significant storage and mobile data. Normal browsing only downloads photos as you see them.</p>
+        </div>
         <div class="section-heading"><h2>Theme</h2></div>
         <div id="themePicker" class="theme-picker"></div>
         <div class="section-heading"><h2>Data & backup</h2></div>
@@ -327,7 +338,7 @@
         <div class="about-card">
           <img src="icon/icon-192.png" alt="Bento app icon" />
           <p><strong>Bento (弁当) means “boxed meal” or “lunchbox” in Japanese.</strong> Just like a bento brings different little dishes together in one organized box, Bento brings your recipes, meal plans, grocery lists, and food ideas together in one place—making everyday meals easier to plan and enjoy.</p>
-          <p class="muted"><strong>Build 0.4</strong> · Daily Kitchen Flow · local-first and designed for real everyday use.</p>
+          <p class="muted"><strong>Build 0.4.6</strong> · Real Photo Library · local-first kitchen planning with real online food photography.</p>
         </div>
       </section>
     </main>
@@ -467,7 +478,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="data/recipes-data.js" defer></script>
-  <script src="data/ingredient-image-map.js" defer></script>
+  <script src="data/photo-index.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

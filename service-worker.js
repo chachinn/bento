@@ -1,6 +1,6 @@
-const CACHE = 'bento-shell-v0.4.4-prepush-2480';
+const CACHE = 'bento-shell-v0.4.7-online-only-photos';
 const ASSETS = [
-  './','./index.html','./style.css','./data/recipes-data.js','./data/ingredient-image-map.js','./data/library_manifest.json','./app.js','./manifest.json',
+  './','./index.html','./style.css','./data/recipes-data.js','./data/photo-index.js','./data/library_manifest.json','./app.js','./manifest.json',
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',
   './icon/icon-144.png','./icon/icon-152.png','./icon/icon-180.png','./icon/icon-192.png',
   './icon/icon-384.png','./icon/icon-512.png','./icon/icon-maskable-192.png','./icon/icon-maskable-512.png'

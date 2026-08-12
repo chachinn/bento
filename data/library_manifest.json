@@ -1,13 +1,17 @@
 {
-  "libraryVersion": 19,
-  "recipeCount": 857,
-  "newRecipesThisBuild": 174,
+  "libraryVersion": 20,
+  "recipeCount": 956,
+  "newRecipesThisBuild": 99,
   "cuisineCount": 3,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
     "Korean"
   ],
+  "standardRecipeCount": 485,
+  "japaneseRecipeCount": 148,
+  "filipinoRecipeCount": 163,
+  "koreanRecipeCount": 174,
   "gameLibraries": {
     "Genshin Impact": {
       "recipeRecords": 372,
@@ -37,26 +41,43 @@
         "Natlan": 11,
         "Nod-Krai": 9
       },
-      "status": "All currently planned Bento Genshin regions through Nod-Krai are represented; game content is isolated behind the Games browser."
+      "status": "All currently planned Bento Genshin regions through Nod-Krai are represented; game content remains isolated behind Games."
     }
   },
-  "dishImageCount": 857,
+  "gameRecipeCount": 382,
+  "animeRecipeCount": 99,
+  "animeSeriesCount": 10,
+  "animeLibraries": {
+    "series": {
+      "Campfire Cooking in Another World with My Absurd Skill": 19,
+      "Food Wars! Shokugeki no Soma": 18,
+      "Delicious in Dungeon": 12,
+      "Today's Menu for the Emiya Family": 13,
+      "Sweetness & Lightning": 12,
+      "Restaurant to Another World": 8,
+      "Isekai Izakaya: Japanese Food from Another World": 6,
+      "Laid-Back Camp": 5,
+      "Dr. Stone": 3,
+      "Jujutsu Kaisen": 3
+    },
+    "navigation": "Flat Anime recipe library; no series dropdown. Series provenance appears in recipe detail/references and is searchable.",
+    "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
+  },
+  "dishImageCount": 956,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
-  "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
+  "photoStrategy": "Real online food photography from Wikimedia Commons; anime screenshots, character art, manga panels and game artwork are not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 14,
+  "instructionVersion": 15,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 857,
-  "japaneseRecipeCount": 148,
-  "gameRecipeCount": 382,
+  "detailedInstructionRecipeCount": 956,
   "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
-  "gameIsolation": "Game/anime recipes are excluded from Cuisines, Meals, Desserts, Drinks, their counts, and automatic Kitchen Magic/Cook With discovery. They remain usable when deliberately opened from Games.",
-  "cacheFix": "Navigation stays network-first; explicitly versioned app/data/style assets are cache-first after successful install to avoid repeat network waits without mixed-version builds.",
-  "generatedAt": "2026-08-13T00:35:00+08:00",
-  "filipinoRecipeCount": 163,
-  "standardRecipeCount": 485,
+  "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
+  "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
+  "cuisineNavigation": "Compact cuisine selector designed to scale to all 18 planned cuisines without a card wall.",
+  "cacheFix": "Navigation is network-first; the v20 service worker upgrades legacy raw index/app responses to v20 and caches versioned Korean, Anime, UI and core assets to prevent mixed-version PWA loads.",
+  "generatedAt": "2026-08-13T06:49:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -70,7 +91,5 @@
     "Juices & coolers",
     "Traditional"
   ],
-  "performance": "Recipe cards remain batch-rendered (30 at a time); cuisine selection filters the standard pool before search/sort work; photos stay lazy/on-demand; game content remains isolated from normal cuisine/meal/dessert/drink discovery; core versioned assets remain cache-first after successful install.",
-  "koreanRecipeCount": 174,
-  "cuisineNavigation": "Single compact cuisine dropdown with All cuisines plus each installed cuisine; designed to scale to the full planned cuisine library without card-grid crowding."
+  "performance": "Recipe cards remain batch-rendered (30 at a time); photos remain lazy/on-demand; game/anime records remain excluded from normal auto-discovery; Anime content is split into ten versioned cached data chunks."
 }

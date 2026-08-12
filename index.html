@@ -50,7 +50,7 @@
         <p class="menu-section-label">Library & tracking</p>
         <div class="menu-list menu-list-compact">
           <button data-view-link="ideas"><span>💭</span><div><b>Ideas & Cravings</b><small>Capture meals you want to try</small></div><i>›</i></button>
-          <button data-view-link="collections"><span>📚</span><div><b>Collections</b><small>Browse recipe groups and rotations</small></div><i>›</i></button>
+          <button data-view-link="collections"><span>📚</span><div><b>Recipe Collections</b><small>Favorites, themed sets & future specials</small></div><i>›</i></button>
           <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
           <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
           <button data-view-link="activity"><span>🧺</span><div><b>Kitchen Activity</b><small>Recently bought & used</small></div><i>›</i></button>
@@ -124,20 +124,38 @@
         <div id="mealPlanGrid" class="meal-plan-grid"></div>
       </section>
 
-      <section class="view" data-view="recipes" aria-labelledby="recipesTitle">
-        <div class="page-title-row">
-          <div><p class="eyebrow">Your kitchen library</p><h1 id="recipesTitle">Recipes</h1></div>
+      <section class="view recipe-library-view" data-view="recipes" aria-labelledby="recipesTitle">
+        <div class="page-title-row recipe-page-title">
+          <div><p class="eyebrow">Your kitchen library</p><h1 id="recipesTitle">Recipes</h1><p class="muted recipe-page-subtitle">Browse verified dishes without digging through a crowded list.</p></div>
           <button class="primary-round" data-action="add-recipe" aria-label="Add recipe">＋</button>
         </div>
-        <div id="recipeLibraryNote" class="info-card recipe-library-note">Loading Bento Library…</div>
-        <div class="search-row">
-          <input id="recipeSearch" class="search-input" type="search" placeholder="Search recipes or ingredients…" autocomplete="off" />
-          <select id="recipeCuisineFilter" class="compact-select cuisine-select" aria-label="Filter recipes by cuisine"><option value="All">All cuisines</option></select>
-          <select id="recipeSort" class="compact-select" aria-label="Sort recipes">
+
+        <div id="recipeLibraryNote" class="library-status-card" aria-live="polite">Loading Bento Library…</div>
+
+        <section class="recipe-discovery" aria-labelledby="recipeBrowseHeading">
+          <div class="recipe-discovery-heading">
+            <div><p class="eyebrow">Browse</p><h2 id="recipeBrowseHeading">Find something to cook</h2></div>
+            <button class="text-btn recipe-clear-filter hidden" type="button" data-clear-recipe-filters>Clear</button>
+          </div>
+          <div id="recipeBrowseTabs" class="recipe-browse-tabs" role="tablist" aria-label="Browse recipe library">
+            <button type="button" class="active" data-recipe-browse="cuisines" role="tab" aria-selected="true"><span>🌏</span>Cuisines</button>
+            <button type="button" data-recipe-browse="types" role="tab" aria-selected="false"><span>🍽️</span>Types</button>
+            <button type="button" data-recipe-browse="collections" role="tab" aria-selected="false"><span>✦</span>Collections</button>
+          </div>
+          <div id="recipeBrowsePanel" class="recipe-browse-panel"></div>
+        </section>
+
+        <div class="recipe-search-toolbar">
+          <label class="recipe-search-field" aria-label="Search recipes"><span>⌕</span><input id="recipeSearch" type="search" placeholder="Search dishes or ingredients…" autocomplete="off" /></label>
+          <select id="recipeSort" class="compact-select recipe-sort" aria-label="Sort recipes">
             <option value="newest">Newest</option><option value="name">A–Z</option><option value="quick">Quickest</option><option value="favorite">Favorites first</option><option value="cooked">Most cooked</option>
           </select>
         </div>
-        <div id="recipeFilters" class="chip-row"></div>
+        <div id="recipeFilters" class="chip-row recipe-quick-filters" aria-label="Quick recipe filters"></div>
+        <div class="recipe-results-heading">
+          <div><h2 id="recipeResultsTitle">All recipes</h2><small id="recipeResultsCount" class="muted"></small></div>
+          <button class="soft-btn compact-filter-clear hidden" type="button" data-clear-recipe-filters>Reset</button>
+        </div>
         <div id="recipeGrid" class="recipe-grid"></div>
       </section>
 
@@ -242,7 +260,8 @@
       </section>
 
       <section class="view subview" data-view="collections" aria-labelledby="collectionsTitle">
-        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Organize your recipe book</p><h1 id="collectionsTitle">Collections</h1></div></div>
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Organize & discover</p><h1 id="collectionsTitle">Recipe Collections</h1></div></div>
+        <div class="info-card collection-intro">Collections sit on top of cuisines. A recipe can stay Japanese while also appearing in a themed collection later—such as Anime Kitchen or Genshin Impact.</div>
         <div id="collectionsGrid" class="collection-grid"></div>
       </section>
 
@@ -358,7 +377,7 @@
       <div class="dialog-title"><div><p class="eyebrow">Kitchen library</p><h2 id="recipeDialogTitle">Add Recipe</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="recipeId" />
       <label>Recipe name<input id="recipeTitleInput" required maxlength="100" placeholder="e.g. Strawberry Daifuku" /></label>
-      <div class="two-col"><label>Category<select id="recipeCategoryInput"><option>Dinner</option><option>Lunch</option><option>Breakfast</option><option>Snack</option><option>Side</option><option>Soup</option><option>Dessert</option><option>Drink</option><option>Other</option></select></label><label>Cuisine<input id="recipeCuisineInput" placeholder="e.g. Japanese" /></label></div>
+      <div class="two-col"><label>Recipe type<select id="recipeCategoryInput"><option>Main Dishes</option><option>Rice & Donburi</option><option>Noodles</option><option>Soups & Hot Pots</option><option>Sushi & Seafood</option><option>Fried & Street Food</option><option>Side Dishes</option><option>Breakfast</option><option>Breads & Pastries</option><option>Sweets & Desserts</option><option>Drinks</option><option>Other</option></select></label><label>Cuisine<input id="recipeCuisineInput" placeholder="e.g. Japanese" /></label></div>
       <div class="three-col"><label>Prep min<input id="recipePrepInput" type="number" min="0" value="0" /></label><label>Cook min<input id="recipeCookInput" type="number" min="0" value="0" /></label><label>Servings<input id="recipeServingsInput" type="number" min="1" value="2" /></label></div>
       <div class="three-col"><label>Energy<select id="recipeEnergyInput"><option value="low">Low effort</option><option value="normal" selected>Normal</option><option value="high">Project meal</option></select></label><label>Cleanup<select id="recipeCleanupInput"><option value="1">1 pan</option><option value="2" selected>2–3 dishes</option><option value="3">Kitchen project</option></select></label><label>Freezer friendly<select id="recipeFreezerInput"><option value="no">No</option><option value="yes">Yes</option></select></label></div>
       <label>Equipment<input id="recipeEquipmentInput" placeholder="e.g. oven, air fryer, rice cooker" /></label>

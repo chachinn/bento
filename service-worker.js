@@ -1,4 +1,4 @@
-const CACHE = 'bento-shell-v0.5.0-recipe-quality-v3';
+const CACHE = 'bento-shell-v0.6.1-library-ui';
 const ASSETS = [
   './','./index.html','./style.css','./data/recipes-data.js','./data/photo-index.js','./data/library_manifest.json','./app.js','./manifest.json',
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',

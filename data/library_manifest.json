@@ -1,5 +1,5 @@
 {
-  "libraryVersion": 4,
+  "libraryVersion": 5,
   "recipeCount": 2480,
   "newRecipesThisBuild": 1000,
   "cuisineCount": 47,
@@ -16,5 +16,11 @@
   "photoPlanCount": 2480,
   "ingredientPhotoPlanCount": 585,
   "photoMode": "online-only",
-  "curatedLocalPhotoCount": 0
+  "curatedLocalPhotoCount": 0,
+  "instructionVersion": 2,
+  "instructionStyle": "detailed",
+  "detailedInstructionRecipeCount": 2480,
+  "minimumStepsPerRecipe": 10,
+  "averageStepsPerRecipe": 10,
+  "averageInstructionWordsPerRecipe": 222.5
 }

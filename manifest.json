@@ -1,7 +1,7 @@
 {
   "name": "Bento — Meal Planner & Recipes",
   "short_name": "Bento",
-  "description": "A local-first meal planner and recipe app with pantry tracking, grocery lists, leftovers, meal templates, ideas, food-waste insights and smart kitchen tools.",
+  "description": "A local-first daily kitchen companion for recipes, meal planning, pantry, groceries, leftovers, prep timelines, food rescue and cooking history.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,4 +1,4 @@
-const CACHE = 'bento-shell-v0.3.0';
+const CACHE = 'bento-shell-v0.4.0';
 const ASSETS = [
   './','./index.html','./style.css','./app.js','./manifest.json',
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',

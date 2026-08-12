@@ -53,6 +53,7 @@
           <button data-view-link="collections"><span>📚</span><div><b>Collections</b><small>Browse recipe groups and rotations</small></div><i>›</i></button>
           <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
           <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
+          <button data-view-link="activity"><span>🧺</span><div><b>Kitchen Activity</b><small>Recently bought & used</small></div><i>›</i></button>
           <button data-view-link="waste"><span>🌱</span><div><b>Food Waste Log</b><small>Notice what gets wasted and why</small></div><i>›</i></button>
           <button data-view-link="insights"><span>📊</span><div><b>Kitchen Insights</b><small>Cooking patterns and goals</small></div><i>›</i></button>
         </div>
@@ -84,7 +85,10 @@
         <div class="section-heading"><h2>Today</h2><button class="text-btn" data-nav="plan">View plan</button></div>
         <div id="todayMeals" class="meal-stack"></div>
 
-        <div class="quick-grid mega-quick-grid">
+        <div class="section-heading" id="tomorrowPrepHeading"><h2>Tomorrow prep</h2><button class="text-btn" data-view-link="smart" data-auto-tool="prep">Prep tools</button></div>
+        <div id="tomorrowPrep" class="card-list"></div>
+
+        <div id="homeQuickActions" class="quick-grid mega-quick-grid">
           <button class="quick-card" data-action="add-recipe"><span>📖</span><b>Add Recipe</b><small>Save a dish</small></button>
           <button class="quick-card" data-view-link="grocery"><span>🛒</span><b>Grocery</b><small id="groceryCountQuick">0 items</small></button>
           <button class="quick-card" data-nav="pantry"><span>🫙</span><b>Pantry</b><small id="pantryCountQuick">0 items</small></button>
@@ -181,9 +185,11 @@
           <button class="feature-tile" data-smart-tool="rescue"><span>🧊</span><b>Fridge Rescue</b><small>Use expiring food first</small></button>
           <button class="feature-tile" data-smart-tool="complete"><span>🥗</span><b>Complete My Meal</b><small>Add sides to a main</small></button>
           <button class="feature-tile" data-smart-tool="deadline"><span>⏰</span><b>Dinner Deadline</b><small>Work backward from mealtime</small></button>
+          <button class="feature-tile" data-smart-tool="parallel"><span>🕰️</span><b>Parallel Timeline</b><small>Finish several dishes together</small></button>
           <button class="feature-tile" data-smart-tool="prep"><span>🔪</span><b>Mise en Place</b><small>One prep list for your meal</small></button>
           <button class="feature-tile" data-smart-tool="batch"><span>🥘</span><b>Batch Prep</b><small>Combine overlapping prep</small></button>
           <button class="feature-tile" data-smart-tool="three"><span>🧩</span><b>3-Ingredient Challenge</b><small>Build around what you choose</small></button>
+          <button class="feature-tile" data-smart-tool="journey"><span>🥕</span><b>Ingredient Journey</b><small>See where an ingredient gets used</small></button>
         </div>
         <div class="smart-controls">
           <label>Time I actually have<select id="smartTime"><option value="0">Any time</option><option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="60">60 min</option></select></label>
@@ -257,6 +263,16 @@
         <div id="historyList" class="card-list"></div>
       </section>
 
+
+      <section class="view subview" data-view="activity" aria-labelledby="activityTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">A quiet kitchen trail</p><h1 id="activityTitle">Kitchen Activity</h1></div><button class="soft-btn" id="clearActivityButton">Clear</button></div>
+        <div class="info-card">Bento keeps a lightweight local history of groceries moved into your pantry and pantry amounts you chose to deduct after cooking. Nothing is pre-filled or shared.</div>
+        <div class="section-heading"><h2>Recently bought</h2></div>
+        <div id="purchaseHistoryList" class="card-list"></div>
+        <div class="section-heading"><h2>Recently used</h2></div>
+        <div id="pantryUseHistoryList" class="card-list"></div>
+      </section>
+
       <section class="view subview" data-view="settings" aria-labelledby="settingsTitle">
         <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Make Bento yours</p><h1 id="settingsTitle">Settings</h1></div></div>
         <div class="settings-card">
@@ -272,6 +288,8 @@
           <label>Default pantry location<select id="defaultPantryLocationSelect"><option>Pantry</option><option>Fridge</option><option>Freezer</option><option>Spice Rack</option><option>Other</option></select></label>
           <label>Grocery currency<select id="currencySelect"><option value="PHP">PHP — Philippine peso</option><option value="JPY">JPY — Japanese yen</option><option value="USD">USD — US dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — British pound</option><option value="SGD">SGD — Singapore dollar</option><option value="HKD">HKD — Hong Kong dollar</option></select></label>
           <label>Interface density<select id="densitySelect"><option value="cozy">Cozy</option><option value="compact">Compact</option></select></label>
+          <label>Usual dinner ready time<input id="defaultDinnerTimeInput" type="time" /></label>
+          <label>Default leftover use-by<select id="defaultLeftoverDaysSelect"><option value="1">1 day</option><option value="2">2 days</option><option value="3">3 days</option><option value="4">4 days</option><option value="5">5 days</option><option value="7">7 days</option></select></label>
         </div>
         <div class="section-heading"><h2>Meal slots</h2></div>
         <div class="settings-card settings-toggle-grid">
@@ -284,6 +302,13 @@
         <div class="settings-card settings-toggle-grid">
           <label class="toggle-line"><span>Show kitchen snapshot</span><input id="showHomeStatsInput" type="checkbox" /></label>
           <label class="toggle-line"><span>Show favorites</span><input id="showHomeFavoritesInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Show tomorrow prep</span><input id="showTomorrowPrepInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Show quick actions</span><input id="showHomeQuickActionsInput" type="checkbox" /></label>
+        </div>
+        <div class="section-heading"><h2>Kitchen automation</h2></div>
+        <div class="settings-card settings-toggle-grid">
+          <label class="toggle-line"><span>Suggest low-stock staples in Grocery</span><input id="autoStapleGroceriesInput" type="checkbox" /></label>
+          <label class="toggle-line"><span>Ask to update Pantry after cooking</span><input id="askPantryDeductInput" type="checkbox" /></label>
         </div>
         <div class="section-heading"><h2>Theme</h2></div>
         <div id="themePicker" class="theme-picker"></div>
@@ -300,6 +325,7 @@
         <div class="about-card">
           <img src="icon/icon-192.png" alt="Bento app icon" />
           <p><strong>Bento (弁当) means “boxed meal” or “lunchbox” in Japanese.</strong> Just like a bento brings different little dishes together in one organized box, Bento brings your recipes, meal plans, grocery lists, and food ideas together in one place—making everyday meals easier to plan and enjoy.</p>
+          <p class="muted"><strong>Build 0.4</strong> · Daily Kitchen Flow · local-first and designed for real everyday use.</p>
         </div>
       </section>
     </main>
@@ -341,9 +367,10 @@
       <label>Location<select id="pantryLocationInput"><option>Pantry</option><option>Fridge</option><option>Freezer</option><option>Spice Rack</option><option>Other</option></select></label>
       <div class="two-col"><label>Expiry / best before<input id="pantryExpiryInput" type="date" /></label><label>Opened date<input id="pantryOpenedInput" type="date" /></label></div>
       <div class="two-col"><label>Package size<input id="pantryPackageInput" placeholder="e.g. 500 g pack" /></label><label>Usual store<input id="pantryStoreInput" placeholder="e.g. Supermarket" /></label></div>
+      <label>Low-stock threshold (optional)<input id="pantryThresholdInput" type="number" min="0" step="0.01" placeholder="e.g. 2" /></label>
       <label class="toggle-line"><span>Always available staple</span><input id="pantryStapleInput" type="checkbox" /></label>
       <label class="toggle-line"><span>Low stock</span><input id="pantryLowInput" type="checkbox" /></label>
-      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save item</button></div>
+      <div class="dialog-actions"><button type="button" id="deletePantryButton" class="danger-text">Delete</button><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save item</button></div>
     </form>
   </dialog>
 
@@ -357,7 +384,8 @@
       <label>Custom meal<input id="mealCustomInput" placeholder="Takeout, leftovers, restaurant…" /></label>
       <label>Servings<input id="mealServingsInput" type="number" min="1" max="30" /></label>
       <label>Prep note<input id="mealPrepNoteInput" placeholder="e.g. thaw chicken in the morning" /></label>
-      <label class="toggle-line"><span>Plan extra portions as leftovers</span><input id="mealLeftoversInput" type="checkbox" /></label>
+      <label>Extra leftover portions<input id="mealExtraPortionsInput" type="number" min="0" max="30" step="1" value="0" /><small class="muted">0 means no planned leftovers.</small></label>
+      <button type="button" id="swapMealButton" class="soft-btn">Suggest a swap</button>
       <div class="dialog-actions"><button type="button" id="removeMealButton" class="danger-text">Remove meal</button><button type="submit" class="primary-btn">Save</button></div>
     </form>
   </dialog>
@@ -406,6 +434,17 @@
       <label>Reason<select id="wasteReasonInput"><option>Expired</option><option>Spoiled</option><option>Forgotten</option><option>Cooked too much</option><option>Didn't like it</option><option>Plans changed</option><option>Other</option></select></label>
       <label>Note<textarea id="wasteNoteInput" rows="3" placeholder="Optional note"></textarea></label>
       <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save log</button></div>
+    </form>
+  </dialog>
+
+
+  <dialog id="pantryDeductionDialog" class="sheet-dialog compact-dialog">
+    <form id="pantryDeductionForm">
+      <div class="sheet-handle"></div>
+      <div class="dialog-title"><div><p class="eyebrow">After cooking</p><h2>Update your pantry?</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <p class="muted">Bento found matching pantry items. Review the suggested amounts—nothing changes until you confirm.</p>
+      <div id="pantryDeductionList" class="deduction-list"></div>
+      <div class="dialog-actions"><button type="button" id="skipPantryDeduction" class="soft-btn">Not now</button><button type="submit" class="primary-btn">Update pantry</button></div>
     </form>
   </dialog>
 

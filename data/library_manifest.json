@@ -1,10 +1,11 @@
 {
-  "libraryVersion": 17,
-  "recipeCount": 520,
-  "newRecipesThisBuild": 179,
-  "cuisineCount": 1,
+  "libraryVersion": 18,
+  "recipeCount": 683,
+  "newRecipesThisBuild": 163,
+  "cuisineCount": 2,
   "verifiedCuisineLibraries": [
-    "Japanese"
+    "Japanese",
+    "Filipino"
   ],
   "gameLibraries": {
     "Genshin Impact": {
@@ -38,19 +39,35 @@
       "status": "All currently planned Bento Genshin regions through Nod-Krai are represented; game content is isolated behind the Games browser."
     }
   },
-  "dishImageCount": 520,
+  "dishImageCount": 683,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 12,
+  "instructionVersion": 13,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 520,
+  "detailedInstructionRecipeCount": 683,
   "japaneseRecipeCount": 148,
   "gameRecipeCount": 382,
   "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
   "gameIsolation": "Game/anime recipes are excluded from Cuisines, Meals, Desserts, Drinks, their counts, and automatic Kitchen Magic/Cook With discovery. They remain usable when deliberately opened from Games.",
-  "cacheFix": "Versioned core assets + network-first app/data fetching retained to prevent mixed stale PWA builds.",
-  "generatedAt": "2026-08-12T23:35:00+08:00"
+  "cacheFix": "Navigation stays network-first; explicitly versioned app/data/style assets are cache-first after successful install to avoid repeat network waits without mixed-version builds.",
+  "generatedAt": "2026-08-13T00:20:00+08:00",
+  "filipinoRecipeCount": 163,
+  "standardRecipeCount": 311,
+  "dessertTaxonomy": [
+    "Rice & traditional",
+    "Cakes & baked",
+    "Chilled & creamy",
+    "Candies & confections",
+    "Fried & griddled"
+  ],
+  "drinkTaxonomy": [
+    "Tea & infusions",
+    "Coffee & cacao",
+    "Juices & coolers",
+    "Traditional"
+  ],
+  "performance": "Recipe cards remain batch-rendered (30 at a time); photo fetching stays lazy/on-demand; versioned core assets remain cache-first after installation; game content remains excluded from normal auto-discovery."
 }

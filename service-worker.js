@@ -1,7 +1,7 @@
-const CACHE = 'bento-shell-v0.5.7-genshin-complete';
+const CACHE = 'bento-shell-v0.5.8-filipino';
 const SHELL_PREFIX = 'bento-shell-';
 const CORE = [
-  './','./index.html','./style.css?v=17','./data/recipes-data.js?v=17','./data/photo-index.js?v=17','./data/library_manifest.json','./app.js?v=17','./manifest.json'
+  './','./index.html','./style.css?v=18','./data/recipes-data.js?v=18','./data/photo-index.js?v=18','./data/library_manifest.json','./app.js?v=18','./manifest.json'
 ];
 const OPTIONAL_ICONS = [
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',

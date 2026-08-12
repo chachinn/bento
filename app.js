@@ -2,10 +2,10 @@
   'use strict';
 
   const STORAGE_KEY = 'bento.app.state.v1';
-  const VERSION = 17;
+  const VERSION = 18;
   const BUILTIN_RECIPES = Array.isArray(window.BENTO_RECIPE_LIBRARY) ? window.BENTO_RECIPE_LIBRARY : [];
   const LIBRARY_RECIPE_COUNT = BUILTIN_RECIPES.length;
-  const LIBRARY_CUISINE_COUNT = new Set(BUILTIN_RECIPES.map(r=>r.cuisine).filter(Boolean)).size;
+  const LIBRARY_CUISINE_COUNT = new Set(BUILTIN_RECIPES.filter(r=>!r.gameDish&&!r.gameSeries&&!r.animeDish&&!r.animeSeries).map(r=>r.cuisine).filter(Boolean)).size;
   const CURATED_CLASSIC_COUNT = BUILTIN_RECIPES.filter(r=>['Curated classic','Verified classic','Reviewed classic'].includes(r.recipeType)).length;
   const BENTO_ORIGINAL_COUNT = BUILTIN_RECIPES.filter(r=>r.recipeType==='Bento original').length;
   const RECIPE_SEARCH_CACHE = new Map();
@@ -30,15 +30,17 @@
   };
   const DESSERT_STYLES = [
     {name:'All desserts',icon:'🍡',filter:'Type:desserts'},
-    {name:'Wagashi & mochi',icon:'🍵',filter:'DessertStyle:Wagashi & mochi'},
-    {name:'Cakes & griddled',icon:'🥞',filter:'DessertStyle:Cakes & griddled'},
-    {name:'Chilled & café',icon:'🍮',filter:'DessertStyle:Chilled & café'},
-    {name:'Regional sweets',icon:'🎐',filter:'DessertStyle:Regional sweets'}
+    {name:'Rice & traditional',icon:'🌾',filter:'DessertStyle:Rice & traditional'},
+    {name:'Cakes & baked',icon:'🍰',filter:'DessertStyle:Cakes & baked'},
+    {name:'Chilled & creamy',icon:'🍮',filter:'DessertStyle:Chilled & creamy'},
+    {name:'Candies & confections',icon:'🍬',filter:'DessertStyle:Candies & confections'},
+    {name:'Fried & griddled',icon:'🥞',filter:'DessertStyle:Fried & griddled'}
   ];
   const DRINK_STYLES = [
     {name:'All drinks',icon:'🍵',filter:'Type:drinks'},
-    {name:'Tea',icon:'🍃',filter:'DrinkStyle:Tea'},
-    {name:'Café',icon:'☕',filter:'DrinkStyle:Café'},
+    {name:'Tea & infusions',icon:'🍃',filter:'DrinkStyle:Tea & infusions'},
+    {name:'Coffee & cacao',icon:'☕',filter:'DrinkStyle:Coffee & cacao'},
+    {name:'Juices & coolers',icon:'🧃',filter:'DrinkStyle:Juices & coolers'},
     {name:'Traditional',icon:'🌾',filter:'DrinkStyle:Traditional'}
   ];
   const MEAL_SLOTS = ['breakfast', 'lunch', 'dinner', 'snack'];
@@ -284,8 +286,8 @@
       const rows=(Array.isArray(state?.recipes)?state.recipes:[]).filter(r=>r&&typeof r==='object');
       const builtins=(Array.isArray(BUILTIN_RECIPES)?BUILTIN_RECIPES:[]).filter(r=>r&&typeof r==='object');
       if(recipeBrowseMode==='cuisines'){
-        const cuisines=[...new Set(builtins.filter(r=>!r.gameDish&&!r.animeDish).map(r=>String(r.cuisine||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-        panel.innerHTML=cuisines.length?`<div class="browse-card-grid">${cuisines.map(c=>{const list=rows.filter(r=>String(r.cuisine||'')===c&&!r.gameDish&&!r.animeDish),count=list.length,on=recipeCuisineFilter===c,sweets=list.filter(r=>['Sweets & Desserts','Dessert'].includes(r.category)).length,drinks=list.filter(r=>['Drinks','Drink','Beverages'].includes(r.category)).length;return `<button class="browse-card ${on?'selected':''}" data-browse-cuisine="${esc(c)}"><span class="browse-card-icon">${cuisineFlag(c)}</span><span><b>${esc(c)}</b><small>${count} recipes · ${sweets} desserts · ${drinks} drinks</small></span><i>›</i></button>`}).join('')}</div>`:emptyCard('No cuisines yet.');
+        const cuisines=[...new Set(builtins.filter(r=>r&&!isGameRecipe(r)&&!isAnimeRecipe(r)).map(r=>String(r.cuisine||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+        panel.innerHTML=cuisines.length?`<div class="browse-card-grid">${cuisines.map(c=>{const list=rows.filter(r=>String(r.cuisine||'')===c&&!isGameRecipe(r)&&!isAnimeRecipe(r)),count=list.length,on=recipeCuisineFilter===c,sweets=list.filter(r=>['Sweets & Desserts','Dessert'].includes(r.category)).length,drinks=list.filter(r=>['Drinks','Drink','Beverages'].includes(r.category)).length;return `<button class="browse-card ${on?'selected':''}" data-browse-cuisine="${esc(c)}"><span class="browse-card-icon">${cuisineFlag(c)}</span><span><b>${esc(c)}</b><small>${count} recipes · ${sweets} desserts · ${drinks} drinks</small></span><i>›</i></button>`}).join('')}</div>`:emptyCard('No cuisines yet.');
         return;
       }
       if(recipeBrowseMode==='meals'){
@@ -330,7 +332,7 @@
     if(filters)filters.innerHTML=quick.map(c=>`<button class="chip ${recipeFilter===c?'active':''}" data-recipe-filter="${esc(c)}">${esc(c)}</button>`).join('');
     renderRecipeBrowse();
   }
-  function recipeSearchText(r){const id=String(r?.id||'');if(RECIPE_SEARCH_CACHE.has(id))return RECIPE_SEARCH_CACHE.get(id);const text=`${r?.title||''} ${r?.japaneseName||''} ${r?.romanization||''} ${r?.cuisine||''} ${r?.country||''} ${r?.category||''} ${r?.collection||''} ${r?.profile||''} ${r?.origin||''} ${r?.seasonality||''} ${r?.dessertStyle||''} ${r?.drinkStyle||''} ${r?.gameRegion||''} ${r?.gameSeries||''} ${recipeGameAppearances(r).map(a=>`${a.title||''} ${a.region||''} ${a.series||''}`).join(' ')} ${r?.gameCharacter||''} ${r?.baseGameDish||''} ${(r?.gameVariants||[]).join(' ')} ${r?.realWorldInspiration||''} ${(r?.tags||[]).join(' ')} ${(r?.ingredients||[]).join(' ')} ${r?.notes||''} ${r?.equipment||''}`.toLowerCase();RECIPE_SEARCH_CACHE.set(id,text);return text}
+  function recipeSearchText(r){const id=String(r?.id||'');if(RECIPE_SEARCH_CACHE.has(id))return RECIPE_SEARCH_CACHE.get(id);const text=`${r?.title||''} ${r?.japaneseName||''} ${r?.romanization||''} ${r?.cuisine||''} ${r?.country||''} ${r?.region||''} ${r?.category||''} ${r?.collection||''} ${r?.profile||''} ${r?.origin||''} ${r?.seasonality||''} ${r?.dessertStyle||''} ${r?.drinkStyle||''} ${r?.gameRegion||''} ${r?.gameSeries||''} ${recipeGameAppearances(r).map(a=>`${a.title||''} ${a.region||''} ${a.series||''}`).join(' ')} ${r?.gameCharacter||''} ${r?.baseGameDish||''} ${(r?.gameVariants||[]).join(' ')} ${r?.realWorldInspiration||''} ${(r?.tags||[]).join(' ')} ${(r?.ingredients||[]).join(' ')} ${r?.notes||''} ${r?.equipment||''}`.toLowerCase();RECIPE_SEARCH_CACHE.set(id,text);return text}
   function filteredRecipes(){
     const q=($('#recipeSearch')?.value||'').trim().toLowerCase();
     let list=(Array.isArray(state?.recipes)?state.recipes:[]).filter(r=>r&&typeof r==='object');

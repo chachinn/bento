@@ -1,11 +1,12 @@
 {
-  "libraryVersion": 18,
-  "recipeCount": 683,
-  "newRecipesThisBuild": 163,
-  "cuisineCount": 2,
+  "libraryVersion": 19,
+  "recipeCount": 857,
+  "newRecipesThisBuild": 174,
+  "cuisineCount": 3,
   "verifiedCuisineLibraries": [
     "Japanese",
-    "Filipino"
+    "Filipino",
+    "Korean"
   ],
   "gameLibraries": {
     "Genshin Impact": {
@@ -39,23 +40,23 @@
       "status": "All currently planned Bento Genshin regions through Nod-Krai are represented; game content is isolated behind the Games browser."
     }
   },
-  "dishImageCount": 683,
+  "dishImageCount": 857,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 13,
+  "instructionVersion": 14,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 683,
+  "detailedInstructionRecipeCount": 857,
   "japaneseRecipeCount": 148,
   "gameRecipeCount": 382,
   "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
   "gameIsolation": "Game/anime recipes are excluded from Cuisines, Meals, Desserts, Drinks, their counts, and automatic Kitchen Magic/Cook With discovery. They remain usable when deliberately opened from Games.",
   "cacheFix": "Navigation stays network-first; explicitly versioned app/data/style assets are cache-first after successful install to avoid repeat network waits without mixed-version builds.",
-  "generatedAt": "2026-08-13T00:20:00+08:00",
+  "generatedAt": "2026-08-13T00:35:00+08:00",
   "filipinoRecipeCount": 163,
-  "standardRecipeCount": 311,
+  "standardRecipeCount": 485,
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -69,5 +70,7 @@
     "Juices & coolers",
     "Traditional"
   ],
-  "performance": "Recipe cards remain batch-rendered (30 at a time); photo fetching stays lazy/on-demand; versioned core assets remain cache-first after installation; game content remains excluded from normal auto-discovery."
+  "performance": "Recipe cards remain batch-rendered (30 at a time); cuisine selection filters the standard pool before search/sort work; photos stay lazy/on-demand; game content remains isolated from normal cuisine/meal/dessert/drink discovery; core versioned assets remain cache-first after successful install.",
+  "koreanRecipeCount": 174,
+  "cuisineNavigation": "Single compact cuisine dropdown with All cuisines plus each installed cuisine; designed to scale to the full planned cuisine library without card-grid crowding."
 }

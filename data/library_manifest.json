@@ -1,0 +1,13 @@
+{
+  "libraryVersion": 3,
+  "recipeCount": 2480,
+  "newRecipesThisBuild": 1000,
+  "cuisineCount": 47,
+  "dishImageCount": 2480,
+  "ingredientImageCount": 625,
+  "hasRecipeImages": true,
+  "hasIngredientImages": true,
+  "recipeData": "data/recipes-data.js",
+  "ingredientData": "data/ingredient-image-map.js",
+  "imageLoading": "lazy; images cached on demand rather than all pre-cached"
+}

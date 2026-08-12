@@ -129,8 +129,10 @@
           <div><p class="eyebrow">Your kitchen library</p><h1 id="recipesTitle">Recipes</h1></div>
           <button class="primary-round" data-action="add-recipe" aria-label="Add recipe">＋</button>
         </div>
+        <div id="recipeLibraryNote" class="info-card recipe-library-note">Loading Bento Library…</div>
         <div class="search-row">
           <input id="recipeSearch" class="search-input" type="search" placeholder="Search recipes or ingredients…" autocomplete="off" />
+          <select id="recipeCuisineFilter" class="compact-select cuisine-select" aria-label="Filter recipes by cuisine"><option value="All">All cuisines</option></select>
           <select id="recipeSort" class="compact-select" aria-label="Sort recipes">
             <option value="newest">Newest</option><option value="name">A–Z</option><option value="quick">Quickest</option><option value="favorite">Favorites first</option><option value="cooked">Most cooked</option>
           </select>
@@ -464,6 +466,8 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="data/recipes-data.js" defer></script>
+  <script src="data/ingredient-image-map.js" defer></script>
   <script src="app.js" defer></script>
 </body>
 </html>

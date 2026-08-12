@@ -1,7 +1,7 @@
 {
   "name": "Bento — Meal Planner & Recipes",
   "short_name": "Bento",
-  "description": "A local-first meal planner and kitchen companion with a clean cuisine, recipe-type and collection browser for a reviewed recipe library.",
+  "description": "A local-first meal planner and kitchen companion with dedicated cuisine, meal, dessert, drink and collection browsing.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",

@@ -1,77 +1,88 @@
 {
-  "libraryVersion": 9,
-  "recipeCount": 64,
-  "curatedClassicCount": 64,
+  "libraryVersion": 11,
+  "recipeCount": 148,
+  "curatedClassicCount": 148,
   "bentoOriginalCount": 0,
   "cuisineCount": 1,
   "verifiedCuisines": [
     "Japanese"
   ],
-  "dishImageCount": 64,
+  "dishImageCount": 148,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "recipeData": "data/recipes-data.js",
   "imageLoading": "on-demand square online dish photos from Wikimedia Commons",
-  "photoStrategy": "Curated per-recipe Japanese + English Wikimedia Commons search queries; square crop via object-fit: cover; no ingredient photos",
-  "generatedRecipeImages": false,
-  "generatedIngredientImages": false,
-  "curatedLocalPhotoCount": 0,
-  "photoPlanCount": 64,
+  "photoStrategy": "Per-recipe Japanese + English Wikimedia Commons searches; square 1:1 display crop; no ingredient photos",
+  "photoPlanCount": 148,
   "ingredientPhotoPlanCount": 0,
   "photoMode": "online-only",
-  "instructionVersion": 5,
+  "instructionVersion": 7,
   "instructionStyle": "detailed-concise",
   "fixedStepTarget": false,
-  "minimumStepsPerRecipe": 5,
+  "minimumStepsPerRecipe": 4,
   "maximumStepsPerRecipe": 8,
-  "averageStepsPerRecipe": 6.25,
-  "averageIngredientCountPerRecipe": 9.56,
-  "averageInstructionWordsPerRecipe": 113.7,
+  "averageStepsPerRecipe": 5.65,
+  "averageIngredientCountPerRecipe": 8.91,
+  "averageInstructionWordsPerRecipe": 106.1,
   "stepCountDistribution": {
-    "5": 5,
-    "6": 39,
+    "4": 10,
+    "5": 53,
+    "6": 65,
     "7": 19,
     "8": 1
   },
   "reviewedAt": "2026-08-12",
   "reviewBasis": [
-    "MAFF Japanese Cuisine",
-    "Kikkoman Global Cookbook / Washoku Lesson",
-    "Japan National Tourism Organization food references"
+    "MAFF Our Regional Cuisines / Traditional Foods in Japan",
+    "Kikkoman Global Cookbook and Washoku guidance",
+    "Japan National Tourism Organization food-culture references"
   ],
   "qualityModel": {
     "cuisineByCuisineRebuild": true,
-    "verifiedCuisineCount": 1,
-    "recipeAccuracyReviewRequired": true,
-    "imageAccuracyReviewRequired": true,
+    "recipeAccuracyAudit2026": true,
+    "imageQueryAuditRequired": true,
     "ingredientMethodConsistencyPass": true,
     "noFixedStepCount": true,
     "ingredientPhotosDisabledInRecipeDetail": true,
     "ingredientChecklistEnabled": true,
-    "clearIngredientChecksEnabled": true
+    "clearIngredientChecksEnabled": true,
+    "currentSourceReviewYear": 2026
   },
-  "uiVersion": "recipe-library-v2",
+  "uiVersion": "recipe-library-v3",
   "browseModel": [
     "cuisines",
-    "recipe types",
+    "meals",
+    "desserts",
+    "drinks",
     "collections"
   ],
   "specialCollectionsPlanned": [
     "Anime Kitchen",
     "Genshin Impact"
   ],
-  "recipeTypeSectionsPrepared": [
-    "Main dishes",
-    "Rice & bowls",
-    "Noodles",
-    "Soups & hot pots",
-    "Street & fried",
-    "Sushi & seafood",
-    "Side dishes",
-    "Breakfast",
-    "Breads & pastries",
-    "Desserts",
-    "Drinks"
-  ]
+  "japaneseExpansion": {
+    "previousCount": 128,
+    "newRecipesThisBuild": 20,
+    "currentCount": 148,
+    "dessertCount": 25,
+    "drinkCount": 9,
+    "breakfastCount": 4,
+    "regionalOrNicheCount": 76
+  },
+  "dedicatedSections": {
+    "desserts": true,
+    "drinks": true,
+    "dessertStyles": [
+      "Cakes & griddled",
+      "Chilled & café",
+      "Regional sweets",
+      "Wagashi & mochi"
+    ],
+    "drinkStyles": [
+      "Café",
+      "Tea",
+      "Traditional"
+    ]
+  }
 }

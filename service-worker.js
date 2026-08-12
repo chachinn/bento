@@ -1,4 +1,4 @@
-const CACHE = 'bento-shell-v0.6.1-library-ui';
+const CACHE = 'bento-shell-v0.8.0-japanese-dessert-drink-ui';
 const ASSETS = [
   './','./index.html','./style.css','./data/recipes-data.js','./data/photo-index.js','./data/library_manifest.json','./app.js','./manifest.json',
   './icon/apple-touch-icon.png','./icon/icon-72.png','./icon/icon-96.png','./icon/icon-128.png',

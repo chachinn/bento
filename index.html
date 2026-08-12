@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-title" content="Bento" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="format-detection" content="telephone=no" />
-  <meta name="description" content="Bento is a cute local-first meal planner, recipe book, pantry tracker and grocery list." />
+  <meta name="description" content="Bento is a cute local-first meal planner, recipe book, pantry tracker, grocery list and smart kitchen companion." />
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon/icon-192.png" />
@@ -43,12 +43,15 @@
         <div class="section-heading"><h2>Today</h2><button class="text-btn" data-nav="plan">View plan</button></div>
         <div id="todayMeals" class="meal-stack"></div>
 
-        <div class="quick-grid">
+        <div class="quick-grid mega-quick-grid">
           <button class="quick-card" data-action="add-recipe"><span>📖</span><b>Add Recipe</b><small>Save a dish</small></button>
           <button class="quick-card" data-view-link="grocery"><span>🛒</span><b>Grocery</b><small id="groceryCountQuick">0 items</small></button>
           <button class="quick-card" data-nav="pantry"><span>🫙</span><b>Pantry</b><small id="pantryCountQuick">0 items</small></button>
-          <button class="quick-card" data-view-link="cookwith"><span>🍳</span><b>What can I cook?</b><small>Use what you have</small></button>
+          <button class="quick-card" data-view-link="smart"><span>✨</span><b>Kitchen Magic</b><small>Smart meal tools</small></button>
         </div>
+
+        <div class="section-heading"><h2>Kitchen snapshot</h2><button class="text-btn" data-view-link="insights">Insights</button></div>
+        <div id="homeStats" class="stat-grid"></div>
 
         <div class="section-heading"><h2>Needs attention</h2></div>
         <div id="attentionCards" class="card-list"></div>
@@ -68,6 +71,11 @@
           <button class="icon-btn" id="nextWeek" aria-label="Next week">›</button>
         </div>
         <div id="weekDays" class="week-days"></div>
+        <div class="plan-toolbar">
+          <button class="soft-btn" id="copyWeekButton">Copy week</button>
+          <button class="soft-btn" id="clearWeekButton">Clear week</button>
+          <button class="soft-btn" data-view-link="smart">✨ Smart fill</button>
+        </div>
         <div id="mealPlanGrid" class="meal-plan-grid"></div>
       </section>
 
@@ -79,10 +87,7 @@
         <div class="search-row">
           <input id="recipeSearch" class="search-input" type="search" placeholder="Search recipes or ingredients…" autocomplete="off" />
           <select id="recipeSort" class="compact-select" aria-label="Sort recipes">
-            <option value="newest">Newest</option>
-            <option value="name">A–Z</option>
-            <option value="quick">Quickest</option>
-            <option value="favorite">Favorites first</option>
+            <option value="newest">Newest</option><option value="name">A–Z</option><option value="quick">Quickest</option><option value="favorite">Favorites first</option><option value="cooked">Most cooked</option>
           </select>
         </div>
         <div id="recipeFilters" class="chip-row"></div>
@@ -99,14 +104,20 @@
           <button class="soft-btn" id="pantrySortButton">Expiry</button>
         </div>
         <div id="pantryFilters" class="chip-row"></div>
+        <div class="action-row compact-actions"><button class="soft-btn" data-view-link="smart">🧊 Fridge Rescue</button><button class="soft-btn" id="addLowStockToGrocery">Low stock → Grocery</button></div>
         <div id="pantryList" class="card-list"></div>
       </section>
 
       <section class="view" data-view="more" aria-labelledby="moreTitle">
         <div class="page-title-row"><div><p class="eyebrow">Your Bento</p><h1 id="moreTitle">More</h1></div></div>
         <div class="menu-list">
+          <button data-view-link="smart"><span>✨</span><div><b>Kitchen Magic</b><small>Deadline, rescue, roulette & more</small></div><i>›</i></button>
+          <button data-view-link="bentobox"><span>🍱</span><div><b>Bento Box Builder</b><small>Build and save lunchbox combinations</small></div><i>›</i></button>
+          <button data-view-link="leftovers"><span>♻️</span><div><b>Leftovers</b><small>Plan, use and rescue leftovers</small></div><i>›</i></button>
           <button data-view-link="grocery"><span>🛒</span><div><b>Grocery List</b><small>Shop from one organized list</small></div><i>›</i></button>
           <button data-view-link="cookwith"><span>🍳</span><div><b>What Can I Cook?</b><small>Match recipes with your pantry</small></div><i>›</i></button>
+          <button data-view-link="collections"><span>📚</span><div><b>Collections</b><small>Browse recipe groups & rotations</small></div><i>›</i></button>
+          <button data-view-link="insights"><span>📊</span><div><b>Kitchen Insights</b><small>Your cooking patterns & goals</small></div><i>›</i></button>
           <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
           <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
           <button data-view-link="settings"><span>🎨</span><div><b>Settings</b><small>Themes, units, reminders & data</small></div><i>›</i></button>
@@ -115,19 +126,78 @@
         <button id="installButton" class="install-card hidden"><span>📲</span><div><b>Install Bento</b><small>Add Bento to your Home Screen</small></div></button>
       </section>
 
+      <section class="view subview" data-view="smart" aria-labelledby="smartTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Your kitchen assistant</p><h1 id="smartTitle">Kitchen Magic ✨</h1></div></div>
+        <div class="smart-grid">
+          <button class="feature-tile" data-smart-tool="roulette"><span>🎲</span><b>Bento Roulette</b><small>Pick dinner for me</small></button>
+          <button class="feature-tile" data-smart-tool="lazy"><span>🥱</span><b>Lazy Meal Mode</b><small>Low effort, low cleanup</small></button>
+          <button class="feature-tile" data-smart-tool="rescue"><span>🧊</span><b>Fridge Rescue</b><small>Use expiring food first</small></button>
+          <button class="feature-tile" data-smart-tool="complete"><span>🥗</span><b>Complete My Meal</b><small>Add sides to a main</small></button>
+          <button class="feature-tile" data-smart-tool="deadline"><span>⏰</span><b>Dinner Deadline</b><small>Work backward from mealtime</small></button>
+          <button class="feature-tile" data-smart-tool="prep"><span>🔪</span><b>Mise en Place</b><small>One prep list for your meal</small></button>
+          <button class="feature-tile" data-smart-tool="batch"><span>🥘</span><b>Batch Prep</b><small>Combine overlapping prep</small></button>
+          <button class="feature-tile" data-smart-tool="three"><span>🧩</span><b>3-Ingredient Challenge</b><small>Build around what you choose</small></button>
+        </div>
+        <div class="smart-controls">
+          <label>Time I actually have<select id="smartTime"><option value="0">Any time</option><option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="60">60 min</option></select></label>
+          <label>Energy<select id="smartEnergy"><option value="any">Any</option><option value="low">I'm tired</option><option value="normal">Normal</option><option value="high">I feel like cooking</option></select></label>
+          <label>Equipment<select id="smartEquipment"><option value="any">Anything</option><option value="none">No special equipment</option><option value="air fryer">Air fryer</option><option value="oven">Oven</option><option value="rice cooker">Rice cooker</option><option value="stovetop">Stovetop</option></select></label>
+        </div>
+        <div id="smartResult" class="card-list smart-result"></div>
+      </section>
+
+      <section class="view subview" data-view="bentobox" aria-labelledby="bentoBoxTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Pack something cute</p><h1 id="bentoBoxTitle">Bento Box Builder</h1></div><button class="primary-round" id="newBentoButton">＋</button></div>
+        <div class="bento-builder-card">
+          <label>Bento name<input id="bentoNameInput" maxlength="60" placeholder="e.g. Sakura Picnic" /></label>
+          <div class="bento-compartments">
+            <label class="compartment main">Main<select id="bentoMain"></select></label>
+            <label>Side 1<select id="bentoSide1"></select></label>
+            <label>Side 2<select id="bentoSide2"></select></label>
+            <label>Treat / fruit<select id="bentoTreat"></select></label>
+          </div>
+          <div id="bentoBalance" class="balance-strip"></div>
+          <button class="primary-btn full-btn" id="saveBentoButton">Save bento combination</button>
+        </div>
+        <div class="section-heading"><h2>Saved bentos</h2></div>
+        <div id="savedBentos" class="card-list"></div>
+      </section>
+
+      <section class="view subview" data-view="leftovers" aria-labelledby="leftoversTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Waste less</p><h1 id="leftoversTitle">Leftovers</h1></div><button class="primary-round" data-action="add-leftover">＋</button></div>
+        <div id="leftoverSummary" class="stat-grid"></div>
+        <div class="section-heading"><h2>Use next</h2></div>
+        <div id="leftoversList" class="card-list"></div>
+      </section>
+
       <section class="view subview" data-view="grocery" aria-labelledby="groceryTitle">
         <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton">◉</button></div>
-        <div class="summary-card"><div><small>Unchecked</small><strong id="groceryUnchecked">0</strong></div><div><small>Checked</small><strong id="groceryChecked">0</strong></div><button class="soft-btn" id="clearCheckedButton">Clear checked</button></div>
+        <div class="summary-card"><div><small>Unchecked</small><strong id="groceryUnchecked">0</strong></div><div><small>Checked</small><strong id="groceryChecked">0</strong></div><div><small>Est.</small><strong id="groceryEstimate">—</strong></div></div>
         <div class="inline-add"><input id="groceryAddInput" placeholder="Add grocery item…" /><button id="groceryAddButton">Add</button></div>
-        <div class="action-row"><button class="soft-btn" id="groceryFromPlanButton">Generate from this week</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>
+        <div class="action-row"><button class="soft-btn" id="groceryFromPlanButton">Generate from this week</button><button class="soft-btn" id="checkedToPantryButton">Checked → Pantry</button><button class="soft-btn" id="clearCheckedButton">Clear checked</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>
         <div id="groceryList" class="grocery-list"></div>
       </section>
 
       <section class="view subview" data-view="cookwith" aria-labelledby="cookWithTitle">
         <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Use what you have</p><h1 id="cookWithTitle">What Can I Cook?</h1></div></div>
-        <div class="info-card">Bento compares your saved recipe ingredients with your pantry. Staples are treated as available.</div>
+        <div class="info-card">Bento compares your saved recipe ingredients with your pantry. Staples count as available, and recipes using food that expires soon are boosted.</div>
         <div class="inline-add"><input id="customCookIngredients" placeholder="Extra ingredients, comma separated…" /><button id="matchRecipesButton">Match</button></div>
+        <div class="chip-row"><button class="chip active" data-match-filter="all">All</button><button class="chip" data-match-filter="perfect">Perfect matches</button><button class="chip" data-match-filter="almost">Missing ≤ 2</button><button class="chip" data-match-filter="use-soon">Use soon</button></div>
         <div id="cookMatchList" class="card-list"></div>
+      </section>
+
+      <section class="view subview" data-view="collections" aria-labelledby="collectionsTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Organize your recipe book</p><h1 id="collectionsTitle">Collections</h1></div></div>
+        <div id="collectionsGrid" class="collection-grid"></div>
+      </section>
+
+      <section class="view subview" data-view="insights" aria-labelledby="insightsTitle">
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Your kitchen, remembered</p><h1 id="insightsTitle">Kitchen Insights</h1></div></div>
+        <div id="insightStats" class="stat-grid"></div>
+        <div class="section-heading"><h2>Cooking goals</h2><button class="text-btn" id="editGoalsButton">Edit</button></div>
+        <div id="goalCards" class="card-list"></div>
+        <div class="section-heading"><h2>Recipe rotation</h2></div>
+        <div id="rotationInsights" class="card-list"></div>
       </section>
 
       <section class="view subview" data-view="favorites" aria-labelledby="favoritesTitle">
@@ -149,6 +219,8 @@
           <label>First day of week<select id="weekStartSelect"><option value="monday">Monday</option><option value="sunday">Sunday</option></select></label>
           <label>Diet<input id="dietInput" type="text" placeholder="e.g. Vegetarian" /></label>
           <label>Allergies / avoid<input id="allergyInput" type="text" placeholder="comma separated" /></label>
+          <label>Kitchen equipment<input id="equipmentInput" type="text" placeholder="e.g. oven, air fryer, rice cooker" /></label>
+          <label>Weekly home-cooked goal<input id="weeklyGoalInput" type="number" min="0" max="28" /></label>
         </div>
         <div class="section-heading"><h2>Theme</h2></div>
         <div id="themePicker" class="theme-picker"></div>
@@ -166,7 +238,7 @@
           <img src="icon/icon-192.png" alt="Bento app icon" />
           <p><strong>Bento (弁当) means “boxed meal” or “lunchbox” in Japanese.</strong> Just like a bento brings different little dishes together in one organized box, Bento brings your recipes, meal plans, grocery lists, and food ideas together in one place—making everyday meals easier to plan and enjoy.</p>
         </div>
-        <div class="info-card"><b>Build 0.1</b><br />Local-first recipe library, weekly meal planner, pantry, grocery list, ingredient matching, favorites, cooking mode, history, themes, backups and offline installability.</div>
+        <div class="info-card"><b>Build 0.2 — Mega Kitchen</b><br />Local-first recipes, weekly planning, pantry, grocery list, ingredient matching, cooking mode, leftovers, Bento Box Builder, Kitchen Magic, collections, insights, goals, themes, backups and offline installability.</div>
       </section>
     </main>
 
@@ -179,61 +251,79 @@
     </nav>
   </div>
 
-  <div id="modalBackdrop" class="modal-backdrop hidden" aria-hidden="true"></div>
-
   <dialog id="recipeDialog" class="sheet-dialog">
-    <form id="recipeForm" method="dialog">
+    <form id="recipeForm">
       <div class="sheet-handle"></div>
       <div class="dialog-title"><div><p class="eyebrow">Kitchen library</p><h2 id="recipeDialogTitle">Add Recipe</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="recipeId" />
       <label>Recipe name<input id="recipeTitleInput" required maxlength="100" placeholder="e.g. Strawberry Daifuku" /></label>
-      <div class="two-col">
-        <label>Category<select id="recipeCategoryInput"><option>Dinner</option><option>Lunch</option><option>Breakfast</option><option>Snack</option><option>Dessert</option><option>Drink</option><option>Other</option></select></label>
-        <label>Cuisine<input id="recipeCuisineInput" placeholder="e.g. Japanese" /></label>
-      </div>
-      <div class="three-col">
-        <label>Prep min<input id="recipePrepInput" type="number" min="0" value="0" /></label>
-        <label>Cook min<input id="recipeCookInput" type="number" min="0" value="0" /></label>
-        <label>Servings<input id="recipeServingsInput" type="number" min="1" value="2" /></label>
-      </div>
+      <div class="two-col"><label>Category<select id="recipeCategoryInput"><option>Dinner</option><option>Lunch</option><option>Breakfast</option><option>Snack</option><option>Side</option><option>Soup</option><option>Dessert</option><option>Drink</option><option>Other</option></select></label><label>Cuisine<input id="recipeCuisineInput" placeholder="e.g. Japanese" /></label></div>
+      <div class="three-col"><label>Prep min<input id="recipePrepInput" type="number" min="0" value="0" /></label><label>Cook min<input id="recipeCookInput" type="number" min="0" value="0" /></label><label>Servings<input id="recipeServingsInput" type="number" min="1" value="2" /></label></div>
+      <div class="three-col"><label>Energy<select id="recipeEnergyInput"><option value="low">Low effort</option><option value="normal" selected>Normal</option><option value="high">Project meal</option></select></label><label>Cleanup<select id="recipeCleanupInput"><option value="1">1 pan</option><option value="2" selected>2–3 dishes</option><option value="3">Kitchen project</option></select></label><label>Freezer friendly<select id="recipeFreezerInput"><option value="no">No</option><option value="yes">Yes</option></select></label></div>
+      <label>Equipment<input id="recipeEquipmentInput" placeholder="e.g. oven, air fryer, rice cooker" /></label>
       <label>Ingredients<textarea id="recipeIngredientsInput" rows="7" placeholder="One ingredient per line\n2 eggs\n1 cup rice\n2 tbsp soy sauce"></textarea></label>
       <label>Steps<textarea id="recipeStepsInput" rows="8" placeholder="One step per line"></textarea></label>
       <label>Notes<textarea id="recipeNotesInput" rows="3" placeholder="Substitutions, tips, family notes…"></textarea></label>
-      <label>Collection<input id="recipeCollectionInput" placeholder="e.g. Weeknight Favorites" /></label>
-      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button class="primary-btn" value="save">Save recipe</button></div>
+      <div class="two-col"><label>Collection<input id="recipeCollectionInput" placeholder="e.g. Weeknight Favorites" /></label><label>Source / URL<input id="recipeSourceInput" placeholder="Family, cookbook or URL" /></label></div>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save recipe</button></div>
     </form>
   </dialog>
 
   <dialog id="pantryDialog" class="sheet-dialog">
-    <form id="pantryForm" method="dialog">
+    <form id="pantryForm">
       <div class="sheet-handle"></div>
       <div class="dialog-title"><div><p class="eyebrow">Inventory</p><h2 id="pantryDialogTitle">Add Pantry Item</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="pantryId" />
       <label>Item<input id="pantryNameInput" required placeholder="e.g. Strawberries" /></label>
       <div class="two-col"><label>Quantity<input id="pantryQtyInput" type="number" min="0" step="0.01" value="1" /></label><label>Unit<input id="pantryUnitInput" placeholder="pcs, g, ml…" /></label></div>
       <label>Location<select id="pantryLocationInput"><option>Pantry</option><option>Fridge</option><option>Freezer</option><option>Spice Rack</option><option>Other</option></select></label>
-      <label>Expiry / best before<input id="pantryExpiryInput" type="date" /></label>
+      <div class="two-col"><label>Expiry / best before<input id="pantryExpiryInput" type="date" /></label><label>Opened date<input id="pantryOpenedInput" type="date" /></label></div>
+      <div class="two-col"><label>Package size<input id="pantryPackageInput" placeholder="e.g. 500 g pack" /></label><label>Usual store<input id="pantryStoreInput" placeholder="e.g. Supermarket" /></label></div>
       <label class="toggle-line"><span>Always available staple</span><input id="pantryStapleInput" type="checkbox" /></label>
       <label class="toggle-line"><span>Low stock</span><input id="pantryLowInput" type="checkbox" /></label>
-      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button class="primary-btn" value="save">Save item</button></div>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save item</button></div>
     </form>
   </dialog>
 
   <dialog id="mealDialog" class="sheet-dialog compact-dialog">
-    <form id="mealForm" method="dialog">
+    <form id="mealForm">
       <div class="sheet-handle"></div>
       <div class="dialog-title"><div><p class="eyebrow" id="mealDialogDate"></p><h2 id="mealDialogTitle">Choose a meal</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="mealDateInput" /><input type="hidden" id="mealSlotInput" />
       <label>Saved recipe<select id="mealRecipeSelect"><option value="">Choose a recipe…</option></select></label>
       <div class="or-divider"><span>or</span></div>
       <label>Custom meal<input id="mealCustomInput" placeholder="Takeout, leftovers, restaurant…" /></label>
-      <div class="dialog-actions"><button type="button" id="removeMealButton" class="danger-text">Remove meal</button><button class="primary-btn" value="save">Save</button></div>
+      <label>Servings<input id="mealServingsInput" type="number" min="1" max="30" /></label>
+      <label>Prep note<input id="mealPrepNoteInput" placeholder="e.g. thaw chicken in the morning" /></label>
+      <label class="toggle-line"><span>Plan extra portions as leftovers</span><input id="mealLeftoversInput" type="checkbox" /></label>
+      <div class="dialog-actions"><button type="button" id="removeMealButton" class="danger-text">Remove meal</button><button type="submit" class="primary-btn">Save</button></div>
     </form>
   </dialog>
 
-  <dialog id="recipeDetailDialog" class="sheet-dialog detail-dialog">
-    <div id="recipeDetailContent"></div>
+  <dialog id="leftoverDialog" class="sheet-dialog compact-dialog">
+    <form id="leftoverForm">
+      <div class="sheet-handle"></div>
+      <div class="dialog-title"><div><p class="eyebrow">Save for later</p><h2>Add Leftover</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <label>Name<input id="leftoverNameInput" required placeholder="e.g. Chicken curry" /></label>
+      <div class="two-col"><label>Portions<input id="leftoverPortionsInput" type="number" min="0.5" step="0.5" value="1" /></label><label>Use by<input id="leftoverUseByInput" type="date" /></label></div>
+      <label>Location<select id="leftoverLocationInput"><option>Fridge</option><option>Freezer</option></select></label>
+      <label>Notes<input id="leftoverNotesInput" placeholder="Lunch, remix idea…" /></label>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save leftover</button></div>
+    </form>
   </dialog>
+
+  <dialog id="goalDialog" class="sheet-dialog compact-dialog">
+    <form id="goalForm">
+      <div class="sheet-handle"></div>
+      <div class="dialog-title"><div><p class="eyebrow">Cooking goals</p><h2>Set your goals</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
+      <label>Home-cooked meals per week<input id="goalCookInput" type="number" min="0" max="28" /></label>
+      <label>New recipes per month<input id="goalNewInput" type="number" min="0" max="31" /></label>
+      <label>Pantry rescue goal per month<input id="goalRescueInput" type="number" min="0" max="50" /></label>
+      <div class="dialog-actions"><button type="button" class="soft-btn close-dialog">Cancel</button><button type="submit" class="primary-btn">Save goals</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="recipeDetailDialog" class="sheet-dialog detail-dialog"><div id="recipeDetailContent"></div></dialog>
 
   <dialog id="quickAddDialog" class="sheet-dialog compact-dialog">
     <div class="sheet-handle"></div>
@@ -242,6 +332,7 @@
       <button data-action="add-recipe"><span>📖</span><div><b>Recipe</b><small>Save a recipe</small></div></button>
       <button data-action="add-pantry"><span>🫙</span><div><b>Pantry item</b><small>Add what you have</small></div></button>
       <button data-action="add-grocery"><span>🛒</span><div><b>Grocery item</b><small>Add to shopping list</small></div></button>
+      <button data-action="add-leftover"><span>♻️</span><div><b>Leftover</b><small>Save remaining portions</small></div></button>
     </div>
   </dialog>
 

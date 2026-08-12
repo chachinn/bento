@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=14" />
+  <link rel="stylesheet" href="style.css?v=15" />
   <title>Bento</title>
 </head>
 <body>
@@ -50,7 +50,7 @@
         <p class="menu-section-label">Library & tracking</p>
         <div class="menu-list menu-list-compact">
           <button data-view-link="ideas"><span>💭</span><div><b>Ideas & Cravings</b><small>Capture meals you want to try</small></div><i>›</i></button>
-          <button data-view-link="collections"><span>📚</span><div><b>Recipe Collections</b><small>Favorites, themed sets & future specials</small></div><i>›</i></button>
+          <button data-view-link="collections"><span>📚</span><div><b>Recipe Collections</b><small>Favorites, saved sets & rotations</small></div><i>›</i></button>
           <button data-view-link="favorites"><span>♡</span><div><b>Favorites</b><small>Your most-loved recipes</small></div><i>›</i></button>
           <button data-view-link="history"><span>🕘</span><div><b>Cooking History</b><small>Remember what you cooked</small></div><i>›</i></button>
           <button data-view-link="activity"><span>🧺</span><div><b>Kitchen Activity</b><small>Recently bought & used</small></div><i>›</i></button>
@@ -130,7 +130,6 @@
           <button class="primary-round" data-action="add-recipe" aria-label="Add recipe">＋</button>
         </div>
 
-        <div id="recipeLibraryNote" class="library-status-card" aria-live="polite">Loading Bento Library…</div>
 
         <section class="recipe-discovery" aria-labelledby="recipeBrowseHeading">
           <div class="recipe-discovery-heading">
@@ -142,7 +141,8 @@
             <button type="button" data-recipe-browse="meals" role="tab" aria-selected="false"><span>🍽️</span>Meals</button>
             <button type="button" data-recipe-browse="desserts" role="tab" aria-selected="false"><span>🍡</span>Desserts</button>
             <button type="button" data-recipe-browse="drinks" role="tab" aria-selected="false"><span>🍵</span>Drinks</button>
-            <button type="button" data-recipe-browse="collections" role="tab" aria-selected="false"><span>✦</span>Collections</button>
+            <button type="button" class="icon-only-browse" data-recipe-browse="games" role="tab" aria-selected="false" aria-label="Game-inspired recipes" title="Game-inspired recipes"><span>🎮</span></button>
+            <button type="button" class="icon-only-browse" data-recipe-browse="anime" role="tab" aria-selected="false" aria-label="Anime-inspired recipes" title="Anime-inspired recipes"><span>📺</span></button>
           </div>
           <div id="recipeBrowsePanel" class="recipe-browse-panel"></div>
         </section>
@@ -263,7 +263,7 @@
 
       <section class="view subview" data-view="collections" aria-labelledby="collectionsTitle">
         <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Organize & discover</p><h1 id="collectionsTitle">Recipe Collections</h1></div></div>
-        <div class="info-card collection-intro">Collections sit on top of cuisines. A recipe can stay Japanese while also appearing in a themed collection later—such as Anime Kitchen or Genshin Impact.</div>
+        <div class="info-card collection-intro">Keep personal recipe sets, favorites, and useful rotations together without changing a recipe’s cuisine or meal type.</div>
         <div id="collectionsGrid" class="collection-grid"></div>
       </section>
 
@@ -359,7 +359,7 @@
         <div class="about-card">
           <img src="icon/icon-192.png" alt="Bento app icon" />
           <p><strong>Bento (弁当) means “boxed meal” or “lunchbox” in Japanese.</strong> Just like a bento brings different little dishes together in one organized box, Bento brings your recipes, meal plans, grocery lists, and food ideas together in one place—making everyday meals easier to plan and enjoy.</p>
-          <p class="muted"><strong>Build 0.4.8</strong> · Detailed Recipe Methods · Detailed Recipe Methods · Real Photo Library · local-first kitchen planning with real online food photography.</p>
+          <p class="muted">A local-first kitchen companion for recipes, meal planning, groceries, pantry tracking, leftovers, and everyday cooking.</p>
         </div>
       </section>
     </main>
@@ -498,8 +498,8 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/recipes-data.js?v=14" defer></script>
-  <script src="data/photo-index.js?v=14" defer></script>
-  <script src="app.js?v=14" defer></script>
+  <script src="data/recipes-data.js?v=15" defer></script>
+  <script src="data/photo-index.js?v=15" defer></script>
+  <script src="app.js?v=15" defer></script>
 </body>
 </html>

@@ -1,39 +1,36 @@
 {
-  "libraryVersion": 14,
-  "recipeCount": 248,
-  "newRecipesThisBuild": 0,
+  "libraryVersion": 15,
+  "recipeCount": 295,
+  "newRecipesThisBuild": 47,
   "cuisineCount": 1,
   "verifiedCuisineLibraries": [
     "Japanese"
   ],
-  "specialCollections": {
+  "gameLibraries": {
     "Genshin Impact": {
-      "realWorldRecreations": 100,
+      "recipeRecords": 147,
       "regions": {
-        "Mondstadt": 38,
-        "Liyue": 62
+        "Mondstadt": 62,
+        "Liyue": 85
       },
-      "archiveFoodCounts": {
-        "Mondstadt": 39,
-        "Liyue": 69
-      },
-      "linkedVariantCount": 8,
-      "status": "Inventory verified 2026; Bento real-world recreations"
+      "characterDishRecords": 46,
+      "linkedQuestEventVariants": 53,
+      "status": "Current Mondstadt/Liyue game identities reviewed for 2026; home recipes are Bento recreations."
     }
   },
-  "dishImageCount": 248,
+  "dishImageCount": 295,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
-  "photoStrategy": "Real online food photography from Wikimedia Commons using practical real-world inspiration queries; no game screenshots or bundled ingredient photos.",
+  "photoStrategy": "Real online food photography from Wikimedia Commons; game/anime artwork is not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 9,
+  "instructionVersion": 10,
   "instructionStyle": "detailed-concise",
-  "detailedInstructionRecipeCount": 248,
+  "detailedInstructionRecipeCount": 295,
   "japaneseRecipeCount": 148,
-  "genshinRecipeCount": 100,
-  "navigationFix": "Recipe renderer made defensive; recipe grid no longer blanks if browse panel fails.",
-  "gameDataReview": "Genshin regional inventory checked against current 2026 Mondstadt/Liyue category listings and HoYoLAB Version 6.7-era recipe tracker.",
-  "generatedAt": "2026-08-12T21:50:00+08:00",
-  "cacheFix": "Versioned core assets + network-first app/data fetching prevent mixed stale PWA builds."
+  "gameRecipeCount": 147,
+  "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
+  "releaseUi": "Development/version banners removed from recipe landing page; game collections are disclosed only inside the Games browser.",
+  "cacheFix": "Versioned core assets + network-first app/data fetching retained to prevent mixed stale PWA builds.",
+  "generatedAt": "2026-08-12T22:15:00+08:00"
 }

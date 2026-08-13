@@ -1,5 +1,6 @@
 (()=>{'use strict';
 const FLAGS={Japanese:'🇯🇵',Filipino:'🇵🇭',Korean:'🇰🇷',Chinese:'🇨🇳',Thai:'🇹🇭',Vietnamese:'🇻🇳',Indian:'🇮🇳',Italian:'🇮🇹',French:'🇫🇷',Spanish:'🇪🇸',Greek:'🇬🇷',Turkish:'🇹🇷',Mexican:'🇲🇽',American:'🇺🇸',Brazilian:'🇧🇷',Peruvian:'🇵🇪',Moroccan:'🇲🇦',British:'🇬🇧'};
+const PHOTO_PREF_KEY='bento.recipe.cardPhotos.v1';
 const panel=document.getElementById('recipeBrowsePanel'),cuisineTab=document.querySelector('[data-recipe-browse="cuisines"]'),animeTab=document.querySelector('[data-recipe-browse="anime"]'),search=document.getElementById('recipeSearch'),detail=document.getElementById('recipeDetailContent');
 if(!panel)return;
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -8,7 +9,18 @@ const ANIME=Array.isArray(window.BENTO_RECIPE_LIBRARY)?window.BENTO_RECIPE_LIBRA
 const ANIME_BY_ID=new Map(ANIME.map(r=>[String(r.id),r]));
 const SERIES=[...new Set(ANIME.map(r=>norm(r.animeSeries)).filter(Boolean))];
 const ALIASES=['jujutsu kaisen','jjk','food wars','shokugeki','campfire cooking','dungeon meshi','delicious in dungeon','emiya','sweetness lightning','restaurant to another world','isekai izakaya','dr stone','laid back camp','yuru camp'];
-function queryIsAnime(value){const q=norm(value);if(!q)return false;if(ALIASES.some(a=>q.includes(a)))return true;return SERIES.some(s=>q===s||(q.length>=8&&(q.includes(s)||s.includes(q))))}
+function cardPhotosEnabled(){try{return localStorage.getItem(PHOTO_PREF_KEY)==='1'}catch{return false}}
+function applyCardPhotoPreference(){const on=cardPhotosEnabled();document.body?.classList.toggle('recipe-card-photos-on',on);document.body?.classList.toggle('recipe-card-photos-off',!on);const input=document.getElementById('recipeCardPhotosInput');if(input)input.checked=on}
+function ensurePhotoSetting(){
+  const settings=document.querySelector('.view[data-view="settings"]');if(!settings||document.getElementById('recipeCardPhotosInput'))return;
+  const automation=[...settings.querySelectorAll('.section-heading')].find(h=>h.querySelector('h2')?.textContent.trim()==='Kitchen automation');
+  const heading=document.createElement('div');heading.className='section-heading recipe-display-heading';heading.innerHTML='<h2>Recipe display</h2>';
+  const card=document.createElement('div');card.className='settings-card settings-toggle-grid recipe-display-settings';
+  card.innerHTML='<label class="toggle-line recipe-photo-toggle"><span><b>Show photos on recipe cards</b><small>Off by default for a faster, denser library. Photos still appear when you open a recipe.</small></span><input id="recipeCardPhotosInput" type="checkbox" /></label>';
+  if(automation){settings.insertBefore(heading,automation);settings.insertBefore(card,automation)}else{settings.append(heading,card)}
+  card.querySelector('#recipeCardPhotosInput')?.addEventListener('change',e=>{try{localStorage.setItem(PHOTO_PREF_KEY,e.target.checked?'1':'0')}catch{}applyCardPhotoPreference()});
+  applyCardPhotoPreference();
+}
 function enhanceCuisines(){
   if(!cuisineTab?.classList.contains('active')||panel.querySelector('.cuisine-picker-card'))return;
   const source=panel.querySelector('.browse-card-grid'),buttons=source?[...source.querySelectorAll('[data-browse-cuisine]')]:[];
@@ -33,10 +45,10 @@ function enhanceDetail(){
   const source=detail.querySelector('.source-disclosure>div');
   if(source&&!source.querySelector('.anime-reference-copy')){const ref=document.createElement('div');ref.className='anime-reference-copy';ref.innerHTML=`<p><b>Anime:</b> ${esc(r.animeSeries||'')}</p>${r.animeEpisode?`<p><b>Episode:</b> ${esc(r.animeEpisode)}${r.animeEpisodeTitle?` · ${esc(r.animeEpisodeTitle)}`:''}</p>`:''}<p><b>Dish shown/referenced:</b> ${esc(r.animeDishName||r.title)}</p><p><b>Bento recreation:</b> ${esc(r.realWorldDish||r.title)}${r.adaptationType?` · ${esc(r.adaptationType)}`:''}</p>`;source.append(ref)}
 }
-let panelQueued=false;function queuePanelEnhance(){if(panelQueued)return;panelQueued=true;requestAnimationFrame(()=>{panelQueued=false;enhanceCuisines()})}
+let panelQueued=false;function queuePanelEnhance(){if(panelQueued)return;panelQueued=true;requestAnimationFrame(()=>{panelQueued=false;enhanceCuisines();applyCardPhotoPreference()})}
 new MutationObserver(queuePanelEnhance).observe(panel,{childList:true,subtree:true});
 if(detail)new MutationObserver(enhanceDetail).observe(detail,{childList:true,subtree:true});
-document.addEventListener('click',e=>{if(e.target.closest('[data-recipe-browse]'))setTimeout(queuePanelEnhance,0);if(e.target.closest('[data-recipe-id],[data-detail-plan],[data-meal-date],[data-history-recipe]'))setTimeout(enhanceDetail,0)},true);
+document.addEventListener('click',e=>{if(e.target.closest('[data-recipe-browse]'))setTimeout(queuePanelEnhance,0);if(e.target.closest('[data-recipe-id],[data-detail-plan],[data-meal-date],[data-history-recipe]'))setTimeout(enhanceDetail,0);if(e.target.closest('[data-view-link="settings"]'))setTimeout(ensurePhotoSetting,0)},true);
 if(search)search.addEventListener('input',()=>{if(queryIsAnime(search.value)&&!animeTab?.classList.contains('active'))animeTab?.click()},true);
-queuePanelEnhance();enhanceDetail();
+applyCardPhotoPreference();ensurePhotoSetting();queuePanelEnhance();enhanceDetail();
 })();

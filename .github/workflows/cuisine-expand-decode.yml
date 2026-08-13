@@ -12,8 +12,14 @@ jobs:
       - uses: actions/checkout@v4
       - name: Decode staged Thai chunks
         run: |
-          base64 -d tmp/thai07.b64 > data/thai-recipes-07.js
-          base64 -d tmp/thai10.b64 > data/thai-recipes-10.js
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          for src,dst in [('tmp/thai07.b64','data/thai-recipes-07.js'),('tmp/thai10.b64','data/thai-recipes-10.js')]:
+              s=Path(src).read_text().strip()
+              s += '=' * (-len(s)%4)
+              Path(dst).write_bytes(base64.b64decode(s))
+          PY
           node --check data/thai-recipes-07.js
           node --check data/thai-recipes-08.js
           node --check data/thai-recipes-10.js

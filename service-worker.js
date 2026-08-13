@@ -1,6 +1,6 @@
-const CACHE='bento-shell-v0.6.0-v20p7';
+const CACHE='bento-shell-v0.6.0-v20p8';
 const SHELL_PREFIX='bento-shell-';
-const ASSET_VERSION='20p7';
+const ASSET_VERSION='20p8';
 
 const CORE=[
   `./style.css?v=${ASSET_VERSION}`,
@@ -65,7 +65,7 @@ function upgradeApp(js){
 
   out=out.replace(
     "function observePhotos(root=document){$$('[data-real-photo]',root).forEach(img=>{if(img.dataset.photoObserved)return;img.dataset.photoObserved='1';photoObserver?photoObserver.observe(img):queuePhoto(img)})}",
-    "function observePhotos(root=document){$$('[data-real-photo]',root).forEach(img=>{if(img.dataset.photoObserved)return;const view=img.closest('.view');if(view&&!view.classList.contains('active'))return;img.dataset.photoObserved='1';photoObserver?photoObserver.observe(img):queuePhoto(img)})}"
+    "function observePhotos(root=document){$$('[data-real-photo]',root).forEach(img=>{if(img.dataset.photoObserved)return;if(img.closest('.recipe-card')){let show=false;try{show=localStorage.getItem('bento.recipe.cardPhotos.v1')==='1'}catch{}if(!show)return}const view=img.closest('.view');if(view&&!view.classList.contains('active'))return;img.dataset.photoObserved='1';photoObserver?photoObserver.observe(img):queuePhoto(img)})}"
   );
 
   out=out.replace(

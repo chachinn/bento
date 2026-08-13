@@ -9,8 +9,21 @@ const ANIME=Array.isArray(window.BENTO_RECIPE_LIBRARY)?window.BENTO_RECIPE_LIBRA
 const ANIME_BY_ID=new Map(ANIME.map(r=>[String(r.id),r]));
 const SERIES=[...new Set(ANIME.map(r=>norm(r.animeSeries)).filter(Boolean))];
 const ALIASES=['jujutsu kaisen','jjk','food wars','shokugeki','campfire cooking','dungeon meshi','delicious in dungeon','emiya','sweetness lightning','restaurant to another world','isekai izakaya','dr stone','laid back camp','yuru camp'];
+function queryIsAnime(value){const q=norm(value);if(!q)return false;if(ALIASES.some(a=>q.includes(a)))return true;return SERIES.some(s=>q===s||(q.length>=8&&(q.includes(s)||s.includes(q))))}
 function cardPhotosEnabled(){try{return localStorage.getItem(PHOTO_PREF_KEY)==='1'}catch{return false}}
-function applyCardPhotoPreference(){const on=cardPhotosEnabled();document.body?.classList.toggle('recipe-card-photos-on',on);document.body?.classList.toggle('recipe-card-photos-off',!on);const input=document.getElementById('recipeCardPhotosInput');if(input)input.checked=on}
+function syncPhotoControls(on){
+  const input=document.getElementById('recipeCardPhotosInput');if(input)input.checked=on;
+  const quick=document.getElementById('recipeCardPhotosQuick');if(quick){quick.classList.toggle('active',on);quick.setAttribute('aria-pressed',String(on));const state=quick.querySelector('small');if(state)state.textContent=on?'On':'Off'}
+}
+function applyCardPhotoPreference(){const on=cardPhotosEnabled();document.body?.classList.toggle('recipe-card-photos-on',on);document.body?.classList.toggle('recipe-card-photos-off',!on);syncPhotoControls(on)}
+function setCardPhotosEnabled(on,refreshRecipeView=false){try{localStorage.setItem(PHOTO_PREF_KEY,on?'1':'0')}catch{}applyCardPhotoPreference();if(refreshRecipeView&&on){const nav=document.querySelector('.bottom-nav [data-nav="recipes"]');if(nav){const y=window.scrollY;requestAnimationFrame(()=>{nav.click();requestAnimationFrame(()=>window.scrollTo(0,y))})}}}
+function ensureRecipePhotoQuickToggle(){
+  const heading=document.querySelector('.recipe-library-view .recipe-results-heading');if(!heading||document.getElementById('recipeCardPhotosQuick'))return;
+  let actions=heading.querySelector('.recipe-result-actions');
+  if(!actions){actions=document.createElement('div');actions.className='recipe-result-actions';const reset=heading.querySelector('[data-clear-recipe-filters]');if(reset)actions.append(reset);heading.append(actions)}
+  const button=document.createElement('button');button.type='button';button.id='recipeCardPhotosQuick';button.className='recipe-photo-quick-toggle';button.setAttribute('aria-label','Toggle recipe card photos');button.innerHTML='<span aria-hidden="true">▧</span><b>Photos</b><small>Off</small>';
+  button.addEventListener('click',()=>setCardPhotosEnabled(!cardPhotosEnabled(),true));actions.insertBefore(button,actions.firstChild);applyCardPhotoPreference();
+}
 function ensurePhotoSetting(){
   const settings=document.querySelector('.view[data-view="settings"]');if(!settings||document.getElementById('recipeCardPhotosInput'))return;
   const automation=[...settings.querySelectorAll('.section-heading')].find(h=>h.querySelector('h2')?.textContent.trim()==='Kitchen automation');
@@ -18,7 +31,7 @@ function ensurePhotoSetting(){
   const card=document.createElement('div');card.className='settings-card settings-toggle-grid recipe-display-settings';
   card.innerHTML='<label class="toggle-line recipe-photo-toggle"><span><b>Show photos on recipe cards</b><small>Off by default for a faster, denser library. Photos still appear when you open a recipe.</small></span><input id="recipeCardPhotosInput" type="checkbox" /></label>';
   if(automation){settings.insertBefore(heading,automation);settings.insertBefore(card,automation)}else{settings.append(heading,card)}
-  card.querySelector('#recipeCardPhotosInput')?.addEventListener('change',e=>{try{localStorage.setItem(PHOTO_PREF_KEY,e.target.checked?'1':'0')}catch{}applyCardPhotoPreference()});
+  card.querySelector('#recipeCardPhotosInput')?.addEventListener('change',e=>setCardPhotosEnabled(e.target.checked,false));
   applyCardPhotoPreference();
 }
 function enhanceCuisines(){
@@ -45,10 +58,10 @@ function enhanceDetail(){
   const source=detail.querySelector('.source-disclosure>div');
   if(source&&!source.querySelector('.anime-reference-copy')){const ref=document.createElement('div');ref.className='anime-reference-copy';ref.innerHTML=`<p><b>Anime:</b> ${esc(r.animeSeries||'')}</p>${r.animeEpisode?`<p><b>Episode:</b> ${esc(r.animeEpisode)}${r.animeEpisodeTitle?` · ${esc(r.animeEpisodeTitle)}`:''}</p>`:''}<p><b>Dish shown/referenced:</b> ${esc(r.animeDishName||r.title)}</p><p><b>Bento recreation:</b> ${esc(r.realWorldDish||r.title)}${r.adaptationType?` · ${esc(r.adaptationType)}`:''}</p>`;source.append(ref)}
 }
-let panelQueued=false;function queuePanelEnhance(){if(panelQueued)return;panelQueued=true;requestAnimationFrame(()=>{panelQueued=false;enhanceCuisines();applyCardPhotoPreference()})}
+let panelQueued=false;function queuePanelEnhance(){if(panelQueued)return;panelQueued=true;requestAnimationFrame(()=>{panelQueued=false;enhanceCuisines();ensureRecipePhotoQuickToggle();applyCardPhotoPreference()})}
 new MutationObserver(queuePanelEnhance).observe(panel,{childList:true,subtree:true});
 if(detail)new MutationObserver(enhanceDetail).observe(detail,{childList:true,subtree:true});
 document.addEventListener('click',e=>{if(e.target.closest('[data-recipe-browse]'))setTimeout(queuePanelEnhance,0);if(e.target.closest('[data-recipe-id],[data-detail-plan],[data-meal-date],[data-history-recipe]'))setTimeout(enhanceDetail,0);if(e.target.closest('[data-view-link="settings"]'))setTimeout(ensurePhotoSetting,0)},true);
 if(search)search.addEventListener('input',()=>{if(queryIsAnime(search.value)&&!animeTab?.classList.contains('active'))animeTab?.click()},true);
-applyCardPhotoPreference();ensurePhotoSetting();queuePanelEnhance();enhanceDetail();
+applyCardPhotoPreference();ensurePhotoSetting();ensureRecipePhotoQuickToggle();queuePanelEnhance();enhanceDetail();
 })();

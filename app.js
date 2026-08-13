@@ -300,11 +300,15 @@
         return;
       }
       if(recipeBrowseMode==='desserts'){
-        panel.innerHTML=`<div class="section-feature-card"><span class="section-feature-icon">🍡</span><div><b>Desserts</b><small>${typeRecipeCount('desserts')} sweets and desserts</small></div></div>${renderStyleCards(DESSERT_STYLES||[],'dessert')}`;
+        const items=(DESSERT_STYLES||[]).filter(item=>recipeStyleCount('dessert',item.name.startsWith('All ')?'':item.name)>0);
+        const selected=items.some(item=>item.filter===recipeFilter)?recipeFilter:'Type:desserts';
+        panel.innerHTML=items.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">🍡</span><span class="sr-only">Choose dessert type</span><select class="dessert-browse-select" aria-label="Choose dessert type">${items.map(item=>{const styleName=item.name.startsWith('All ')?'':item.name,count=recipeStyleCount('dessert',styleName);return `<option value="${esc(item.filter)}" ${selected===item.filter?'selected':''}>${item.icon||'🍡'} ${esc(item.name)} · ${count}</option>`}).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No dessert recipes yet.');
         return;
       }
       if(recipeBrowseMode==='drinks'){
-        panel.innerHTML=`<div class="section-feature-card"><span class="section-feature-icon">🍵</span><div><b>Drinks</b><small>${typeRecipeCount('drinks')} drinks</small></div></div>${renderStyleCards(DRINK_STYLES||[],'drink')}`;
+        const items=(DRINK_STYLES||[]).filter(item=>recipeStyleCount('drink',item.name.startsWith('All ')?'':item.name)>0);
+        const selected=items.some(item=>item.filter===recipeFilter)?recipeFilter:'Type:drinks';
+        panel.innerHTML=items.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">🍵</span><span class="sr-only">Choose drink type</span><select class="drink-browse-select" aria-label="Choose drink type">${items.map(item=>{const styleName=item.name.startsWith('All ')?'':item.name,count=recipeStyleCount('drink',styleName);return `<option value="${esc(item.filter)}" ${selected===item.filter?'selected':''}>${item.icon||'🍵'} ${esc(item.name)} · ${count}</option>`}).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No drink recipes yet.');
         return;
       }
       if(recipeBrowseMode==='games'){
@@ -324,10 +328,10 @@
         const anime=rows.filter(r=>r.animeDish||r.animeSeries);
         if(!anime.length){panel.innerHTML=emptyCard('No anime-inspired recipes yet.');return;}
         const series=[...new Set(anime.map(r=>r.animeSeries).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
-        panel.innerHTML=`<div class="special-collection-stack anime-series-stack"><button class="special-collection-card ${recipeFilter==='Anime'?'selected':''}" data-anime-series=""><span class="special-icon">📺</span><span><b>All Anime</b><small>${anime.length} recipes</small></span><i>›</i></button>${series.map(name=>{const n=anime.filter(r=>r.animeSeries===name).length,on=recipeFilter===`AnimeSeries:${name}`;return `<button class="special-collection-card ${on?'selected':''}" data-anime-series="${esc(name)}"><span class="special-icon">📺</span><span><b>${esc(name)}</b><small>${n} recipes</small></span><i>›</i></button>`}).join('')}</div>`;
+        const selected=recipeFilter.startsWith('AnimeSeries:')?recipeFilter:'Anime';
+        panel.innerHTML=`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">📺</span><span class="sr-only">Choose anime series</span><select class="anime-browse-select" aria-label="Choose anime series"><option value="Anime" ${selected==='Anime'?'selected':''}>All Anime · ${anime.length}</option>${series.map(name=>{const value=`AnimeSeries:${name}`,count=anime.filter(r=>r.animeSeries===name).length;return `<option value="${esc(value)}" ${selected===value?'selected':''}>📺 ${esc(name)} · ${count}</option>`}).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`;
         return;
       }
-      panel.innerHTML=emptyCard('Choose a recipe section above.');
     }catch(err){
       console.error('Recipe browse render failed',err);
       panel.innerHTML=emptyCard('Browse could not load. Your recipes are still available below.');
@@ -551,6 +555,9 @@
   document.addEventListener('change',e=>{
     const cuisineSelect=e.target.closest('.cuisine-browse-select');if(cuisineSelect){recipeCuisineFilter=cuisineSelect.value||'All';recipeFilter='Cuisines';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
     const mealSelect=e.target.closest('.meal-browse-select');if(mealSelect){recipeFilter=mealSelect.value||'Meals';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
+    const dessertSelect=e.target.closest('.dessert-browse-select');if(dessertSelect){recipeFilter=dessertSelect.value||'Type:desserts';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
+    const drinkSelect=e.target.closest('.drink-browse-select');if(drinkSelect){recipeFilter=drinkSelect.value||'Type:drinks';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
+    const animeSelect=e.target.closest('.anime-browse-select');if(animeSelect){recipeFilter=animeSelect.value||'Anime';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
     const g=e.target.closest('[data-grocery-check]');if(g){const item=state.grocery.find(x=>x.id===g.dataset.groceryCheck);if(item){const before=item.checked;item.checked=g.checked;queuePersist();g.closest('.grocery-item')?.classList.toggle('checked',g.checked);renderGlobalBadges();toast(g.checked?'Marked purchased':'Marked unchecked',()=>{item.checked=before})}return}
     const ci=e.target.closest('[data-cook-ing]');if(ci&&cookingSession){const i=Number(ci.dataset.cookIng);ci.checked?cookingSession.checked.add(i):cookingSession.checked.delete(i);return}
     if(['bentoMain','bentoSide1','bentoSide2','bentoTreat'].includes(e.target.id)){renderBentoBalance();return}

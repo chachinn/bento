@@ -148,3 +148,17 @@ body.recipe-card-photos-off .recipe-card .thumb{display:none!important}body.reci
   .compact-browse-select select{height:34px;font-size:11.5px;padding-right:24px}
   .compact-browse-select .browse-select-chevron{right:10px;font-size:13px}
 }
+
+/* Complete compact Recipes browse */
+@media(max-width:520px){
+  .recipe-library-view .recipe-browse-tabs{display:flex!important;overflow:hidden!important;width:100%!important}
+  .recipe-library-view .recipe-browse-tabs button:not(.icon-only-browse){min-width:0!important;flex:1 1 0!important;padding:0 4px!important;font-size:9px!important}
+  .recipe-library-view .recipe-browse-tabs .icon-only-browse{min-width:34px!important;width:34px!important;flex:0 0 34px!important;padding:0!important}
+  .recipe-library-view .recipe-browse-tabs .icon-only-browse span{font-size:15px!important}
+}
+@media(max-width:370px){
+  .recipe-library-view .recipe-browse-tabs{gap:3px!important;padding:3px!important}
+  .recipe-library-view .recipe-browse-tabs button:not(.icon-only-browse){font-size:8.5px!important;padding:0 3px!important}
+  .recipe-library-view .recipe-browse-tabs .icon-only-browse{min-width:31px!important;width:31px!important;flex-basis:31px!important}
+}
+

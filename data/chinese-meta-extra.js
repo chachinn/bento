@@ -1,0 +1,1 @@
+(()=>{for(let r of (window.BENTO_RECIPE_LIBRARY||[]).filter(x=>x.cuisine==='Chinese'))Object.assign(r,{verifiedAt:'2026-08-13',origin:r.region,profile:r.region==='National'?'Popular':'Regional',seasonality:'All year',tags:['China',r.region,r.localName,r.romanization],auditStatus:'Chinese library reviewed · 2026',source:'Bento Chinese Kitchen · reviewed August 2026.'})})();

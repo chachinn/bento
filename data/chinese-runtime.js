@@ -1,0 +1,1 @@
+(()=>{let K='id title localName romanization category region prep cook total servings difficulty equipment ingredients steps notes spiceLevel'.split(' '),A=window.BENTO_RECIPE_LIBRARY||(window.BENTO_RECIPE_LIBRARY=[]);for(let x of window.BENTO_CN||[]){let r={cuisine:'Chinese',country:'China',builtIn:true,collection:'Chinese Kitchen'};K.forEach((k,i)=>r[k]=x[i]);A.push(r)}})();

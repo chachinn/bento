@@ -1,0 +1,1 @@
+BENTO_CN.push(["cn_029","Stir-Fried Bok Choy","清炒小白菜","qīngchǎo xiǎobáicài","Side Dishes","National",10,8,18,4,"Easy","wok",["600 g bok choy","garlic","soy sauce"],["Bok choy is prepared and drained.","Garlic cooks briefly until fragrant.","Bok choy cooks 3–5 minutes until tender-crisp.","Soy sauce finishes the dish."],"Simple home-style bok choy.","mild"]);

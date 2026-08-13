@@ -1,0 +1,22 @@
+from pathlib import Path
+p=Path('app.js');s=p.read_text(encoding='utf-8')
+def req(v,m):
+    if not v: raise SystemExit(m)
+anchor="function recipeOptions(){if(recipeOptionsHtmlCache)return recipeOptionsHtmlCache;recipeOptionsHtmlCache='<option value=\"\">Choose recipe…</option>'+standardRecipePool().sort((a,b)=>a.title.localeCompare(b.title)).map(r=>`<option value=\"${r.id}\">${esc(r.title)}</option>`).join('');return recipeOptionsHtmlCache}"
+req(anchor in s,'recipeOptions missing')
+if 'function mealRecipeOptions' not in s:
+    helper="function mealRecipeOptions(query='',selected=''){const q=String(query||'').trim().toLowerCase(),rows=[...standardRecipePool()].sort((a,b)=>a.title.localeCompare(b.title)),filtered=q?rows.filter(r=>recipeSearchText(r).includes(q)):rows;let html='<option value=\"\">Choose recipe…</option>'+filtered.map(r=>`<option value=\"${r.id}\">${esc(r.title)}</option>`).join('');if(selected&&!filtered.some(r=>r.id===selected)){const r=getRecipe(selected);if(r)html+=`<option value=\"${r.id}\">${esc(r.title)}</option>`}return html}\n  function applyMealRecipeSearch(query=''){const select=$('#mealRecipeSelect');if(!select)return;const selected=select.value;select.innerHTML=mealRecipeOptions(query,selected);if(selected)select.value=selected}"
+    s=s.replace(anchor,anchor+'\n  '+helper,1)
+old="function openMealForm(date,slot){const cur=state.mealPlan[date]?.[slot];$('#mealDateInput').value=date;$('#mealSlotInput').value=slot;$('#mealDialogDate').textContent=parseDate(date).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});$('#mealDialogTitle').textContent=slot[0].toUpperCase()+slot.slice(1);const selectedRecipeId=cur?.recipeId||pendingPlanRecipeId||'';$('#mealRecipeSelect').innerHTML=recipeOptions();"
+new="function openMealForm(date,slot){const cur=state.mealPlan[date]?.[slot];$('#mealDateInput').value=date;$('#mealSlotInput').value=slot;$('#mealDialogDate').textContent=parseDate(date).toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'});$('#mealDialogTitle').textContent=slot[0].toUpperCase()+slot.slice(1);const selectedRecipeId=cur?.recipeId||pendingPlanRecipeId||'';if($('#mealRecipeSearchInput'))$('#mealRecipeSearchInput').value='';$('#mealRecipeSelect').innerHTML=mealRecipeOptions('',selectedRecipeId);"
+if "mealRecipeOptions('',selectedRecipeId)" not in s: req(old in s,'openMealForm picker missing');s=s.replace(old,new,1)
+old="function openRecipeDetail(id){const r=getRecipe(id);if(!r)return;recipeDetailId=id;recipeDetailServingTarget=Number(r.servings)||2;"
+new="function openRecipeDetail(id,servingTarget=null){const r=getRecipe(id);if(!r)return;recipeDetailId=id;recipeDetailServingTarget=clamp(Number(servingTarget)||Number(r.servings)||2,1,30);"
+if 'function openRecipeDetail(id,servingTarget=null)' not in s: req(old in s,'recipe detail missing');s=s.replace(old,new,1)
+old="const rid=e.target.closest('[data-recipe-id]');if(rid){openRecipeDetail(rid.dataset.recipeId);return}"
+new="const rid=e.target.closest('[data-recipe-id]');if(rid){openRecipeDetail(rid.dataset.recipeId,Number(rid.dataset.recipeServing)||null);return}"
+if 'Number(rid.dataset.recipeServing)' not in s: req(old in s,'recipe click missing');s=s.replace(old,new,1)
+old="$('#mealRecipeSelect').addEventListener('change',()=>{if($('#mealRecipeSelect').value){$('#mealCustomInput').value='';const r=getRecipe($('#mealRecipeSelect').value);if(r)$('#mealServingsInput').value=r.servings||state.settings.defaultServings||2}});$('#mealCustomInput').addEventListener('input',()=>{if($('#mealCustomInput').value.trim())$('#mealRecipeSelect').value=''})"
+new="$('#mealRecipeSelect').addEventListener('change',()=>{if($('#mealRecipeSelect').value){$('#mealCustomInput').value='';const r=getRecipe($('#mealRecipeSelect').value);if(r)$('#mealServingsInput').value=r.servings||state.settings.defaultServings||2}});$('#mealRecipeSearchInput')?.addEventListener('input',debounce(e=>applyMealRecipeSearch(e.target.value),80));$('#mealCustomInput').addEventListener('input',()=>{if($('#mealCustomInput').value.trim())$('#mealRecipeSelect').value=''})"
+if "$('#mealRecipeSearchInput')?.addEventListener" not in s: req(old in s,'meal listener missing');s=s.replace(old,new,1)
+p.write_text(s,encoding='utf-8')

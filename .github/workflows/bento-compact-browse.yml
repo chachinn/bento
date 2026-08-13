@@ -1,0 +1,118 @@
+name: Bento compact recipe browse
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bento-compact-browse.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Make recipe browse compact
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          app_path=Path('app.js')
+          style_path=Path('style.css')
+          sw_path=Path('service-worker.js')
+          workflow_path=Path('.github/workflows/bento-compact-browse.yml')
+
+          app=app_path.read_text(encoding='utf-8')
+          start=app.index("      if(recipeBrowseMode==='cuisines'){")
+          end=app.index("      if(recipeBrowseMode==='desserts'){", start)
+          replacement=r'''      if(recipeBrowseMode==='cuisines'){
+        const cuisines=[...new Set(builtins.filter(r=>r&&!isGameRecipe(r)&&!isAnimeRecipe(r)).map(r=>String(r.cuisine||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+        const selected=cuisines.includes(recipeCuisineFilter)?recipeCuisineFilter:'All';
+        panel.innerHTML=cuisines.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">${selected==='All'?'🌏':cuisineFlag(selected)}</span><span class="sr-only">Choose cuisine</span><select class="cuisine-browse-select" aria-label="Choose cuisine"><option value="All">All cuisines</option>${cuisines.map(c=>`<option value="${esc(c)}" ${selected===c?'selected':''}>${cuisineFlag(c)} ${esc(c)}</option>`).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No cuisines yet.');
+        return;
+      }
+      if(recipeBrowseMode==='meals'){
+        const entries=Object.entries(RECIPE_TYPE_GROUPS||{}).filter(([key])=>!['desserts','drinks'].includes(key)&&typeRecipeCount(key)>0);
+        const selected=recipeFilter.startsWith('Type:')?recipeFilter:'Meals';
+        panel.innerHTML=entries.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">🍽️</span><span class="sr-only">Choose meal type</span><select class="meal-browse-select" aria-label="Choose meal type"><option value="Meals" ${selected==='Meals'?'selected':''}>All meal types</option>${entries.map(([key,cfg])=>{const value=`Type:${key}`,count=typeRecipeCount(key);return `<option value="${esc(value)}" ${selected===value?'selected':''}>${cfg.icon||'🍽️'} ${esc(cfg.label||key)} · ${count}</option>`}).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No meal recipes yet.');
+        return;
+      }
+'''
+          app=app[:start]+replacement+app[end:]
+
+          old="    const cuisineSelect=e.target.closest('.cuisine-browse-select');if(cuisineSelect){recipeCuisineFilter=cuisineSelect.value||'All';recipeFilter='Cuisines';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}"
+          new=old+"\n    const mealSelect=e.target.closest('.meal-browse-select');if(mealSelect){recipeFilter=mealSelect.value||'Meals';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}"
+          if old not in app:
+            raise SystemExit('Cuisine select change handler not found')
+          app=app.replace(old,new,1)
+          app_path.write_text(app,encoding='utf-8')
+
+          style=style_path.read_text(encoding='utf-8').rstrip()
+          marker='/* Compact recipe browse selectors */'
+          if marker not in style:
+            style += r'''
+
+/* Compact recipe browse selectors */
+.compact-browse-select{position:relative;display:flex;align-items:center;gap:8px;width:100%;min-height:42px;padding:0 11px;border:1px solid var(--line);border-radius:13px;background:var(--surface);box-shadow:0 2px 8px rgba(112,74,72,.025)}
+.compact-browse-select .browse-select-icon{flex:0 0 auto;font-size:16px;line-height:1}
+.compact-browse-select select{appearance:none;-webkit-appearance:none;flex:1;min-width:0;height:40px;padding:0 28px 0 0;border:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:750;outline:none}
+.compact-browse-select .browse-select-chevron{position:absolute;right:11px;top:50%;transform:translateY(-54%);pointer-events:none;color:var(--muted);font-size:14px;line-height:1}
+.recipe-library-view .recipe-browse-panel>.compact-browse-select{margin:0}
+@media(max-width:520px){
+  .recipe-library-view .recipe-browse-panel{padding:0!important;margin:0 0 5px!important}
+  .compact-browse-select{min-height:36px;height:36px;border-radius:11px;padding:0 10px;gap:7px}
+  .compact-browse-select .browse-select-icon{font-size:14px}
+  .compact-browse-select select{height:34px;font-size:11.5px;padding-right:24px}
+  .compact-browse-select .browse-select-chevron{right:10px;font-size:13px}
+}
+'''
+          style_path.write_text(style+'\n',encoding='utf-8')
+
+          sw=sw_path.read_text(encoding='utf-8')
+          sw,n=re.subn(r"const CACHE='bento-shell-v0\.7\.\d+-v21';","const CACHE='bento-shell-v0.7.1-v21';",sw,count=1)
+          if n!=1:
+            raise SystemExit('Service worker cache version line not found')
+          sw_path.write_text(sw,encoding='utf-8')
+
+          # Structural QA: the two large browse cards must no longer be generated.
+          source=app_path.read_text(encoding='utf-8')
+          block=source[source.index("      if(recipeBrowseMode==='cuisines'){"):source.index("      if(recipeBrowseMode==='desserts'){",source.index("      if(recipeBrowseMode==='cuisines'){"))]
+          checks={
+            'compact cuisine select':'class="cuisine-browse-select"' in block,
+            'compact meal select':'class="meal-browse-select"' in block,
+            'meal grid removed':'type-card-grid' not in block,
+            'large cuisine card removed':'cuisine-picker-card' not in block,
+            'meal handler present':"mealSelect=e.target.closest('.meal-browse-select')" in source,
+            'compact CSS present':marker in style_path.read_text(encoding='utf-8'),
+          }
+          failed=[name for name,ok in checks.items() if not ok]
+          if failed:
+            raise SystemExit('QA failed: '+', '.join(failed))
+
+          workflow_path.unlink()
+          print('Compact browse structural QA passed.')
+          PY
+
+      - name: Validate
+        run: |
+          node --check app.js
+          node --check service-worker.js
+          git diff --check
+          test ! -f .github/workflows/bento-compact-browse.yml
+
+      - name: Commit update
+        run: |
+          git config user.name "chachinn"
+          git config user.email "140357822+chachinn@users.noreply.github.com"
+          git add -A
+          git status --short
+          git commit -m "Bento v21: compact recipe browse dropdowns [skip ci]"
+          git push origin HEAD:main

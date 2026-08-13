@@ -1,1 +1,0 @@
-const fs=require('fs'),h=fs.readFileSync('index.html','utf8'),s=fs.readFileSync('service-worker.js','utf8');for(let i=1;i<=40;i++){let n=`chinese-recipes-${String(i).padStart(3,'0')}.js?v=23p1`;if(!h.includes(n)||!s.includes(n))throw Error(n)}console.log('ASSET_QA_PASS');

@@ -1,5 +1,5 @@
 {
-  "libraryVersion": 22,
+  "libraryVersion": 23,
   "recipeCount": 956,
   "newRecipesThisBuild": 0,
   "cuisineCount": 3,
@@ -69,7 +69,7 @@
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; anime screenshots, character art, manga panels and game artwork are not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 20,
+  "instructionVersion": 21,
   "instructionStyle": "comprehensive-variable-length",
   "detailedInstructionRecipeCount": 956,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
@@ -77,7 +77,7 @@
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
   "cacheFix": "v22.1 aligns index.html and the service-worker shell to the same 22p1 asset generation; the service worker does not rewrite application source.",
-  "generatedAt": "2026-08-13T18:39:00+08:00",
+  "generatedAt": "2026-08-13T20:10:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -92,7 +92,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "22.1",
+  "appRelease": "22.2",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -114,7 +114,7 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "All existing Japanese, Filipino, Korean, Genshin, and Anime libraries passed structure, timing, doneness, duplication, count, and regression gates before release.",
+  "qualityGate": "v22.2 re-audits method depth across all 956 existing recipes. Compound cooking actions were separated without text loss; genuinely generic or compressed methods were manually rewritten by recipe ID; counts and IDs remain unchanged.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
       "recipeCount": 956,
@@ -140,8 +140,33 @@
       "exactDuplicateMethodGroups": 0,
       "recipesWithoutExplicitTimedStep": 0,
       "recipesWithoutStrongDonenessCue": 0
+    },
+    "methodDepth": {
+      "recipesReviewed": 956,
+      "recipesWithMethodChanges": 288,
+      "Japanese": 45,
+      "Filipino": 102,
+      "Korean": 59,
+      "Genshin": 45,
+      "Anime": 37,
+      "manualMethodRewrites": 14,
+      "stepHistogram": {
+        "4": 14,
+        "5": 153,
+        "6": 410,
+        "7": 220,
+        "8": 61,
+        "9": 47,
+        "10": 25,
+        "11": 15,
+        "12": 6,
+        "13": 4,
+        "14": 1
+      },
+      "maximumSteps": 14,
+      "minimumPolicy": "No fixed step count. Methods use as many numbered steps as the dish requires."
     }
   },
   "cookingExperience": "v22 adds a before-you-start guide, timed-step summary, likely-current ingredients, next-step preview, missing-only grocery action, and serving-accurate Pantry deduction review.",
-  "cleanupRelease": "v22.1 completes the pre-expansion quality cleanup in sequence: Japanese, Filipino, Korean, Genshin, then Anime. No new cuisine was added."
+  "cleanupRelease": "v22.2 completes the method-depth cleanup before Chinese cuisine expansion. Existing recipes are no longer authored toward an artificial 5–8-step ceiling; simple dishes remain concise and complex dishes may use 9–14+ steps as needed."
 }

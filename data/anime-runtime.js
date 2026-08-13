@@ -23,9 +23,9 @@ window.BENTO_ANIME_ADD_ROWS=(rows)=>{
       animeDish:true,cuisine:'',country:'',region:'',
       recipeType:'Reviewed anime recreation',collection:'Anime',
       source:`Anime: ${raw.animeSeries}${raw.animeEpisode?` · ${raw.animeEpisode}${raw.animeEpisodeTitle?` · ${raw.animeEpisodeTitle}`:''}`:''}. ${SERIES_SOURCE_NOTE}`,builtIn:true,favorite:false,
-      libraryVersion:20,instructionVersion:20,instructionStyle:'comprehensive-variable-length',
-      createdAt:'2026-08-13T06:45:00+08:00',updatedAt:'2026-08-13T18:39:00+08:00',verifiedAt:'2026-08-13',
-      auditStatus:'Method & timing reviewed · 2026',
+      libraryVersion:20,instructionVersion:21,instructionStyle:'comprehensive-variable-length',
+      createdAt:'2026-08-13T06:45:00+08:00',updatedAt:'2026-08-13T19:55:00+08:00',verifiedAt:'2026-08-13',
+      auditStatus:'Method depth reviewed · 2026',
       allergens:allergens(raw.ingredients),
       tags:[...(Array.isArray(raw.tags)?raw.tags:[]),raw.animeSeries,raw.animeEpisode,raw.animeEpisodeTitle,raw.animeDishName,raw.realWorldDish,raw.adaptationType].filter(Boolean),
       inactiveMinutes:Math.max(0,Number(raw.total||0)-Number(raw.prep||0)-Number(raw.cook||0))

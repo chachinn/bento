@@ -1,0 +1,25 @@
+name: Promote reviewed Bento v23.2
+on:
+  push:
+    branches: [bento-chinese-v23]
+    paths: ['.github/workflows/bento-v23-2-promote.yml']
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify production base
+        run: |
+          git fetch origin main bento-v23-2-review
+          test "$(git rev-parse origin/main)" = "4e1c8629e734c16b269655d134d0e8703e727650"
+          test "$(git merge-base origin/main origin/bento-v23-2-review)" = "4e1c8629e734c16b269655d134d0e8703e727650"
+      - name: Final syntax check
+        run: |
+          git checkout -B release origin/bento-v23-2-review
+          node --check app.js
+          node --check service-worker.js
+          node --check data/recipes-data.js
+      - name: Fast-forward main
+        run: git push origin HEAD:main

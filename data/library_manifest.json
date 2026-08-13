@@ -69,8 +69,8 @@
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; anime screenshots, character art, manga panels and game artwork are not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 15,
-  "instructionStyle": "detailed-concise",
+  "instructionVersion": 16,
+  "instructionStyle": "comprehensive-variable-length",
   "detailedInstructionRecipeCount": 956,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
@@ -91,5 +91,29 @@
     "Juices & coolers",
     "Traditional"
   ],
-  "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load."
+  "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load.",
+  "appRelease": "22.0",
+  "cuisineRoadmap": [
+    "Japanese",
+    "Filipino",
+    "Korean",
+    "Chinese",
+    "Thai",
+    "Vietnamese",
+    "Indian",
+    "Italian",
+    "French",
+    "Spanish",
+    "Greek",
+    "Turkish",
+    "Mexican",
+    "American",
+    "Brazilian",
+    "Peruvian",
+    "Moroccan",
+    "British"
+  ],
+  "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
+  "qualityGate": "v22 audits critical recipe structure, repeated boilerplate patterns, timer/doneness support, cooking-mode usability, and serving-scaled Pantry deductions.",
+  "cookingExperience": "v22 adds a before-you-start guide, timed-step summary, likely-current ingredients, next-step preview, missing-only grocery action, and serving-accurate Pantry deduction review."
 }

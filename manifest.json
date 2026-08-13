@@ -81,8 +81,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Add Recipe",
-      "short_name": "Recipe",
+      "name": "Recipes",
+      "short_name": "Recipes",
       "url": "./index.html#recipes",
       "icons": [
         {

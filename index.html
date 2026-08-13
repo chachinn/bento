@@ -119,7 +119,7 @@
         <div class="plan-toolbar">
           <button class="soft-btn" id="copyWeekButton">Copy week</button>
           <button class="soft-btn" id="clearWeekButton">Clear week</button>
-          <button class="soft-btn" data-view-link="smart">✨ Smart fill</button><button class="soft-btn" data-view-link="templates">🗓️ Templates</button>
+          <button class="soft-btn" data-view-link="smart">✨ Kitchen Magic</button><button class="soft-btn" data-view-link="templates">🗓️ Templates</button>
         </div>
         <div id="mealPlanGrid" class="meal-plan-grid"></div>
       </section>
@@ -225,7 +225,7 @@
       </section>
 
       <section class="view subview" data-view="bentobox" aria-labelledby="bentoBoxTitle">
-        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Pack something cute</p><h1 id="bentoBoxTitle">Bento Box Builder</h1></div><button class="primary-round" id="newBentoButton">＋</button></div>
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Pack something cute</p><h1 id="bentoBoxTitle">Bento Box Builder</h1></div><button class="primary-round" id="newBentoButton" aria-label="Start a new bento">＋</button></div>
         <div class="bento-builder-card">
           <label>Bento name<input id="bentoNameInput" maxlength="60" placeholder="e.g. Sakura Picnic" /></label>
           <div class="bento-compartments">
@@ -242,14 +242,14 @@
       </section>
 
       <section class="view subview" data-view="leftovers" aria-labelledby="leftoversTitle">
-        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Waste less</p><h1 id="leftoversTitle">Leftovers</h1></div><button class="primary-round" data-action="add-leftover">＋</button></div>
+        <div class="subview-header"><button class="back-btn" data-back>‹</button><div><p class="eyebrow">Waste less</p><h1 id="leftoversTitle">Leftovers</h1></div><button class="primary-round" data-action="add-leftover" aria-label="Add leftover">＋</button></div>
         <div id="leftoverSummary" class="stat-grid"></div>
         <div class="section-heading"><h2>Use next</h2></div>
         <div id="leftoversList" class="card-list"></div>
       </section>
 
       <section class="view" data-view="grocery" aria-labelledby="groceryTitle">
-        <div class="page-title-row"><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton" aria-label="Shopping mode">◉</button></div>
+        <div class="page-title-row"><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton" aria-label="Shopping mode" aria-pressed="false">◉</button></div>
         <div class="summary-card"><div><small>Unchecked</small><strong id="groceryUnchecked">0</strong></div><div><small>Checked</small><strong id="groceryChecked">0</strong></div><div><small>Est.</small><strong id="groceryEstimate">—</strong></div></div>
         <div class="inline-add"><input id="groceryAddInput" placeholder="Add grocery item…" /><button id="groceryAddButton">Add</button></div>
         <div class="action-row"><button class="soft-btn" id="groceryFromPlanButton">Generate from this week</button><button class="soft-btn" id="checkedToPantryButton">Checked → Pantry</button><button class="soft-btn" id="clearCheckedButton">Clear checked</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>

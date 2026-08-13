@@ -60,7 +60,7 @@
       "Dr. Stone": 3,
       "Jujutsu Kaisen": 3
     },
-    "navigation": "Flat Anime recipe library; no series dropdown. Series provenance appears in recipe detail/references and is searchable.",
+    "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
   "dishImageCount": 956,
@@ -72,12 +72,12 @@
   "instructionVersion": 15,
   "instructionStyle": "detailed-concise",
   "detailedInstructionRecipeCount": 956,
-  "navigation": "Cuisines, Meals, Desserts, Drinks, icon-only Games and Anime discovery.",
+  "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
-  "cuisineNavigation": "Compact cuisine selector designed to scale to all 18 planned cuisines without a card wall.",
-  "cacheFix": "Navigation is network-first; the v20 service worker upgrades legacy raw index/app responses to v20 and caches versioned Korean, Anime, UI and core assets to prevent mixed-version PWA loads.",
-  "generatedAt": "2026-08-13T06:49:00+08:00",
+  "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
+  "cacheFix": "v21 uses a conventional versioned shell cache with network-first navigation; the service worker no longer rewrites app or HTML source at runtime.",
+  "generatedAt": "2026-08-13T16:32:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -91,5 +91,5 @@
     "Juices & coolers",
     "Traditional"
   ],
-  "performance": "Recipe cards remain batch-rendered (30 at a time); photos remain lazy/on-demand; game/anime records remain excluded from normal auto-discovery; Anime content is split into ten versioned cached data chunks."
+  "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load."
 }

@@ -1,0 +1,30 @@
+name: Stage remaining Thai v24 recipes
+on:
+  push:
+    branches: [bento-thai-v24]
+    paths: ['.github/workflows/thai-v24-stage-final.yml']
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore Thai recipes 26-40
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          : > data/thai-recipes-04.js
+          for sha in e218b8d3d73659801df1ffcc37db0cee2dad76ef 954c6eb16412516ef0289c4dee74e2b176c42172 a0d75387bc050f0d80b53a76073dd94e51d2bf4a 53b27ebe0ef7fd09d9a0689d36410c411975389b 8e83125219ffd916c6d3b3699d61f66aeed78ba7; do gh api "repos/${GITHUB_REPOSITORY}/git/blobs/$sha" --jq .content | base64 -d >> data/thai-recipes-04.js; done
+          : > data/thai-recipes-05.js
+          for sha in e88efcf26842e90d4854a02f652f12b08ec9cd6b e47ed47272f347c853125bf4be66be773d24ed38 44c15252016bf3de1c57c698939f249e42c9b564 08714bdd5c1276f9c7510131631583f3bb8d210d d702bff00a955cb4fdaab7986a96cd3a1b139d91; do gh api "repos/${GITHUB_REPOSITORY}/git/blobs/$sha" --jq .content | base64 -d >> data/thai-recipes-05.js; done
+          : > data/thai-recipes-06.js
+          for sha in 05924ed99aca6865cb21b3c6fd4043ca5ef8569b 1daf0b201d3940248cd36bec2872940f4cd83f6c 97f85123b75d51cfe4b3838eabb1eb73ae4f321e 68c33379f3bb4ca78b48f64291eb79e68d6a336f 2ff781a6b37cee123659f3651e90c6cb10a78de8; do gh api "repos/${GITHUB_REPOSITORY}/git/blobs/$sha" --jq .content | base64 -d >> data/thai-recipes-06.js; done
+      - name: Validate and commit
+        run: |
+          for f in data/thai-recipes-0{4,5,6}.js; do node --check "$f"; done
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js
+          git commit -m 'Bento v24: complete 40-recipe Thai library'
+          git push

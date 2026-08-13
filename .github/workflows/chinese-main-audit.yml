@@ -1,0 +1,53 @@
+name: Bento Chinese current-main audit
+
+on:
+  push:
+    branches: [bento-cn-main-audit]
+    paths: ['.github/workflows/chinese-main-audit.yml']
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax
+        run: |
+          node --check app.js
+          node --check service-worker.js
+          for f in data/*.js; do node --check "$f"; done
+      - name: Chinese and full-library audit
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),vm=require('vm'),path=require('path');
+          global.window=global;
+          const load=f=>vm.runInThisContext(fs.readFileSync(f,'utf8'),{filename:f});
+          load('data/recipes-data.js');
+          load('data/photo-index.js');
+          load('data/korean-runtime.js');
+          for(const f of fs.readdirSync('data').filter(x=>/^korean-recipes-\d+\.js$/.test(x)).sort())load(path.join('data',f));
+          load('data/anime-runtime.js');
+          for(const f of fs.readdirSync('data').filter(x=>/^anime-recipes-\d+\.js$/.test(x)).sort())load(path.join('data',f));
+          load('data/chinese-init.js');
+          for(const f of fs.readdirSync('data').filter(x=>/^chinese-recipes-\d+\.js$/.test(x)).sort())load(path.join('data',f));
+          load('data/chinese-runtime.js');load('data/chinese-meta-core.js');load('data/chinese-meta-extra.js');load('data/chinese-photo.js');
+          const all=global.BENTO_RECIPE_LIBRARY||[],cn=all.filter(r=>r.cuisine==='Chinese');
+          const hist={};for(const r of cn)hist[r.steps.length]=(hist[r.steps.length]||0)+1;
+          const timed=/\d+(?:\.\d+)?\s*(?:[–-]|to)?\s*\d*(?:\.\d+)?\s*(?:minutes?|mins?|hours?|hrs?)/i;
+          const cue=/until|fully cooked|tender|golden|set\b|opaque|crisp|translucent|glossy|soft|expanded|browned|juicy|separate|springy|creamy|flexible|puffy|wrinkled|blistered|flake|thicken/i;
+          const noTimer=cn.filter(r=>Number(r.cook||0)>=15&&!r.steps.some(s=>timed.test(String(s))));
+          const noCue=cn.filter(r=>Number(r.cook||0)>0&&!r.steps.some(s=>cue.test(String(s))));
+          const sig=new Map();for(const r of cn){const s=r.steps.join(' || ').toLowerCase();const a=sig.get(s)||[];a.push(r.title);sig.set(s,a)}
+          const dup=[...sig.values()].filter(a=>a.length>1);
+          const ids=all.map(r=>String(r.id||''));
+          const app=fs.readFileSync('app.js','utf8');
+          console.log(JSON.stringify({
+            total:all.length,uniqueIds:new Set(ids).size,chinese:cn.length,
+            regions:[...new Set(cn.map(r=>r.region))].sort(),categories:[...new Set(cn.map(r=>r.category))].sort(),
+            stepHistogram:hist,maxSteps:Math.max(...cn.map(r=>r.steps.length)),eightPlus:cn.filter(r=>r.steps.length>=8).map(r=>`${r.title} (${r.steps.length})`),
+            noTimer:noTimer.map(r=>r.title),noCue:noCue.map(r=>r.title),duplicateMethods:dup,
+            localNameMissing:cn.filter(r=>!r.localName).map(r=>r.title),romanizationMissing:cn.filter(r=>!r.romanization).map(r=>r.title),
+            appVersion:(app.match(/const VERSION = (\d+);/)||[])[1],
+            searchHasLocalName:app.includes("${r?.localName||''}"),cardHasLocalName:app.includes('r.japaneseName||r.localName'),
+          },null,2));
+          if(all.length!==996||new Set(ids).size!==996||cn.length!==40)process.exit(2);
+          NODE

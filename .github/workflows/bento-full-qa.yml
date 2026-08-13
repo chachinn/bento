@@ -24,7 +24,7 @@ jobs:
           python3 <<'PY'
           from pathlib import Path
           from html.parser import HTMLParser
-          import re, json, os
+          import re, json
 
           root=Path('.')
           index_path=root/'index.html'
@@ -38,8 +38,8 @@ jobs:
           style=style_path.read_text(encoding='utf-8')
           sw=sw_path.read_text(encoding='utf-8')
 
-          # ---- Safe CSS cleanup: remove obsolete cuisine-picker styling that conflicts
-          # with the new shared compact-browse-select component.
+          # Remove obsolete cuisine-picker styling that conflicts with the shared
+          # compact-browse-select now used by Cuisines/Meals/Desserts/Drinks/Anime.
           style=style.replace('.cuisine-picker-card,.anime-library-intro,.anime-source-card{border-radius:16px}', '.anime-library-intro,.anime-source-card{border-radius:16px}')
           style=style.replace('.cuisine-picker-card~.browse-card-grid,.browse-card-grid[hidden]{display:none!important}', '.browse-card-grid[hidden]{display:none!important}')
           legacy_patterns=[
@@ -62,30 +62,15 @@ jobs:
           for pat in legacy_patterns:
             style=re.sub(pat,'',style)
 
-          # Remove compact mobile legacy cuisine rules that may be embedded in a long line.
-          for pat in [
-            r'\.cuisine-picker-card\{gap:9px;padding:11px 12px\}',
-            r'\.cuisine-picker-head\{gap:9px\}',
-            r'\.cuisine-picker-icon\{width:36px;height:36px;border-radius:12px;font-size:1\.15rem\}',
-            r'\.cuisine-picker-head b\{font-size:\.92rem\}',
-            r'\.cuisine-picker-head small,\.cuisine-picker-note\{font-size:\.7rem;line-height:1\.3\}',
-            r'\.cuisine-browse-select\{min-height:42px;border-radius:13px;padding-left:11px;font-size:\.88rem\}',
-          ]:
-            style=re.sub(pat,'',style)
-
-          # Shared selector polish for all compact browse dropdowns.
           marker='/* QA unified compact browse control */'
           if marker not in style:
             style += '''\n\n/* QA unified compact browse control */\n.compact-browse-select{overflow:hidden}\n.compact-browse-select select{width:100%;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;margin:0!important}\n.compact-browse-select .browse-select-icon{display:grid;place-items:center;width:22px;height:22px;flex:0 0 22px}\n.compact-browse-select .browse-select-chevron{z-index:1}\n@media(max-width:520px){\n  .recipe-library-view .compact-browse-select{width:100%!important;min-height:36px!important;height:36px!important;padding:0 10px!important;border:1px solid var(--line)!important;border-radius:11px!important;background:var(--surface)!important;box-shadow:none!important}\n  .recipe-library-view .compact-browse-select select{height:34px!important;padding:0 26px 0 0!important;font-size:11.5px!important;font-weight:750!important;color:var(--text)!important}\n  .recipe-library-view .compact-browse-select .browse-select-icon{font-size:14px!important;width:20px!important;height:20px!important;flex-basis:20px!important}\n  .recipe-library-view .compact-browse-select .browse-select-chevron{right:10px!important;font-size:13px!important;color:var(--muted)!important}\n}\n'''
 
-          # Mobile safety hardening across all views without changing desktop structure.
           mobile_marker='/* QA mobile layout safety */'
           if mobile_marker not in style:
             style += '''\n/* QA mobile layout safety */\n@media(max-width:520px){\n  .page-title-row,.subview-header,.section-heading{min-width:0}\n  .page-title-row>div,.subview-header>div,.section-heading>h2{min-width:0}\n  .action-row,.action-grid,.plan-toolbar,.chip-row{max-width:100%}\n  .search-row,.recipe-search-toolbar{min-width:0}\n  .search-row>*,.recipe-search-toolbar>*{min-width:0}\n  .settings-card,.info-card,.about-card,.summary-card,.meal-card,.list-card,.attention-card,.match-card,.smart-card,.plan-day{max-width:100%}\n  .bottom-nav button{min-width:0}\n}\n'''
-
           style_path.write_text(style.rstrip()+"\n",encoding='utf-8')
 
-          # Bump cache only if this QA build is committed.
           sw2,n=re.subn(r"const CACHE='bento-shell-v0\.7\.\d+-v21';","const CACHE='bento-shell-v0.7.3-v21';",sw,count=1)
           if n==1:
             sw=sw2
@@ -114,24 +99,22 @@ jobs:
           missing_controls=sorted(set(p.controls)-ids)
           if missing_controls: errors.append('aria-controls targets missing: '+', '.join(missing_controls))
 
-          # Static JS ID references should exist in HTML.
+          # JS references may target static HTML or controls dynamically rendered by app.js.
           js_ids=set(re.findall(r"\$\('#([A-Za-z0-9_-]+)'\)",app))
           js_ids |= set(re.findall(r"getElementById\(['\"]([A-Za-z0-9_-]+)['\"]\)",app))
-          missing_js_ids=sorted(js_ids-ids)
-          if missing_js_ids: errors.append('JS references missing static ids: '+', '.join(missing_js_ids[:40]))
+          dynamic_ids=set(re.findall(r'id=[\\\"\']([A-Za-z0-9_-]+)[\\\"\']',app))
+          unresolved_js_ids=sorted(js_ids-ids-dynamic_ids)
+          if unresolved_js_ids: errors.append('JS references unresolved ids: '+', '.join(unresolved_js_ids[:40]))
 
-          # Ensure every static action is represented in app source.
           missing_actions=sorted({a for a in p.actions if a not in app})
-          if missing_actions: warnings.append('Actions not found literally in app.js: '+', '.join(missing_actions))
+          if missing_actions: errors.append('Static actions not wired in app.js: '+', '.join(missing_actions))
 
-          # Main browse modes and handlers.
           for mode in ['cuisines','meals','desserts','drinks','games','anime']:
             if f'data-recipe-browse="{mode}"' not in index: errors.append(f'Missing browse tab: {mode}')
             if f"recipeBrowseMode==='{mode}'" not in app: errors.append(f'Missing browse renderer: {mode}')
           for cls in ['cuisine-browse-select','meal-browse-select','dessert-browse-select','drink-browse-select','anime-browse-select']:
             if cls not in app: errors.append('Missing browse dropdown/handler: '+cls)
 
-          # Service worker shell references must exist.
           core_match=re.search(r'const CORE=\[(.*?)\];',sw,re.S)
           if not core_match: errors.append('Service worker CORE list missing')
           else:
@@ -140,34 +123,36 @@ jobs:
               path=asset.split('?')[0].replace('./','')
               if path and not (root/path).exists(): errors.append('Missing cached asset: '+path)
 
-          # No legacy sidecar architecture or stale false-refresh text.
           root_names={x.name for x in root.iterdir()}
           stale=[x for x in root_names if x.startswith('v20-') or x.startswith('v19-')]
           if stale: errors.append('Legacy sidecar files remain: '+', '.join(sorted(stale)))
           if 'That section could not refresh' in app: errors.append('Old false refresh toast remains in app.js')
           if 'upgradeApp' in sw or 'upgradeHtml' in sw: errors.append('Service worker still rewrites app source')
 
-          # CSS sanity.
           final_style=style_path.read_text(encoding='utf-8')
           if final_style.count('{')!=final_style.count('}'):
             errors.append('CSS brace count mismatch')
           for dead in ['.cuisine-picker-card{','.cuisine-select-wrap{','.recipe-library-view .cuisine-browse-select{']:
             if dead in final_style: errors.append('Legacy cuisine CSS remains: '+dead)
 
-          # JavaScript source sanity markers for all major sections.
-          section_markers={
-            'home':'renderHome','plan':'renderPlan','recipes':'renderRecipes','pantry':'renderPantry','grocery':'renderGrocery',
-            'ideas':'renderIdeas','templates':'renderTemplates','collections':'renderCollections','favorites':'renderFavorites',
-            'history':'renderHistory','activity':'renderActivity','waste':'renderWaste','insights':'renderInsights','settings':'renderSettings',
-            'about':'renderAbout','smart':'renderSmart','cookwith':'renderCookWith','bentobox':'renderBento','leftovers':'renderLeftovers'
-          }
-          for view,marker_name in section_markers.items():
-            if view in views and marker_name not in app:
-              warnings.append(f'Could not find expected renderer marker for {view}: {marker_name}')
+          # Verify every declared view is referenced by navigation/render logic somewhere in app.js.
+          for view in sorted(views):
+            if view not in app:
+              errors.append('View not referenced in app.js: '+view)
+
+          # High-risk feature hooks that should exist after recent fixes.
+          required_hooks=[
+            'function renderCurrentView','function navigate(','function renderHome','function renderPlan','function renderRecipes',
+            'function renderPantry','function renderGrocery','function renderSmart','function renderSettings','function renderCookingMode',
+            "document.addEventListener('click'","document.addEventListener('change'",'recipeCardPhotos','AnimeSeries:',
+            'data-genshin-region','data-game-series','data-clear-recipe-filters'
+          ]
+          for hook in required_hooks:
+            if hook not in app: errors.append('Missing high-risk app hook: '+hook)
 
           print('BENTO FULL QA REPORT')
           print('Views:', ', '.join(sorted(views)))
-          print('Static IDs:', len(ids), 'JS ID refs:', len(js_ids), 'Actions:', len(set(p.actions)))
+          print('Static IDs:', len(ids), 'Dynamic IDs:', len(dynamic_ids), 'JS ID refs:', len(js_ids), 'Actions:', len(set(p.actions)))
           print('Errors:', len(errors))
           for e in errors: print('ERROR:',e)
           print('Warnings:', len(warnings))
@@ -185,17 +170,9 @@ jobs:
           node --check service-worker.js
           for f in data/*.js; do node --check "$f"; done
 
-      - name: Decide and commit tested QA build
+      - name: Commit only if QA passes
         shell: bash
         run: |
-          python3 - <<'PY'
-          import json,sys
-          q=json.load(open('qa-result.json'))
-          if q['errors']:
-            print('QA_BLOCKED: no app changes will be committed.')
-            sys.exit(0)
-          print('QA_PASS: committing tested files.')
-          PY
           if grep -q '"errors": \[\]' qa-result.json; then
             rm -f qa-result.json
             git config user.name 'chachinn'
@@ -204,4 +181,7 @@ jobs:
             git diff --cached --check
             git commit -m 'Bento v21.1: full QA hardening and unified browse UI'
             git push origin HEAD:bento-qa-aug13
+          else
+            echo 'QA_BLOCKED: no app changes committed.'
+            cat qa-result.json
           fi

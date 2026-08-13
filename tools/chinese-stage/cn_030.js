@@ -1,0 +1,1 @@
+BENTO_CN.push(["cn_030","Hunan Cabbage","手撕包菜","shǒusī bāocài","Side Dishes","Hunan",10,10,20,4,"Easy","wok",["1 small cabbage","garlic","vinegar","soy sauce"],["Cabbage is torn into bite-size pieces.","Garlic cooks briefly until fragrant.","Cabbage cooks 4–6 minutes until tender with some bite.","Vinegar and soy sauce finish the dish."],"Hunan-style hand-torn cabbage.","mild"]);

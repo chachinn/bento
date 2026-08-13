@@ -1,0 +1,1 @@
+(()=>{for(let r of (window.BENTO_RECIPE_LIBRARY||[]).filter(x=>x.cuisine==='Chinese'))Object.assign(r,{countryCode:'CN',recipeType:'Reviewed classic',favorite:false,freezer:'no',energy:'normal',cleanup:2,libraryVersion:23,instructionVersion:23,instructionStyle:'comprehensive-variable-length'})})();

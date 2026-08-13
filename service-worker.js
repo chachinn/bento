@@ -1,36 +1,81 @@
-const CACHE='bento-shell-v0.8.2-v22p2';
+const CACHE='bento-shell-v0.9.0-v23p1';
 const SHELL_PREFIX='bento-shell-';
-const ASSET_VERSION='22p2';
+const ASSET_VERSION='23p1';
 const CORE=[
   './index.html',
-  './style.css?v=22p2',
-  './data/recipes-data.js?v=22p2',
-  './data/photo-index.js?v=22p2',
+  './style.css?v=23p1',
+  './data/recipes-data.js?v=23p1',
+  './data/photo-index.js?v=23p1',
   './data/library_manifest.json',
   './manifest.json',
-  './data/korean-runtime.js?v=22p2',
-  './data/korean-recipes-00.js?v=22p2',
-  './data/korean-recipes-01.js?v=22p2',
-  './data/korean-recipes-02.js?v=22p2',
-  './data/korean-recipes-03.js?v=22p2',
-  './data/korean-recipes-04.js?v=22p2',
-  './data/korean-recipes-05.js?v=22p2',
-  './data/korean-recipes-06.js?v=22p2',
-  './data/korean-recipes-07.js?v=22p2',
-  './data/korean-recipes-08.js?v=22p2',
-  './data/korean-recipes-09.js?v=22p2',
-  './data/anime-runtime.js?v=22p2',
-  './data/anime-recipes-00.js?v=22p2',
-  './data/anime-recipes-01.js?v=22p2',
-  './data/anime-recipes-02.js?v=22p2',
-  './data/anime-recipes-03.js?v=22p2',
-  './data/anime-recipes-04.js?v=22p2',
-  './data/anime-recipes-05.js?v=22p2',
-  './data/anime-recipes-06.js?v=22p2',
-  './data/anime-recipes-07.js?v=22p2',
-  './data/anime-recipes-08.js?v=22p2',
-  './data/anime-recipes-09.js?v=22p2',
-  './app.js?v=22p2'
+  './data/korean-runtime.js?v=23p1',
+  './data/korean-recipes-00.js?v=23p1',
+  './data/korean-recipes-01.js?v=23p1',
+  './data/korean-recipes-02.js?v=23p1',
+  './data/korean-recipes-03.js?v=23p1',
+  './data/korean-recipes-04.js?v=23p1',
+  './data/korean-recipes-05.js?v=23p1',
+  './data/korean-recipes-06.js?v=23p1',
+  './data/korean-recipes-07.js?v=23p1',
+  './data/korean-recipes-08.js?v=23p1',
+  './data/korean-recipes-09.js?v=23p1',
+  './data/anime-runtime.js?v=23p1',
+  './data/anime-recipes-00.js?v=23p1',
+  './data/anime-recipes-01.js?v=23p1',
+  './data/anime-recipes-02.js?v=23p1',
+  './data/anime-recipes-03.js?v=23p1',
+  './data/anime-recipes-04.js?v=23p1',
+  './data/anime-recipes-05.js?v=23p1',
+  './data/anime-recipes-06.js?v=23p1',
+  './data/anime-recipes-07.js?v=23p1',
+  './data/anime-recipes-08.js?v=23p1',
+  './data/anime-recipes-09.js?v=23p1',
+  './data/chinese-init.js?v=23p1',
+  './data/chinese-recipes-001.js?v=23p1',
+  './data/chinese-recipes-002.js?v=23p1',
+  './data/chinese-recipes-003.js?v=23p1',
+  './data/chinese-recipes-004.js?v=23p1',
+  './data/chinese-recipes-005.js?v=23p1',
+  './data/chinese-recipes-006.js?v=23p1',
+  './data/chinese-recipes-007.js?v=23p1',
+  './data/chinese-recipes-008.js?v=23p1',
+  './data/chinese-recipes-009.js?v=23p1',
+  './data/chinese-recipes-010.js?v=23p1',
+  './data/chinese-recipes-011.js?v=23p1',
+  './data/chinese-recipes-012.js?v=23p1',
+  './data/chinese-recipes-013.js?v=23p1',
+  './data/chinese-recipes-014.js?v=23p1',
+  './data/chinese-recipes-015.js?v=23p1',
+  './data/chinese-recipes-016.js?v=23p1',
+  './data/chinese-recipes-017.js?v=23p1',
+  './data/chinese-recipes-018.js?v=23p1',
+  './data/chinese-recipes-019.js?v=23p1',
+  './data/chinese-recipes-020.js?v=23p1',
+  './data/chinese-recipes-021.js?v=23p1',
+  './data/chinese-recipes-022.js?v=23p1',
+  './data/chinese-recipes-023.js?v=23p1',
+  './data/chinese-recipes-024.js?v=23p1',
+  './data/chinese-recipes-025.js?v=23p1',
+  './data/chinese-recipes-026.js?v=23p1',
+  './data/chinese-recipes-027.js?v=23p1',
+  './data/chinese-recipes-028.js?v=23p1',
+  './data/chinese-recipes-029.js?v=23p1',
+  './data/chinese-recipes-030.js?v=23p1',
+  './data/chinese-recipes-031.js?v=23p1',
+  './data/chinese-recipes-032.js?v=23p1',
+  './data/chinese-recipes-033.js?v=23p1',
+  './data/chinese-recipes-034.js?v=23p1',
+  './data/chinese-recipes-035.js?v=23p1',
+  './data/chinese-recipes-036.js?v=23p1',
+  './data/chinese-recipes-037.js?v=23p1',
+  './data/chinese-recipes-038.js?v=23p1',
+  './data/chinese-recipes-039.js?v=23p1',
+  './data/chinese-recipes-040.js?v=23p1',
+  './data/chinese-runtime.js?v=23p1',
+  './data/chinese-meta-core.js?v=23p1',
+  './data/chinese-meta-extra.js?v=23p1',
+  './data/chinese-photo.js?v=23p1',
+  './app.js?v=23p1'
 ];
 const OPTIONAL_ICONS=[
   './icon/apple-touch-icon.png',
@@ -52,7 +97,7 @@ async function cacheFresh(cache,asset){
   if(!response.ok)throw new Error(`Failed to cache ${asset}`);
   await cache.put(asset,response);
 }
-async function cacheInBatches(cache,assets,size=4){
+async function cacheInBatches(cache,assets,size=8){
   for(let i=0;i<assets.length;i+=size){
     await Promise.all(assets.slice(i,i+size).map(asset=>cacheFresh(cache,asset)));
     await new Promise(resolve=>setTimeout(resolve,0));
@@ -61,7 +106,7 @@ async function cacheInBatches(cache,assets,size=4){
 self.addEventListener('install',event=>{
   event.waitUntil((async()=>{
     const cache=await caches.open(CACHE);
-    await cacheInBatches(cache,CORE,4);
+    await cacheInBatches(cache,CORE,8);
     await Promise.allSettled(OPTIONAL_ICONS.map(asset=>cacheFresh(cache,asset)));
   })());
   self.skipWaiting();

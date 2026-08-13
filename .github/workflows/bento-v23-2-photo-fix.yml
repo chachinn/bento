@@ -1,0 +1,39 @@
+name: Bento v23.2 photo order QA
+on:
+  push:
+    branches: [bento-chinese-v23]
+    paths: ['.github/workflows/bento-v23-2-photo-fix.yml']
+permissions:
+  contents: write
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          git fetch origin bento-v23-2-review
+          git checkout -B review origin/bento-v23-2-review
+      - name: Fix photo preference order
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('app.js');s=p.read_text(encoding='utf-8')
+          old="function recipePhotoPlan(r){const plan=RECIPE_PHOTO_INDEX[r?.id];if(plan)return plan;const gameApp=activeGameAppearance(r),gameTitle=String(gameApp?.title||(typeof r?.gameDish==='string'?r.gameDish:'')||r?.title||'').trim();"
+          new="function recipePhotoPlan(r){const gameApp=activeGameAppearance(r),gameTitle=String(gameApp?.title||(typeof r?.gameDish==='string'?r.gameDish:'')||r?.title||'').trim();"
+          if old not in s: raise SystemExit('photo order anchor missing')
+          s=s.replace(old,new,1)
+          anchor="if(r?.animeSeries)return{id:r?.id||photoHash(r?.title||r.animeSeries),kind:'recipe',special:'anime',series:String(r.animeSeries),title:String(r?.animeDishName||r?.title||r.animeSeries),queries:[`${r?.realWorldDish||r?.title||''} food`,`${r?.animeDishName||r?.title||''} food`]};"
+          if anchor not in s: raise SystemExit('anime anchor missing')
+          s=s.replace(anchor,anchor+"const plan=RECIPE_PHOTO_INDEX[r?.id];if(plan)return plan;",1)
+          p.write_text(s,encoding='utf-8')
+          PY
+      - name: Verify and publish
+        run: |
+          node --check app.js
+          node -e "const fs=require('fs');const s=fs.readFileSync('app.js','utf8'),i=s.indexOf('function recipePhotoPlan');if(!(s.indexOf(\"special:'genshin'\",i)<s.indexOf('RECIPE_PHOTO_INDEX',i)))process.exit(1);if(!(s.indexOf(\"special:'anime'\",i)<s.indexOf('RECIPE_PHOTO_INDEX',i)))process.exit(1)"
+          git diff --check
+          git config user.name chachinn
+          git config user.email 140357822+chachinn@users.noreply.github.com
+          git add app.js
+          git commit -m 'Bento v23.2: prioritize game and anime artwork'
+          git push origin HEAD:bento-v23-2-review

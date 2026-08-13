@@ -1,0 +1,33 @@
+name: Cuisine expansion decode
+on:
+  push:
+    branches: [bento-cuisine-expand-v24]
+    paths: ['.github/workflows/cuisine-expand-decode.yml']
+permissions:
+  contents: write
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Decode staged Thai chunks
+        run: |
+          base64 -d tmp/thai07.b64 > data/thai-recipes-07.js
+          base64 -d tmp/thai10.b64 > data/thai-recipes-10.js
+          node --check data/thai-recipes-07.js
+          node --check data/thai-recipes-08.js
+          node --check data/thai-recipes-10.js
+      - name: Print staged Thai inventory
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),vm=require('vm');global.window=global;global.BENTO_THAI_ROWS=[];
+          for(const f of ['data/thai-recipes-07.js','data/thai-recipes-08.js','data/thai-recipes-10.js']) vm.runInThisContext(fs.readFileSync(f,'utf8'),{filename:f});
+          console.log(JSON.stringify(BENTO_THAI_ROWS.map(r=>({id:r[0],title:r[1],region:r[5]})),null,2));
+          NODE
+      - name: Commit decoded recipe files
+        run: |
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add data/thai-recipes-07.js data/thai-recipes-10.js
+          git commit -m 'Stage decoded Thai expansion recipes'
+          git push

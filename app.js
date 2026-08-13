@@ -180,10 +180,14 @@
   async function resolveAndApplyPhoto(img){
     const plan=planForPhotoElement(img);if(!plan)return markPhotoUnavailable(img);const variant=Number(img.dataset.photoVariant||photoVariantByRecipe.get(String(plan.id||img.dataset.photoKey||''))||0),meta=await resolvePhotoMeta(plan,variant);if(!meta||meta.missing||!meta.url)return markPhotoUnavailable(img);
     const releaseObjectUrl=()=>{const u=img.dataset.objectUrl;if(u){try{URL.revokeObjectURL(u)}catch{}delete img.dataset.objectUrl}};
-    const onLoad=()=>{const shell=img.closest('.photo-shell,.ingredient-photo-shell');shell?.classList.add('has-photo');shell?.classList.remove('photo-unavailable');shell?.querySelector('.photo-skeleton')?.remove();if(shell?.classList.contains('detail-photo-shell'))addPhotoCredit(shell,img);releaseObjectUrl()};
-    const onError=()=>{releaseObjectUrl();markPhotoUnavailable(img)};
+    const onLoad=()=>{photoQueued.delete(img);const shell=img.closest('.photo-shell,.ingredient-photo-shell');shell?.classList.add('has-photo');shell?.classList.remove('photo-unavailable');shell?.querySelector('.photo-skeleton')?.remove();if(shell?.classList.contains('detail-photo-shell'))addPhotoCredit(shell,img);releaseObjectUrl()};
+    const onError=()=>{photoQueued.delete(img);releaseObjectUrl();markPhotoUnavailable(img)};
     img.addEventListener('load',onLoad,{once:true});img.addEventListener('error',onError,{once:true});
-    const blob=await cachedPhotoBlob(meta.url);if(blob){const objectUrl=URL.createObjectURL(blob);img.dataset.objectUrl=objectUrl;img.src=objectUrl}else if(navigator.onLine)img.src=meta.url;else{img.removeEventListener('load',onLoad);img.removeEventListener('error',onError);return markPhotoUnavailable(img)}
+    if(navigator.onLine){
+      img.src=meta.url;
+    }else{
+      const blob=await cachedPhotoBlob(meta.url);if(!blob){img.removeEventListener('load',onLoad);img.removeEventListener('error',onError);return markPhotoUnavailable(img)}const objectUrl=URL.createObjectURL(blob);img.dataset.objectUrl=objectUrl;img.src=objectUrl;
+    }
     img.dataset.photoLoaded='1';img.dataset.photoPage=meta.page||'';img.dataset.photoLicense=meta.license||'';img.dataset.photoArtist=meta.artist||'';img.dataset.photoTitle=meta.title||'';
   }
   function addPhotoCredit(shell,img){if(!shell||shell.querySelector('.photo-credit'))return;const page=img.dataset.photoPage||'',license=img.dataset.photoLicense||'',artist=img.dataset.photoArtist||'';const a=document.createElement(page?'a':'span');a.className='photo-credit';if(page){a.href=page;a.target='_blank';a.rel='noopener noreferrer'}a.textContent=`Photo: Wikimedia Commons${artist?` · ${artist}`:''}${license?` · ${license}`:''}`;shell.append(a)}
@@ -297,7 +301,7 @@
       if(recipeBrowseMode==='cuisines'){
         const cuisines=[...new Set(standardRecipePool().map(r=>String(r.cuisine||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
         const selected=cuisines.includes(recipeCuisineFilter)?recipeCuisineFilter:'All';
-        panel.innerHTML=cuisines.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">${selected==='All'?'🌏':cuisineFlag(selected)}</span><span class="sr-only">Choose cuisine</span><select class="cuisine-browse-select" aria-label="Choose cuisine"><option value="All">All cuisines</option>${cuisines.map(c=>`<option value="${esc(c)}" ${selected===c?'selected':''}>${cuisineFlag(c)} ${esc(c)}</option>`).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No cuisines yet.');
+        panel.innerHTML=cuisines.length?`<label class="compact-cuisine-select"><span class="sr-only">Choose cuisine</span><select class="cuisine-browse-select" aria-label="Choose cuisine"><option value="All" ${selected==='All'?'selected':''}>🌏 All cuisines</option>${cuisines.map(c=>`<option value="${esc(c)}" ${selected===c?'selected':''}>${cuisineFlag(c)} ${esc(c)}</option>`).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No cuisines yet.');
         return;
       }
       if(recipeBrowseMode==='meals'){
@@ -374,7 +378,7 @@
     const visible=list.slice(0,recipeRenderLimit),label=currentRecipeFilterLabel(),title=$('#recipeResultsTitle'),count=$('#recipeResultsCount'),grid=$('#recipeGrid');
     if(title)title.textContent=label;if(count)count.textContent=`${list.length} recipe${list.length===1?'':'s'}`;
     const baseline={cuisines:'Cuisines',meals:'Meals',desserts:'Type:desserts',drinks:'Type:drinks',games:'Games',anime:'Anime'}[recipeBrowseMode]||'All',hasFilter=String(recipeFilter||'All')!==baseline||String(recipeCuisineFilter||'All')!=='All'||!!($('#recipeSearch')?.value||'').trim();$$('[data-clear-recipe-filters]').forEach(b=>b.classList.toggle('hidden',!hasFilter));
-    if(grid)grid.innerHTML=list.length?visible.map(recipeCard).join('')+(list.length>visible.length?`<div class="load-more-wrap"><button class="soft-btn load-more-btn" data-load-more-recipes>Show more · ${list.length-visible.length} remaining</button></div>`:''):emptyCard((Array.isArray(state?.recipes)?state.recipes:[]).length?'No recipes match this search.':'Your recipe book is empty. Add your first recipe to begin.','Add recipe','add-recipe');
+    if(grid){grid.innerHTML=list.length?visible.map(recipeCard).join('')+(list.length>visible.length?`<div class="load-more-wrap"><button class="soft-btn load-more-btn" data-load-more-recipes>Show more · ${list.length-visible.length} remaining</button></div>`:''):emptyCard((Array.isArray(state?.recipes)?state.recipes:[]).length?'No recipes match this search.':'Your recipe book is empty. Add your first recipe to begin.','Add recipe','add-recipe');if(state.settings.recipeCardPhotos===true)requestAnimationFrame(()=>observePhotos(grid));}
   }
 
 

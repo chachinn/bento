@@ -18,6 +18,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Harden migration matcher
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p=Path('tools/consolidate_bento.py')
+          s=p.read_text()
+          old='card_pattern = r"  function recipeCard\\(r\\)\\{.*?\\n  \\}\\n\\n  function typeRecipeCount"'
+          new='card_pattern = r"  function recipeCard\\(r\\)\\{.*?\\n\\n  function typeRecipeCount"'
+          if old not in s:
+              raise SystemExit('Could not patch recipeCard migration matcher')
+          p.write_text(s.replace(old,new,1))
+          PY
+
       - name: Consolidate Bento
         run: python3 tools/consolidate_bento.py
 

@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=18" />
+  <link rel="stylesheet" href="style.css?v=21" />
   <title>Bento</title>
 </head>
 <body>
@@ -156,7 +156,10 @@
         <div id="recipeFilters" class="chip-row recipe-quick-filters" aria-label="Quick recipe filters"></div>
         <div class="recipe-results-heading">
           <div><h2 id="recipeResultsTitle">All recipes</h2><small id="recipeResultsCount" class="muted"></small></div>
-          <button class="soft-btn compact-filter-clear hidden" type="button" data-clear-recipe-filters>Reset</button>
+          <div class="recipe-result-actions">
+            <button id="recipeCardPhotosQuick" class="recipe-photo-quick-toggle" type="button" aria-label="Toggle recipe card photos" aria-pressed="false"><span aria-hidden="true">▧</span><b>Photos</b><small>Off</small></button>
+            <button class="soft-btn compact-filter-clear hidden" type="button" data-clear-recipe-filters>Reset</button>
+          </div>
         </div>
         <div id="recipeGrid" class="recipe-grid"></div>
       </section>
@@ -328,6 +331,10 @@
           <label class="toggle-line"><span>Show tomorrow prep</span><input id="showTomorrowPrepInput" type="checkbox" /></label>
           <label class="toggle-line"><span>Show quick actions</span><input id="showHomeQuickActionsInput" type="checkbox" /></label>
         </div>
+        <div class="section-heading"><h2>Recipe display</h2></div>
+        <div class="settings-card settings-toggle-grid recipe-display-settings">
+          <label class="toggle-line recipe-photo-toggle"><span><b>Show photos on recipe cards</b><small>Off by default for a faster, denser library. Full photos still appear when a recipe is opened.</small></span><input id="recipeCardPhotosInput" type="checkbox" /></label>
+        </div>
         <div class="section-heading"><h2>Kitchen automation</h2></div>
         <div class="settings-card settings-toggle-grid">
           <label class="toggle-line"><span>Suggest low-stock staples in Grocery</span><input id="autoStapleGroceriesInput" type="checkbox" /></label>
@@ -498,8 +505,30 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/recipes-data.js?v=18" defer></script>
-  <script src="data/photo-index.js?v=18" defer></script>
-  <script src="app.js?v=18" defer></script>
+  <script src="data/recipes-data.js?v=21" defer></script>
+  <script src="data/photo-index.js?v=21" defer></script>
+  <script src="data/korean-runtime.js?v=21" defer></script>
+  <script src="data/korean-recipes-00.js?v=21" defer></script>
+  <script src="data/korean-recipes-01.js?v=21" defer></script>
+  <script src="data/korean-recipes-02.js?v=21" defer></script>
+  <script src="data/korean-recipes-03.js?v=21" defer></script>
+  <script src="data/korean-recipes-04.js?v=21" defer></script>
+  <script src="data/korean-recipes-05.js?v=21" defer></script>
+  <script src="data/korean-recipes-06.js?v=21" defer></script>
+  <script src="data/korean-recipes-07.js?v=21" defer></script>
+  <script src="data/korean-recipes-08.js?v=21" defer></script>
+  <script src="data/korean-recipes-09.js?v=21" defer></script>
+  <script src="data/anime-runtime.js?v=21" defer></script>
+  <script src="data/anime-recipes-00.js?v=21" defer></script>
+  <script src="data/anime-recipes-01.js?v=21" defer></script>
+  <script src="data/anime-recipes-02.js?v=21" defer></script>
+  <script src="data/anime-recipes-03.js?v=21" defer></script>
+  <script src="data/anime-recipes-04.js?v=21" defer></script>
+  <script src="data/anime-recipes-05.js?v=21" defer></script>
+  <script src="data/anime-recipes-06.js?v=21" defer></script>
+  <script src="data/anime-recipes-07.js?v=21" defer></script>
+  <script src="data/anime-recipes-08.js?v=21" defer></script>
+  <script src="data/anime-recipes-09.js?v=21" defer></script>
+  <script src="app.js?v=21" defer></script>
 </body>
 </html>

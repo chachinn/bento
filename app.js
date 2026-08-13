@@ -290,14 +290,13 @@
       if(recipeBrowseMode==='cuisines'){
         const cuisines=[...new Set(builtins.filter(r=>r&&!isGameRecipe(r)&&!isAnimeRecipe(r)).map(r=>String(r.cuisine||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
         const selected=cuisines.includes(recipeCuisineFilter)?recipeCuisineFilter:'All';
-        const selectedRows=selected==='All'?rows.filter(r=>!isGameRecipe(r)&&!isAnimeRecipe(r)):rows.filter(r=>String(r.cuisine||'')===selected&&!isGameRecipe(r)&&!isAnimeRecipe(r));
-        const sweets=selectedRows.filter(r=>['Sweets & Desserts','Dessert'].includes(r.category)).length,drinks=selectedRows.filter(r=>['Drinks','Drink','Beverages'].includes(r.category)).length;
-        panel.innerHTML=cuisines.length?`<div class="cuisine-picker-card"><div class="cuisine-picker-head"><span class="cuisine-picker-icon">${selected==='All'?'🌏':cuisineFlag(selected)}</span><span><b>${esc(selected==='All'?'Choose a cuisine':selected)}</b><small>${selected==='All'?`${cuisines.length} cuisines in Bento`:`${selectedRows.length} recipes · ${sweets} desserts · ${drinks} drinks`}</small></span></div><label class="cuisine-select-wrap"><span class="sr-only">Choose cuisine</span><select class="cuisine-browse-select" aria-label="Choose cuisine"><option value="All">🌏 All cuisines</option>${cuisines.map(c=>`<option value="${esc(c)}" ${selected===c?'selected':''}>${cuisineFlag(c)} ${esc(c)}</option>`).join('')}</select><span aria-hidden="true">⌄</span></label><p class="cuisine-picker-note">${selected==='All'?'Pick a cuisine to narrow the library.':`Showing ${esc(selected)} recipes only.`}</p></div>`:emptyCard('No cuisines yet.');
+        panel.innerHTML=cuisines.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">${selected==='All'?'🌏':cuisineFlag(selected)}</span><span class="sr-only">Choose cuisine</span><select class="cuisine-browse-select" aria-label="Choose cuisine"><option value="All">All cuisines</option>${cuisines.map(c=>`<option value="${esc(c)}" ${selected===c?'selected':''}>${cuisineFlag(c)} ${esc(c)}</option>`).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No cuisines yet.');
         return;
       }
       if(recipeBrowseMode==='meals'){
         const entries=Object.entries(RECIPE_TYPE_GROUPS||{}).filter(([key])=>!['desserts','drinks'].includes(key)&&typeRecipeCount(key)>0);
-        panel.innerHTML=entries.length?`<div class="type-card-grid">${entries.map(([key,cfg])=>{const count=typeRecipeCount(key),on=recipeFilter===`Type:${key}`;return `<button class="type-card ${on?'selected':''}" data-browse-type="${key}"><span>${cfg.icon||'🍽️'}</span><b>${esc(cfg.label||key)}</b><small>${count} recipe${count===1?'':'s'}</small></button>`}).join('')}</div>`:emptyCard('No meal recipes yet.');
+        const selected=recipeFilter.startsWith('Type:')?recipeFilter:'Meals';
+        panel.innerHTML=entries.length?`<label class="compact-browse-select"><span class="browse-select-icon" aria-hidden="true">🍽️</span><span class="sr-only">Choose meal type</span><select class="meal-browse-select" aria-label="Choose meal type"><option value="Meals" ${selected==='Meals'?'selected':''}>All meal types</option>${entries.map(([key,cfg])=>{const value=`Type:${key}`,count=typeRecipeCount(key);return `<option value="${esc(value)}" ${selected===value?'selected':''}>${cfg.icon||'🍽️'} ${esc(cfg.label||key)} · ${count}</option>`}).join('')}</select><span class="browse-select-chevron" aria-hidden="true">⌄</span></label>`:emptyCard('No meal recipes yet.');
         return;
       }
       if(recipeBrowseMode==='desserts'){
@@ -551,6 +550,7 @@
 
   document.addEventListener('change',e=>{
     const cuisineSelect=e.target.closest('.cuisine-browse-select');if(cuisineSelect){recipeCuisineFilter=cuisineSelect.value||'All';recipeFilter='Cuisines';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
+    const mealSelect=e.target.closest('.meal-browse-select');if(mealSelect){recipeFilter=mealSelect.value||'Meals';recipeCuisineFilter='All';recipeRenderLimit=RECIPE_RENDER_BATCH;renderRecipes();return}
     const g=e.target.closest('[data-grocery-check]');if(g){const item=state.grocery.find(x=>x.id===g.dataset.groceryCheck);if(item){const before=item.checked;item.checked=g.checked;queuePersist();g.closest('.grocery-item')?.classList.toggle('checked',g.checked);renderGlobalBadges();toast(g.checked?'Marked purchased':'Marked unchecked',()=>{item.checked=before})}return}
     const ci=e.target.closest('[data-cook-ing]');if(ci&&cookingSession){const i=Number(ci.dataset.cookIng);ci.checked?cookingSession.checked.add(i):cookingSession.checked.delete(i);return}
     if(['bentoMain','bentoSide1','bentoSide2','bentoTreat'].includes(e.target.id)){renderBentoBalance();return}

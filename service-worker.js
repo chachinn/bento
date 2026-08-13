@@ -1,4 +1,4 @@
-const CACHE='bento-shell-v0.7.0-v21';
+const CACHE='bento-shell-v0.7.1-v21';
 const SHELL_PREFIX='bento-shell-';
 const ASSET_VERSION='21';
 const CORE=[

@@ -134,3 +134,17 @@ body.recipe-card-photos-off .recipe-card .thumb{display:none!important}body.reci
 @media(max-width:370px){.recipe-library-view .recipe-browse-tabs button{min-width:62px!important;padding:0 6px!important}.recipe-library-view .recipe-sort{width:84px!important;max-width:84px!important}.recipe-photo-quick-toggle>span{display:none}}
 
 .recipe-card,.anime-external-card{content-visibility:auto;contain:layout paint style;contain-intrinsic-size:auto 230px}.browse-card,.type-card,.special-collection-card{content-visibility:auto;contain:layout paint style}.recipe-card .thumb,.anime-card-thumb,.photo-shell{contain:layout paint}body.bento-fast-scroll .recipe-card,body.bento-fast-scroll .recipe-card *,body.bento-fast-scroll .anime-external-card,body.bento-fast-scroll .anime-external-card *,body.bento-fast-scroll .browse-card,body.bento-fast-scroll .type-card{animation:none!important;transition:none!important}body.bento-fast-scroll .recipe-card,body.bento-fast-scroll .anime-external-card{box-shadow:none!important}@media(prefers-reduced-motion:reduce){.recipe-card,.anime-external-card,.browse-card,.type-card{scroll-behavior:auto!important}}
+
+/* Compact recipe browse selectors */
+.compact-browse-select{position:relative;display:flex;align-items:center;gap:8px;width:100%;min-height:42px;padding:0 11px;border:1px solid var(--line);border-radius:13px;background:var(--surface);box-shadow:0 2px 8px rgba(112,74,72,.025)}
+.compact-browse-select .browse-select-icon{flex:0 0 auto;font-size:16px;line-height:1}
+.compact-browse-select select{appearance:none;-webkit-appearance:none;flex:1;min-width:0;height:40px;padding:0 28px 0 0;border:0;background:transparent;color:var(--text);font:inherit;font-size:12.5px;font-weight:750;outline:none}
+.compact-browse-select .browse-select-chevron{position:absolute;right:11px;top:50%;transform:translateY(-54%);pointer-events:none;color:var(--muted);font-size:14px;line-height:1}
+.recipe-library-view .recipe-browse-panel>.compact-browse-select{margin:0}
+@media(max-width:520px){
+  .recipe-library-view .recipe-browse-panel{padding:0!important;margin:0 0 5px!important}
+  .compact-browse-select{min-height:36px;height:36px;border-radius:11px;padding:0 10px;gap:7px}
+  .compact-browse-select .browse-select-icon{font-size:14px}
+  .compact-browse-select select{height:34px;font-size:11.5px;padding-right:24px}
+  .compact-browse-select .browse-select-chevron{right:10px;font-size:13px}
+}

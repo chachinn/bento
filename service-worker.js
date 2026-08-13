@@ -1,6 +1,6 @@
-const CACHE='bento-shell-v0.6.0-v20p8';
+const CACHE='bento-shell-v0.6.0-v20p9';
 const SHELL_PREFIX='bento-shell-';
-const ASSET_VERSION='20p8';
+const ASSET_VERSION='20p9';
 
 const CORE=[
   `./style.css?v=${ASSET_VERSION}`,

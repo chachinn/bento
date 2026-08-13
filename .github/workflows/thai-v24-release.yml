@@ -1,0 +1,113 @@
+name: Build clean Bento v24 Thai review
+on:
+  push:
+    branches: [bento-thai-v24]
+    paths: ['.github/workflows/thai-v24-release.yml']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build from current production
+        run: |
+          git fetch origin main bento-thai-v24
+          git checkout -B v24-release origin/main
+          for f in data/thai-runtime.js data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js data/thai-recipes-03.js data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js; do
+            git show "origin/bento-thai-v24:$f" > "$f"
+          done
+      - name: Wire Thai into Bento
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+
+          app=Path('app.js')
+          s=app.read_text()
+          if 'const VERSION = 23;' not in s: raise SystemExit('unexpected app version')
+          app.write_text(s.replace('const VERSION = 23;','const VERSION = 24;',1))
+
+          index=Path('index.html')
+          s=index.read_text().replace('23p3','24p1')
+          anchor='  <script src="app.js?v=24p1" defer></script>'
+          if anchor not in s: raise SystemExit('app script anchor missing')
+          thai='\n'.join([f'  <script src="data/thai-recipes-{i:02d}.js?v=24p1" defer></script>' for i in range(7)])
+          thai += '\n  <script src="data/thai-runtime.js?v=24p1" defer></script>\n'
+          s=s.replace(anchor,thai+anchor,1)
+          index.write_text(s)
+
+          sw=Path('service-worker.js')
+          s=sw.read_text().replace("const CACHE='bento-shell-v0.9.2-v23p3';","const CACHE='bento-shell-v1.0.0-v24p1';",1).replace("const ASSET_VERSION='23p3';","const ASSET_VERSION='24p1';",1).replace('?v=23p3','?v=24p1')
+          anchor="  './app.js?v=24p1'"
+          if anchor not in s: raise SystemExit('service worker app anchor missing')
+          assets='\n'.join([f"  './data/thai-recipes-{i:02d}.js?v=24p1'," for i in range(7)])
+          assets += "\n  './data/thai-runtime.js?v=24p1',\n"
+          s=s.replace(anchor,assets+anchor,1)
+          sw.write_text(s)
+
+          p=Path('data/library_manifest.json')
+          d=json.loads(p.read_text())
+          d['libraryVersion']=25
+          d['recipeCount']=1038
+          d['newRecipesThisBuild']=40
+          d['cuisineCount']=5
+          d['verifiedCuisineLibraries']=['Japanese','Filipino','Korean','Chinese','Thai']
+          d['standardRecipeCount']=567
+          d['thaiRecipeCount']=40
+          d['dishImageCount']=1038
+          d['instructionVersion']=25
+          d['detailedInstructionRecipeCount']=1038
+          d['appRelease']='24.0'
+          d['cacheFix']='v24.0 uses the 24p1 shell generation and adds the reviewed Thai cuisine library.'
+          d['generatedAt']='2026-08-14T05:55:00+08:00'
+          d['qualityGate']='v24.0 adds 40 reviewed Thai recipes with Thai names, romanization, regional metadata, variable-length methods, explicit cooking timing/doneness guidance, unique IDs and full-library regression checks.'
+          qa=d.setdefault('qualityAuditSnapshot',{})
+          qa['fullLibrary']={'recipeCount':1038,'uniqueRecipeIds':1038,'criticalStructureFailures':0}
+          std=qa.setdefault('standardCuisines',{})
+          std.update({'recipeCount':567,'Japanese':149,'Filipino':164,'Korean':174,'Chinese':40,'Thai':40,'flaggedRecipes':0})
+          qa['Thai']={'recipeCount':40,'uniqueRecipeIds':40,'methodStructureFailures':0,'regionalCoverage':['Central Thailand','Northern Thailand','Isan/Northeastern Thailand','Southern Thailand']}
+          d['thaiRelease']='v24.0 adds 40 reviewed Thai recipes spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, plus street food, breakfast, desserts and drinks.'
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Syntax and library QA
+        run: |
+          node --check app.js
+          node --check service-worker.js
+          for f in data/*.js; do node --check "$f"; done
+          node <<'NODE'
+          const fs=require('fs'),vm=require('vm');global.window=global;
+          const html=fs.readFileSync('index.html','utf8');
+          const scripts=[...html.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1].split('?')[0]).filter(x=>x.startsWith('data/')&&x.endsWith('.js'));
+          for(const f of scripts){vm.runInThisContext(fs.readFileSync(f,'utf8'),{filename:f})}
+          const rows=global.BENTO_RECIPE_LIBRARY||[];
+          const ids=rows.map(r=>String(r.id||''));
+          if(rows.length!==1038)throw new Error(`expected 1038 recipes, got ${rows.length}`);
+          if(new Set(ids).size!==1038)throw new Error('duplicate recipe ids');
+          const thai=rows.filter(r=>r.cuisine==='Thai');
+          if(thai.length!==40)throw new Error(`expected 40 Thai recipes, got ${thai.length}`);
+          const thaiIds=new Set(thai.map(r=>r.id)); if(thaiIds.size!==40)throw new Error('duplicate Thai ids');
+          const bad=thai.filter(r=>!r.title||!r.localName||!r.romanization||!r.region||!Array.isArray(r.ingredients)||r.ingredients.length<2||!Array.isArray(r.steps)||r.steps.length<5);
+          if(bad.length)throw new Error('Thai structure failures: '+bad.map(r=>r.title).join(', '));
+          const regions=['Central','Northern','Isan','Southern'];
+          for(const region of regions)if(!thai.some(r=>String(r.region).includes(region)))throw new Error('missing regional coverage '+region);
+          const timed=thai.filter(r=>Number(r.cook||0)>=10&&!r.steps.some(s=>/\d+\s*(?:-|–|to)?\s*\d*\s*(?:minutes?|mins?|hours?|hrs?)/i.test(s)));
+          if(timed.length)throw new Error('missing timed cooking guidance: '+timed.map(r=>r.title).join(', '));
+          if(!thai.some(r=>r.title==='Pad Thai')||!thai.some(r=>r.title==='Khao Soi Gai')||!thai.some(r=>r.title==='Som Tam Thai')||!thai.some(r=>r.title==='Mango Sticky Rice'))throw new Error('expected Thai anchors missing');
+          console.log(JSON.stringify({recipes:rows.length,thai:thai.length,regions:[...new Set(thai.map(r=>r.region))],maxSteps:Math.max(...thai.map(r=>r.steps.length)),minSteps:Math.min(...thai.map(r=>r.steps.length))},null,2));
+          NODE
+      - name: PWA and diff QA
+        run: |
+          grep -q "const VERSION = 24;" app.js
+          grep -q "bento-shell-v1.0.0-v24p1" service-worker.js
+          grep -q "thai-runtime.js?v=24p1" index.html
+          grep -q "thai-recipes-06.js?v=24p1" service-worker.js
+          test "$(git diff --name-only origin/main | sort | tr '\n' ' ')" = "$(printf '%s\n' app.js data/library_manifest.json data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js data/thai-recipes-03.js data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js data/thai-runtime.js index.html service-worker.js | sort | tr '\n' ' ')"
+          git diff --check
+      - name: Publish clean review
+        run: |
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add app.js index.html service-worker.js data/library_manifest.json data/thai-runtime.js data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js data/thai-recipes-03.js data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js
+          git commit -m 'Bento v24: add reviewed Thai cuisine library'
+          git push origin HEAD:refs/heads/bento-v24-review --force

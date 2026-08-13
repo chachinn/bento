@@ -1,0 +1,11 @@
+name: Bento Chinese QA
+on: push
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node tools/qa-cn.js
+      - run: node tools/qa-assets.js
+      - run: node --check service-worker.js
+      - run: git diff --check

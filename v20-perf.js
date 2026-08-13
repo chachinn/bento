@@ -1,0 +1,27 @@
+(()=>{
+  'use strict';
+  if(window.__BENTO_PERF_V20P2__)return;
+  window.__BENTO_PERF_V20P2__=true;
+  const nativeFetch=window.fetch.bind(window);
+  const coarse=matchMedia?.('(pointer: coarse)')?.matches ?? false;
+  const lowMemory=Number(navigator.deviceMemory||4)<=4;
+  const slowConnection=/2g/.test(String(navigator.connection?.effectiveType||''));
+  const MAX_REMOTE_PHOTO_FETCHES=(coarse||lowMemory||slowConnection)?1:2;
+  const queue=[];
+  let active=0,scrolling=false,scrollTimer=0,pumpTimer=0;
+  const idle=(fn,timeout=350)=>'requestIdleCallback'in window?requestIdleCallback(fn,{timeout}):setTimeout(fn,16);
+  const remotePhotoUrl=input=>{try{const raw=typeof input==='string'?input:input?.url;if(!raw)return false;const u=new URL(raw,location.href);return u.hostname==='commons.wikimedia.org'||u.hostname.endsWith('.wikimedia.org')}catch{return false}};
+  const detailIsOpen=()=>!!document.querySelector('.detail-photo,[data-real-photo].detail-photo');
+  const schedulePump=(delay=0)=>{clearTimeout(pumpTimer);pumpTimer=setTimeout(pump,delay)};
+  const pump=()=>{if(document.visibilityState==='hidden')return;if(scrolling&&!detailIsOpen()){if(queue.length)schedulePump(110);return}while(active<MAX_REMOTE_PHOTO_FETCHES&&queue.length){const job=queue.shift();active++;idle(()=>{nativeFetch(job.input,job.init).then(job.resolve,job.reject).finally(()=>{active--;schedulePump(0)})},300)}};
+  window.fetch=function(input,init){if(!remotePhotoUrl(input))return nativeFetch(input,init);return new Promise((resolve,reject)=>{queue.push({input,init,resolve,reject});schedulePump(0)})};
+  const markScrolling=()=>{scrolling=true;document.body?.classList.add('bento-fast-scroll');clearTimeout(scrollTimer);scrollTimer=setTimeout(()=>{scrolling=false;document.body?.classList.remove('bento-fast-scroll');schedulePump(0)},140)};
+  addEventListener('scroll',markScrolling,{passive:true,capture:true});
+  addEventListener('touchmove',markScrolling,{passive:true,capture:true});
+  addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')schedulePump(0)});
+  const tuneImage=img=>{if(!(img instanceof HTMLImageElement)||img.dataset.bentoPerfTuned)return;img.dataset.bentoPerfTuned='1';img.decoding='async';if(img.classList.contains('detail-photo')){try{img.fetchPriority='high'}catch{}}else{img.loading='lazy';try{img.fetchPriority='low'}catch{}}};
+  const tuneTree=root=>{if(root instanceof HTMLImageElement)tuneImage(root);root?.querySelectorAll?.('img').forEach(tuneImage)};
+  const startDomTuning=()=>{tuneTree(document);const observer=new MutationObserver(records=>{idle(()=>{for(const record of records)for(const node of record.addedNodes)if(node.nodeType===1)tuneTree(node)},220)});observer.observe(document.body,{childList:true,subtree:true})};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',startDomTuning,{once:true});else startDomTuning();
+  addEventListener('pagehide',()=>{clearTimeout(scrollTimer);clearTimeout(pumpTimer);document.body?.classList.remove('bento-fast-scroll')},{passive:true});
+})();

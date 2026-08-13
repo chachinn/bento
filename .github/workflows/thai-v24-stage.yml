@@ -1,0 +1,33 @@
+name: Stage Thai v24 recipe chunks
+on:
+  push:
+    branches: [bento-thai-v24]
+    paths: ['.github/workflows/thai-v24-stage.yml']
+permissions:
+  contents: write
+jobs:
+  stage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Restore reviewed Thai chunks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for pair in \
+            'deb0f159ada0bfec94e82a2c97a77665dffd065e data/thai-recipes-00.js' \
+            '5230bf20d4378308a5c3816863912f64f1e87114 data/thai-recipes-01.js' \
+            'a94b33a69992effaa21172a40971a4dedb8e493d data/thai-recipes-02.js' \
+            'c13a8fb7737b44fc5ec2aad9dd585e0ce53e6e96 data/thai-recipes-03.js'; do
+            set -- $pair
+            gh api "repos/${GITHUB_REPOSITORY}/git/blobs/$1" --jq .content | base64 -d > "$2"
+          done
+      - name: Validate and commit
+        run: |
+          node --check data/thai-runtime.js
+          for f in data/thai-recipes-0{0,1,2,3}.js; do node --check "$f"; done
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js data/thai-recipes-03.js
+          git commit -m 'Bento v24: add first 25 Thai recipes'
+          git push

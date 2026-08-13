@@ -77,8 +77,8 @@
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v23.0 aligns the Chinese library and PWA shell to the 23p1 asset generation.",
-  "generatedAt": "2026-08-13T21:55:00+08:00",
+  "cacheFix": "v23.1 aligns the installed PWA to the 23p2 asset generation and fixes Chinese native-name search/display integration.",
+  "generatedAt": "2026-08-13T23:00:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -93,7 +93,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "23.0",
+  "appRelease": "23.1",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -177,5 +177,5 @@
   "cookingExperience": "v22 adds a before-you-start guide, timed-step summary, likely-current ingredients, next-step preview, missing-only grocery action, and serving-accurate Pantry deduction review.",
   "cleanupRelease": "v22.2 completes the method-depth cleanup before Chinese cuisine expansion. Existing recipes are no longer authored toward an artificial 5–8-step ceiling; simple dishes remain concise and complex dishes may use 9–14+ steps as needed.",
   "chineseRecipeCount": 40,
-  "chineseRelease": "v23.0 introduces 40 reviewed Chinese recipes across regional classics, noodles, rice, dim sum, breakfast, soups, vegetables, desserts and drinks."
+  "chineseRelease": "v23.1 keeps the 40 reviewed Chinese recipes and completes native-name integration: Chinese characters are searchable and shown with pinyin on recipe surfaces."
 }

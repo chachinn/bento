@@ -13,7 +13,7 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="icon/apple-touch-icon.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="icon/icon-192.png" />
-  <link rel="stylesheet" href="style.css?v=23p2" />
+  <link rel="stylesheet" href="style.css?v=23p3" />
   <title>Bento</title>
 </head>
 <body>
@@ -174,7 +174,8 @@
           <button class="soft-btn" id="pantrySortButton">Expiry</button>
         </div>
         <div id="pantryFilters" class="chip-row"></div>
-        <div class="action-row compact-actions"><button class="soft-btn" data-view-link="smart">🧊 Fridge Rescue</button><button class="soft-btn" id="addLowStockToGrocery">Low stock → Grocery</button></div>
+        <div class="action-row compact-actions pantry-action-row"><button class="soft-btn" data-view-link="smart">🧊 Fridge Rescue</button><button class="soft-btn" id="addLowStockToGrocery">Low stock → Grocery</button><button class="soft-btn" id="pantrySelectButton">Select</button></div>
+        <div id="pantryBulkBar" class="bulk-action-bar hidden"><span id="pantrySelectedCount">0 selected</span><button class="soft-btn" id="pantrySelectAllButton">Select all</button><button class="soft-btn danger-soft" id="pantryDeleteSelectedButton">Delete</button></div>
         <div id="pantryList" class="card-list"></div>
       </section>
 
@@ -252,7 +253,7 @@
         <div class="page-title-row"><div><p class="eyebrow">Shopping</p><h1 id="groceryTitle">Grocery List</h1></div><button class="icon-btn" id="shoppingModeButton" aria-label="Shopping mode" aria-pressed="false">◉</button></div>
         <div class="summary-card"><div><small>Unchecked</small><strong id="groceryUnchecked">0</strong></div><div><small>Checked</small><strong id="groceryChecked">0</strong></div><div><small>Est.</small><strong id="groceryEstimate">—</strong></div></div>
         <div class="inline-add"><input id="groceryAddInput" placeholder="Add grocery item…" /><button id="groceryAddButton">Add</button></div>
-        <div class="action-row"><button class="soft-btn" id="groceryFromPlanButton">Generate from this week</button><button class="soft-btn" id="checkedToPantryButton">Checked → Pantry</button><button class="soft-btn" id="clearCheckedButton">Clear checked</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>
+        <div class="action-row grocery-actions"><button class="soft-btn" id="groceryFromPlanButton">From plan</button><button class="soft-btn" id="checkedToPantryButton">To Pantry</button><button class="soft-btn" id="groceryCheckAllButton">Check all</button><button class="soft-btn" id="groceryUncheckAllButton">Uncheck</button><button class="soft-btn danger-soft" id="clearCheckedButton">Delete checked</button><button class="soft-btn" id="shareGroceryButton">Share</button></div>
         <div id="groceryList" class="grocery-list"></div>
       </section>
 
@@ -420,7 +421,7 @@
       <div class="sheet-handle"></div>
       <div class="dialog-title"><div><p class="eyebrow" id="mealDialogDate"></p><h2 id="mealDialogTitle">Choose a meal</h2></div><button type="button" class="icon-btn close-dialog">×</button></div>
       <input type="hidden" id="mealDateInput" /><input type="hidden" id="mealSlotInput" />
-      <label>Saved recipe<select id="mealRecipeSelect"><option value="">Choose a recipe…</option></select></label>
+      <label>Saved recipe<input id="mealRecipeSearchInput" type="search" placeholder="Type to search recipes…" autocomplete="off" /><select id="mealRecipeSelect"><option value="">Choose a recipe…</option></select><small class="muted">Search first, then choose from the filtered dropdown.</small></label>
       <div class="or-divider"><span>or</span></div>
       <label>Custom meal<input id="mealCustomInput" placeholder="Takeout, leftovers, restaurant…" /></label>
       <label>Servings<input id="mealServingsInput" type="number" min="1" max="30" /></label>
@@ -505,75 +506,75 @@
   </dialog>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
-  <script src="data/recipes-data.js?v=23p2" defer></script>
-  <script src="data/photo-index.js?v=23p2" defer></script>
-  <script src="data/korean-runtime.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-00.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-01.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-02.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-03.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-04.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-05.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-06.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-07.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-08.js?v=23p2" defer></script>
-  <script src="data/korean-recipes-09.js?v=23p2" defer></script>
-  <script src="data/anime-runtime.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-00.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-01.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-02.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-03.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-04.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-05.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-06.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-07.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-08.js?v=23p2" defer></script>
-  <script src="data/anime-recipes-09.js?v=23p2" defer></script>
-  <script src="data/chinese-init.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-001.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-002.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-003.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-004.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-005.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-006.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-007.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-008.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-009.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-010.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-011.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-012.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-013.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-014.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-015.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-016.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-017.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-018.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-019.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-020.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-021.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-022.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-023.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-024.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-025.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-026.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-027.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-028.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-029.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-030.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-031.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-032.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-033.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-034.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-035.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-036.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-037.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-038.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-039.js?v=23p2" defer></script>
-  <script src="data/chinese-recipes-040.js?v=23p2" defer></script>
-  <script src="data/chinese-runtime.js?v=23p2" defer></script>
-  <script src="data/chinese-meta-core.js?v=23p2" defer></script>
-  <script src="data/chinese-meta-extra.js?v=23p2" defer></script>
-  <script src="data/chinese-photo.js?v=23p2" defer></script>
-  <script src="app.js?v=23p2" defer></script>
+  <script src="data/recipes-data.js?v=23p3" defer></script>
+  <script src="data/photo-index.js?v=23p3" defer></script>
+  <script src="data/korean-runtime.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-00.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-01.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-02.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-03.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-04.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-05.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-06.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-07.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-08.js?v=23p3" defer></script>
+  <script src="data/korean-recipes-09.js?v=23p3" defer></script>
+  <script src="data/anime-runtime.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-00.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-01.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-02.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-03.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-04.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-05.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-06.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-07.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-08.js?v=23p3" defer></script>
+  <script src="data/anime-recipes-09.js?v=23p3" defer></script>
+  <script src="data/chinese-init.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-001.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-002.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-003.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-004.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-005.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-006.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-007.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-008.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-009.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-010.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-011.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-012.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-013.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-014.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-015.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-016.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-017.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-018.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-019.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-020.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-021.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-022.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-023.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-024.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-025.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-026.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-027.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-028.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-029.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-030.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-031.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-032.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-033.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-034.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-035.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-036.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-037.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-038.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-039.js?v=23p3" defer></script>
+  <script src="data/chinese-recipes-040.js?v=23p3" defer></script>
+  <script src="data/chinese-runtime.js?v=23p3" defer></script>
+  <script src="data/chinese-meta-core.js?v=23p3" defer></script>
+  <script src="data/chinese-meta-extra.js?v=23p3" defer></script>
+  <script src="data/chinese-photo.js?v=23p3" defer></script>
+  <script src="app.js?v=23p3" defer></script>
 </body>
 </html>

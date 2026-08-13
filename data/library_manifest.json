@@ -1,7 +1,7 @@
 {
-  "libraryVersion": 23,
-  "recipeCount": 996,
-  "newRecipesThisBuild": 40,
+  "libraryVersion": 24,
+  "recipeCount": 998,
+  "newRecipesThisBuild": 2,
   "cuisineCount": 4,
   "verifiedCuisineLibraries": [
     "Japanese",
@@ -9,9 +9,9 @@
     "Korean",
     "Chinese"
   ],
-  "standardRecipeCount": 525,
-  "japaneseRecipeCount": 148,
-  "filipinoRecipeCount": 163,
+  "standardRecipeCount": 527,
+  "japaneseRecipeCount": 149,
+  "filipinoRecipeCount": 164,
   "koreanRecipeCount": 174,
   "gameLibraries": {
     "Genshin Impact": {
@@ -64,21 +64,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 996,
+  "dishImageCount": 998,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; anime screenshots, character art, manga panels and game artwork are not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 23,
+  "instructionVersion": 24,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 996,
+  "detailedInstructionRecipeCount": 998,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v23.1 aligns the installed PWA to the 23p2 asset generation and fixes Chinese native-name search/display integration.",
-  "generatedAt": "2026-08-13T23:00:00+08:00",
+  "cacheFix": "v23.2 uses the 23p3 shell generation for the short usability release.",
+  "generatedAt": "2026-08-13T23:50:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -93,7 +93,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "23.1",
+  "appRelease": "23.2",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -118,14 +118,14 @@
   "qualityGate": "v23.0 adds 40 reviewed Chinese recipes on top of the audited v22.2 library; IDs, counts, metadata and method structure are regression checked.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 996,
-      "uniqueRecipeIds": 996,
+      "recipeCount": 998,
+      "uniqueRecipeIds": 998,
       "criticalStructureFailures": 0
     },
     "standardCuisines": {
-      "recipeCount": 525,
-      "Japanese": 148,
-      "Filipino": 163,
+      "recipeCount": 527,
+      "Japanese": 149,
+      "Filipino": 164,
       "Korean": 174,
       "Chinese": 40,
       "flaggedRecipes": 0
@@ -177,5 +177,6 @@
   "cookingExperience": "v22 adds a before-you-start guide, timed-step summary, likely-current ingredients, next-step preview, missing-only grocery action, and serving-accurate Pantry deduction review.",
   "cleanupRelease": "v22.2 completes the method-depth cleanup before Chinese cuisine expansion. Existing recipes are no longer authored toward an artificial 5–8-step ceiling; simple dishes remain concise and complex dishes may use 9–14+ steps as needed.",
   "chineseRecipeCount": 40,
-  "chineseRelease": "v23.1 keeps the 40 reviewed Chinese recipes and completes native-name integration: Chinese characters are searchable and shown with pinyin on recipe surfaces."
+  "chineseRelease": "v23.1 keeps the 40 reviewed Chinese recipes and completes native-name integration: Chinese characters are searchable and shown with pinyin on recipe surfaces.",
+  "shortUpdateRelease": "v23.2 adds Pork Estofado and Japanese Soufflé Pancakes; fixes the top search action; adds collapsible Genshin regions; prefers source-world visuals for Genshin and Anime with real-food fallback; makes planned recipes directly openable with planned serving counts; adds searchable meal selection; and adds compact bulk grocery/pantry controls."
 }

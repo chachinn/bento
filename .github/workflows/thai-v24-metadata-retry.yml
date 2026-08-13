@@ -1,0 +1,29 @@
+name: Thai v24 metadata retry
+on:
+  push:
+    branches: [bento-thai-v24]
+    paths: ['.github/workflows/thai-v24-metadata-retry.yml']
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Patch staged metadata and retrigger review
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p=Path('data/thai-recipes-04.js')
+          s=p.read_text()
+          old="'Southern Thailand',35,10,45,4"
+          new="'Southern Thailand',35,0,35,4"
+          if s.count(old)!=1: raise SystemExit('metadata anchor mismatch')
+          p.write_text(s.replace(old,new,1))
+          PY
+          printf '\n# retry metadata gate\n' >> .github/workflows/thai-v24-release.yml
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add data/thai-recipes-04.js .github/workflows/thai-v24-release.yml
+          git commit -m 'Bento v24: correct staged metadata'
+          git push

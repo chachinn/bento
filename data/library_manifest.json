@@ -174,8 +174,8 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "24p2",
-      "recipeQualityRuntime": 27,
+      "assetVersion": "25p1",
+      "recipeQualityRuntime": 29,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
     },

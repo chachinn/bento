@@ -1,4 +1,5 @@
 'use strict';
+// Cross-check current Bento Genshin dish identity against genshin-db 6.7 source data.
 const fs=require('fs'),vm=require('vm'),genshin=require('genshin-db');
 const index=fs.readFileSync('index.html','utf8');
 const srcs=[...index.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));

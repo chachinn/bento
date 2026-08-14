@@ -31,4 +31,10 @@ writeIfChanged('index.html',index);
 let sw=fs.readFileSync('service-worker.js','utf8').replace(/24p1/g,'24p2').replace(/bento-shell-v1\.0\.0-v24p2-refs1/g,'bento-shell-v1.0.0-v24p2-qa1');
 for(const file of scripts){const asset=`'./${file}?v=24p2'`;if(!sw.includes(asset))sw=sw.replace("  './app.js?v=24p2'",`  ${asset},\n  './app.js?v=24p2'`)}
 writeIfChanged('service-worker.js',sw);
+const identityPath='data/recipe-content-fixes-genshin-identity.js';
+if(fs.existsSync(identityPath)){
+  let identity=fs.readFileSync(identityPath,'utf8');
+  identity=identity.replace("reflecting the game's Rice, Shrimp Meat, and Carrot anchors.","reflecting the game’s Rice, Shrimp Meat, and Carrot anchors.");
+  writeIfChanged(identityPath,identity);
+}
 console.log('system fixes complete');

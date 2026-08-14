@@ -2,6 +2,8 @@ name: Bento full recipe QA
 on:
   push:
     branches: [bento-v24-full-recipe-qa]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

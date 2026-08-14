@@ -1,0 +1,39 @@
+name: Record Vietnamese method depth
+on:
+  push:
+    branches: [bento-vietnamese-v27]
+permissions:
+  contents: write
+jobs:
+  update-manifest:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Record audited Vietnamese step range
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('data/library_manifest.json');m=json.loads(p.read_text())
+          d=m['qualityAuditSnapshot']['methodDepth']
+          d['VietnameseStepRange']='7-10'
+          assert m['qualityAuditSnapshot']['v27Vietnamese']['recipeFailures']==0
+          assert m['qualityAuditSnapshot']['v27Vietnamese']['preRuntimeAllergenFailures']==0
+          assert m['qualityAuditSnapshot']['fullLibrary']['releaseGate']=='pass'
+          p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+          python -m json.tool data/library_manifest.json >/dev/null
+          grep -q '"VietnameseStepRange": "7-10"' data/library_manifest.json
+          git diff --check
+      - name: Commit manifest correction and remove one-use workflow
+        run: |
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add data/library_manifest.json
+          git rm .github/workflows/v27-vietnamese-manifest-depth-fix.yml
+          git diff --cached --check
+          git commit -m 'Record Vietnamese v27 method depth'
+          git push

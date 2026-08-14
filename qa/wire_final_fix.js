@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('fs');
-const files=['data/recipe-content-fixes-final.js','data/recipe-semantic-alias-fixes.js','data/recipe-content-fixes-genshin-identity.js'];
+const files=['data/recipe-content-fixes-final.js','data/recipe-semantic-alias-fixes.js','data/recipe-content-fixes-genshin-identity.js','data/recipe-content-fixes-genshin-unindexed.js'];
 let html=fs.readFileSync('index.html','utf8');
 for(const file of files)if(!html.includes(file))html=html.replace('<script src="data/recipe-quality-runtime.js?v=24p2" defer></script>',`<script src="${file}?v=24p2" defer></script>\n  <script src="data/recipe-quality-runtime.js?v=24p2" defer></script>`);
 fs.writeFileSync('index.html',html);

@@ -34,9 +34,13 @@ jobs:
           git commit -m "Apply Bento recipe QA system fixes"
           git push origin HEAD:bento-v24-full-recipe-qa
   audit:
+    needs: [apply-system-fixes]
+    if: ${{ always() && (github.event_name != 'push' || needs.apply-system-fixes.result == 'success') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: bento-v24-full-recipe-qa
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -52,8 +56,9 @@ jobs:
         run: node qa/full_recipe_audit.js
       - name: Final production recipe gate
         run: node qa/final_recipe_gate.js
+      - name: Source-world release gate
+        run: node qa/source_world_gate.js
       - name: Genshin source identity audit
-        continue-on-error: true
         run: |
           npm install --no-save genshin-db@latest
           node qa/genshin_identity_audit.js
@@ -65,7 +70,7 @@ jobs:
           const html=fs.readFileSync('index.html','utf8');
           const sw=fs.readFileSync('service-worker.js','utf8');
           const scripts=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(m=>m[1].split('?')[0]);
-          for(const s of scripts)if((s.endsWith('.js'))&&!fs.existsSync(s))throw new Error(`Missing index script ${s}`);
+          for(const s of scripts)if(s.endsWith('.js')&&!fs.existsSync(s))throw new Error(`Missing index script ${s}`);
           const core=[...sw.matchAll(/'\.\/(.+?)'/g)].map(m=>m[1].split('?')[0]);
           for(const p of core)if(!fs.existsSync(p))throw new Error(`Missing cached asset ${p}`);
           console.log('repository consistency PASS');

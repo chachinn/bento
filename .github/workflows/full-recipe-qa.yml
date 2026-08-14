@@ -30,7 +30,7 @@ jobs:
           fi
           git config user.name "chachinn"
           git config user.email "140357822+chachinn@users.noreply.github.com"
-          git add app.js index.html service-worker.js
+          git add app.js index.html service-worker.js data/recipe-content-fixes-genshin-identity.js
           git commit -m "Apply Bento recipe QA system fixes"
           git push origin HEAD:bento-v24-full-recipe-qa
   audit:

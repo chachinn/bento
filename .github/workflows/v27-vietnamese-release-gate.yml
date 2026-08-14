@@ -1,0 +1,126 @@
+name: Bento v27 Vietnamese release gate
+on:
+  push:
+    branches: [bento-vietnamese-v27]
+permissions:
+  contents: write
+jobs:
+  release-review:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wire Bento v27 in review workspace
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('index.html');s=p.read_text().replace('?v=26p1','?v=27p1')
+          marker='  <script src="data/thai-runtime.js?v=27p1" defer></script>'
+          block=marker+'\n  <script src="data/vietnamese-runtime.js?v=27p1" defer></script>\n'+"\n".join(f'  <script src="data/vietnamese-recipes-{a:03d}-{b:03d}.js?v=27p1" defer></script>' for a,b in [(1,10),(11,20),(21,30),(31,40),(41,50),(51,60),(61,70),(71,80),(81,90),(91,100),(101,110),(111,120),(121,130)])
+          if 'vietnamese-runtime.js?v=27p1' not in s:s=s.replace(marker,block)
+          p.write_text(s)
+          p=Path('service-worker.js');sw=p.read_text().replace('26p1','27p1')
+          marker="  './data/thai-runtime.js?v=27p1',"
+          block=marker+"\n  './data/vietnamese-runtime.js?v=27p1',\n"+"\n".join(f"  './data/vietnamese-recipes-{a:03d}-{b:03d}.js?v=27p1'," for a,b in [(1,10),(11,20),(21,30),(31,40),(41,50),(51,60),(61,70),(71,80),(81,90),(91,100),(101,110),(111,120),(121,130)])
+          if 'vietnamese-runtime.js?v=27p1' not in sw:sw=sw.replace(marker,block)
+          sw=sw.replace("const CACHE='bento-shell-v1.0.0-v26p1';","const CACHE='bento-shell-v1.0.0-v27p1';")
+          p.write_text(sw)
+          p=Path('app.js');a=p.read_text().replace('const VERSION = 26;','const VERSION = 27;');p.write_text(a)
+          p=Path('data/library_manifest.json');m=json.loads(p.read_text())
+          m.update({'libraryVersion':31,'recipeCount':1328,'newRecipesThisBuild':130,'cuisineCount':6,'standardRecipeCount':857,'japaneseRecipeCount':189,'filipinoRecipeCount':184,'koreanRecipeCount':174,'chineseRecipeCount':90,'thaiRecipeCount':90,'vietnameseRecipeCount':130,'dishImageCount':1328,'instructionVersion':31,'detailedInstructionRecipeCount':1328,'appRelease':'27.0','generatedAt':'2026-08-14T14:59:00+08:00'})
+          v=m.setdefault('verifiedCuisineLibraries',[])
+          if 'Vietnamese' not in v:v.append('Vietnamese')
+          m['qualityGate']='Permanent Bento recipe standard plus v27 Vietnamese cuisine gate: authentic dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, accurate official references, title-specific photo routing, doneness cues, semantic consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling.'
+          m['cacheFix']='v27.0 uses the 27p1 shell generation and caches the Vietnamese runtime plus all 13 Vietnamese regional recipe modules alongside the existing production library.'
+          m['fullQaRelease']='v27.0 introduces a 130-recipe Vietnamese library spanning Hanoi/Northern, Hue/Central, Hoi An-Da Nang, South-Central/Central Highlands, Saigon/Southern, Mekong, everyday home dishes, sweets and drinks. 130 is the result of this coverage pass, not a cuisine cap.'
+          q=m.setdefault('qualityAuditSnapshot',{})
+          q['fullLibrary']={'recipeCount':1328,'uniqueRecipeIds':1328,'criticalStructureFailures':0,'releaseGate':'pending v27 QA'}
+          q['standardCuisines']={'recipeCount':857,'Japanese':189,'Filipino':184,'Korean':174,'Vietnamese':130,'Chinese':90,'Thai':90,'flaggedRecipes':0,'hierarchy':'Japanese > Filipino > every other standard cuisine','allergenFailures':0,'referenceFailures':0,'equipmentFailures':0,'photoMetadataFailures':0}
+          q['PWA']=dict(q.get('PWA',{}),assetVersion='27p1',recipeQualityRuntime=29)
+          q['v27Vietnamese']={'VietnameseAdded':130,'VietnameseTotal':130,'recipeFailures':'pending','preRuntimeAllergenFailures':'pending','photoMetadataFailures':'pending','methodPolicy':'variable-length; no artificial 5- or 6-step ceiling','coveragePolicy':'coverage determines recipe count; 130 is this pass, not a cap','regionalCoverage':['Hanoi / Northern','Red River and northern regional','Hue / Central','Quang Nam / Hoi An / Da Nang','South-Central / Central Highlands','Ho Chi Minh City / Southern','Mekong Delta','National home dishes, sweets and drinks']}
+          p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Syntax and full-library identity QA
+        run: |
+          set -e
+          node --check app.js
+          node --check service-worker.js
+          for f in data/*.js; do node --check "$f"; done
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm');
+          const html=fs.readFileSync('index.html','utf8');
+          const srcs=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));
+          if(new Set(srcs).size!==srcs.length)throw Error('duplicate data script refs');
+          for(const f of srcs)if(!fs.existsSync(f))throw Error('missing data script '+f);
+          const base={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
+          const make=()=>{const c={...base};c.window=c;c.globalThis=c;vm.createContext(c);return c};
+          const beforeQuality=make();
+          for(const f of srcs){if(f==='data/recipe-quality-runtime.js')break;vm.runInContext(fs.readFileSync(f,'utf8'),beforeQuality,{filename:f,timeout:10000})}
+          const rawlib=beforeQuality.BENTO_RECIPE_LIBRARY||[];
+          const freshRaw=rawlib.filter(r=>/^vn_(?:0\d\d|1[0-2]\d|130)$/.test(String(r.id)));
+          if(freshRaw.length!==130)throw Error('pre-quality Vietnamese count '+freshRaw.length);
+          const infer=ingredients=>{const raw=(' '+(ingredients||[]).join(' ')+' ').toLowerCase(),out=[];const has=rx=>rx.test(raw);if(has(/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|fermented bean paste)\b/))out.push('soy');if(has(/\b(wheat|all-purpose flour|bread flour|cake flour|panko|breadcrumbs?|bread crumbs?|egg noodles?|wonton wrappers?|spring roll wrappers?|soy sauce|hoisin sauce)\b/))out.push('gluten');if(has(/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo)\b/))out.push('egg');const dairy=raw.replace(/\b(coconut|soy|almond|oat|rice|cashew|macadamia) milk\b/g,' plantmilk ').replace(/\b(peanut|almond|cashew|walnut|hazelnut|pistachio|macadamia|sunflower seed) butter\b/g,' nutbutter ');if(/\b(whole milk|fresh milk|evaporated milk|condensed milk|cream|butter|cheese|yogurt|yoghurt|milk powder|ice cream)\b/.test(dairy)||/(^|[^a-z])milk([^a-z]|$)/.test(dairy))out.push('milk');if(has(/\b(fish sauce|anchov(?:y|ies)|salmon|tuna|mackerel|cod|sardines?|fish cake|sea bass|snapper|catfish|fish stock|white fish|firm fish|mudskippers?)\b/))out.push('fish');if(has(/\b(shrimp|prawn|crab|clam|mussel|oyster(?:s| sauce)?|scallop|squid|octopus|abalone|lobster)\b/))out.push('shellfish');if(has(/\b(peanut|peanuts|peanut butter|cashew|cashews|walnut|walnuts|almond|almonds|hazelnut|hazelnuts|pistachio|pistachios|pine nut|pine nuts|chestnut|chestnuts|macadamia)\b/))out.push('nuts');if(has(/\b(sesame|tahini)\b/))out.push('sesame');if(has(/\b(coconut|coconut milk|coconut cream|coconut water)\b/))out.push('coconut');return [...new Set(out)]};
+          const allergenBad=[];for(const r of freshRaw){const stored=(r.allergens||[]).map(x=>String(x).toLowerCase());for(const a of infer(r.ingredients))if(!stored.includes(a))allergenBad.push([r.id,a])}if(allergenBad.length)throw Error('pre-runtime allergen gaps '+JSON.stringify(allergenBad));
+          const c=make();for(const f of srcs)vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f,timeout:10000});const lib=c.BENTO_RECIPE_LIBRARY||[];
+          if(lib.length!==1328)throw Error('library count '+lib.length);if(new Set(lib.map(r=>String(r.id))).size!==1328)throw Error('duplicate recipe IDs');
+          const standard=r=>!r.gameDish&&!r.gameSeries&&!r.animeDish&&!r.animeSeries;const count=x=>lib.filter(r=>standard(r)&&r.cuisine===x).length;
+          const counts={Japanese:count('Japanese'),Filipino:count('Filipino'),Korean:count('Korean'),Vietnamese:count('Vietnamese'),Chinese:count('Chinese'),Thai:count('Thai')};
+          const expected={Japanese:189,Filipino:184,Korean:174,Vietnamese:130,Chinese:90,Thai:90};if(JSON.stringify(counts)!==JSON.stringify(expected))throw Error('bad cuisine counts '+JSON.stringify(counts));
+          if(!(counts.Japanese>counts.Filipino&&counts.Filipino>Math.max(counts.Korean,counts.Vietnamese,counts.Chinese,counts.Thai)))throw Error('hierarchy failure '+JSON.stringify(counts));
+          const fresh=lib.filter(r=>/^vn_(?:0\d\d|1[0-2]\d|130)$/.test(String(r.id)));if(fresh.length!==130)throw Error('Vietnamese count '+fresh.length);
+          const titleMap=new Map(),bad=[];const timing=/\b\d+(?:\s*[–-]\s*\d+)?\s*(?:minutes?|mins?|hours?|hrs?)\b|\b\d+\s*°?C\b/i;const cue=/until|should be|golden|tender|set\b|glossy|opaque|crisp|chewy|springy|soft|firm|reduced|coat|bubbl|translucent|aromatic|flake|temperature|reaches at least|ready when|center|fully cooked|piping hot|no raw|clear|resilient|moist|juicy/i;
+          for(const r of lib.filter(standard)){const k=String(r.title||'').trim().toLowerCase();if(!k)continue;if(titleMap.has(k)&&fresh.includes(r))bad.push([r.id,'duplicate standard title with '+titleMap.get(k)]);else titleMap.set(k,r.id)}
+          for(const r of fresh){if(!r.title||!r.category||!r.region||!r.equipment||!r.difficulty||r.cuisine!=='Vietnamese'||r.country!=='Vietnam')bad.push([r.id,'recipe details']);if(!Number.isFinite(+r.servings)||+r.servings<1)bad.push([r.id,'recommended servings']);if(!Number.isFinite(+r.prep)||!Number.isFinite(+r.cook)||!Number.isFinite(+r.total)||+r.total<+r.prep+ +r.cook)bad.push([r.id,'time math']);if(+r.inactiveMinutes!==+r.total-+r.prep-+r.cook)bad.push([r.id,'inactive time']);if(!Array.isArray(r.ingredients)||r.ingredients.length<4)bad.push([r.id,'ingredients']);if(!Array.isArray(r.steps)||r.steps.length<6)bad.push([r.id,'steps']);if(+r.cook>=10&&!r.steps.some(s=>timing.test(String(s))))bad.push([r.id,'timed method']);if(+r.cook>0&&!r.steps.some(s=>cue.test(String(s))))bad.push([r.id,'doneness cue']);if(!Array.isArray(r.allergens))bad.push([r.id,'allergens array']);if(!r.source||!Array.isArray(r.sourceUrls)||r.sourceUrls.length<3||r.sourceUrls.some(u=>!/^https:\/\//.test(String(u))))bad.push([r.id,'references']);const pq=(r.photoQueries||[]).join(' ').toLowerCase();if(!Array.isArray(r.photoQueries)||r.photoQueries.length<2||!pq.includes(String(r.title).toLowerCase()))bad.push([r.id,'photo routing']);const meth=r.steps.join(' ').toLowerCase();if(/main ingredient|return the protein|listed garnishes|cook until done/.test(meth))bad.push([r.id,'generic method wording'])}
+          if(bad.length)throw Error('Vietnamese QA '+JSON.stringify(bad));
+          const methods=new Map();for(const r of fresh){const k=r.steps.map(x=>String(x).trim().toLowerCase()).join('|');if(methods.has(k))throw Error('duplicate method '+methods.get(k)+' '+r.id);methods.set(k,r.id)}
+          const lengths=fresh.map(r=>r.steps.length);if(Math.max(...lengths)<10)throw Error('method-depth regression / apparent cap');
+          if(typeof c.BENTO_INFER_ALLERGENS!=='function')throw Error('allergen runtime unavailable');const pb=c.BENTO_INFER_ALLERGENS(['2 tbsp peanut butter']),cm=c.BENTO_INFER_ALLERGENS(['400 ml coconut milk']);if(!pb.includes('nuts')||pb.includes('milk')||!cm.includes('coconut')||cm.includes('milk'))throw Error('allergen runtime regression');
+          console.log('V27 VIETNAMESE QA PASS',counts,'fresh',fresh.length,'stepRange',[Math.min(...lengths),Math.max(...lengths)],'preRuntimeAllergens','PASS');
+          NODE
+      - name: PWA release metadata and provider QA
+        run: |
+          set -e
+          grep -q "const VERSION = 27;" app.js
+          grep -q "const ASSET_VERSION='27p1';" service-worker.js
+          grep -q "bento-shell-v1.0.0-v27p1" service-worker.js
+          for f in vietnamese-runtime vietnamese-recipes-001-010 vietnamese-recipes-011-020 vietnamese-recipes-021-030 vietnamese-recipes-031-040 vietnamese-recipes-041-050 vietnamese-recipes-051-060 vietnamese-recipes-061-070 vietnamese-recipes-071-080 vietnamese-recipes-081-090 vietnamese-recipes-091-100 vietnamese-recipes-101-110 vietnamese-recipes-111-120 vietnamese-recipes-121-130; do
+            grep -q "data/$f.js?v=27p1" index.html
+            grep -q "data/$f.js?v=27p1" service-worker.js
+          done
+          grep -q "ingredientScaleFactor" app.js
+          python - <<'PY'
+          import json
+          m=json.load(open('data/library_manifest.json'))
+          assert m['recipeCount']==1328 and m['standardRecipeCount']==857 and m['vietnameseRecipeCount']==130
+          assert m['japaneseRecipeCount']==189 and m['filipinoRecipeCount']==184 and m['koreanRecipeCount']==174 and m['chineseRecipeCount']==90 and m['thaiRecipeCount']==90
+          assert m['instructionVersion']==31 and m['libraryVersion']==31 and m['appRelease']=='27.0'
+          assert m['qualityAuditSnapshot']['PWA']['assetVersion']=='27p1'
+          PY
+          for url in \
+            'https://commons.wikimedia.org/wiki/Category:Pho' \
+            'https://commons.wikimedia.org/wiki/Category:Banh_mi' \
+            'https://commons.wikimedia.org/wiki/Category:Spring_rolls_of_Vietnam' \
+            'https://www.vietnam.travel/things-to-do/food'; do
+            code=$(curl -L -A 'BentoRecipeQA/27.0' --retry 2 --retry-delay 2 --connect-timeout 8 --max-time 25 -s -o /dev/null -w '%{http_code}' "$url")
+            test "$code" = 200 || { echo "provider/reference spot-check failed $code $url"; exit 1; }
+          done
+          git diff --check
+      - name: Finalize reviewed v27 wiring
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('data/library_manifest.json');m=json.loads(p.read_text());q=m['qualityAuditSnapshot'];q['fullLibrary']['releaseGate']='pass';q['v27Vietnamese'].update({'recipeFailures':0,'preRuntimeAllergenFailures':0,'photoMetadataFailures':0,'photoProviderCheck':'Representative Wikimedia Commons Vietnamese food routes and the Vietnam Tourism food reference passed; all 130 recipes carry title-specific lazy/on-demand photo queries.'});p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add app.js index.html service-worker.js data/library_manifest.json
+          git diff --cached --check
+          git commit -m 'Bento v27: wire Vietnamese cuisine library'
+          git push

@@ -19,7 +19,9 @@ jobs:
         with:
           node-version: 22
       - name: Apply idempotent production fixes
-        run: node qa/apply_system_fixes.js
+        run: |
+          node qa/apply_system_fixes.js
+          node qa/wire_final_fix.js
       - name: Commit generated fixes when needed
         run: |
           if git diff --quiet; then
@@ -50,6 +52,11 @@ jobs:
         run: node qa/full_recipe_audit.js
       - name: Final production recipe gate
         run: node qa/final_recipe_gate.js
+      - name: Genshin source identity audit
+        continue-on-error: true
+        run: |
+          npm install --no-save genshin-db@latest
+          node qa/genshin_identity_audit.js
       - name: Repository consistency
         run: |
           git diff --check

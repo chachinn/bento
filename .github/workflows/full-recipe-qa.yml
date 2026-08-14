@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: full-recipe-audit
-          path: qa-out/full-recipe-audit.json
+          path: qa-out/*.json

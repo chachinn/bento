@@ -2,12 +2,11 @@
 const fs=require('fs'),vm=require('vm');
 const index=fs.readFileSync('index.html','utf8');
 const srcs=[...index.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));
-const window={};
-const context={window,console,URL,URLSearchParams,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
-context.globalThis=context;vm.createContext(context);
+const context={console,URL,URLSearchParams,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
+context.window=context;context.globalThis=context;vm.createContext(context);
 for(const file of srcs){if(!fs.existsSync(file))throw new Error(`Missing script: ${file}`);try{vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file,timeout:5000})}catch(e){console.error(`EXEC_FAIL ${file}:`,e);process.exit(2)}}
-const lib=Array.isArray(window.BENTO_RECIPE_LIBRARY)?window.BENTO_RECIPE_LIBRARY:[];
-const photoIndex=window.BENTO_RECIPE_PHOTO_INDEX||{};
+const lib=Array.isArray(context.BENTO_RECIPE_LIBRARY)?context.BENTO_RECIPE_LIBRARY:[];
+const photoIndex=context.BENTO_RECIPE_PHOTO_INDEX||{};
 const isAnime=r=>!!r.animeSeries;
 const isGenshin=r=>r.gameSeries==='Genshin Impact'||r.collection==='Genshin Impact'||!!r.gameDish||Array.isArray(r.gameAppearances)&&r.gameAppearances.some(x=>x?.series==='Genshin Impact');
 const isStandard=r=>!isAnime(r)&&!isGenshin(r);

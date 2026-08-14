@@ -152,7 +152,8 @@
       "ChineseStepRange": "5-12",
       "ThaiStepRange": "6-10",
       "GenshinStepRange": "4-12",
-      "AnimeStepRange": "4-10"
+      "AnimeStepRange": "4-10",
+      "VietnameseStepRange": "7-10"
     },
     "Genshin": {
       "recipeCount": 372,

@@ -1,0 +1,36 @@
+name: Bento Chinese Thai coverage audit
+on:
+  push:
+    paths:
+      - '.github/workflows/cn-thai-coverage-audit.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Export current Chinese and Thai coverage
+        run: |
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm');
+          const html=fs.readFileSync('index.html','utf8');
+          const srcs=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)]
+            .map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));
+          const c={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
+          c.window=c;c.globalThis=c;vm.createContext(c);
+          for(const f of srcs) vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f,timeout:10000});
+          const lib=c.BENTO_RECIPE_LIBRARY||[];
+          for(const cuisine of ['Chinese','Thai']){
+            const rows=lib.filter(r=>r.cuisine===cuisine&&!r.gameDish&&!r.animeDish).sort((a,b)=>String(a.id).localeCompare(String(b.id),undefined,{numeric:true}));
+            console.log('\n=== '+cuisine.toUpperCase()+' '+rows.length+' ===');
+            for(const r of rows) console.log([r.id,r.title,r.region||'',r.category||'',r.servings||'',r.steps?.length||0].join('\t'));
+            const regions={}; for(const r of rows) regions[r.region||'Unspecified']=(regions[r.region||'Unspecified']||0)+1;
+            const cats={}; for(const r of rows) cats[r.category||'Unspecified']=(cats[r.category||'Unspecified']||0)+1;
+            console.log('REGIONS '+JSON.stringify(regions));
+            console.log('CATEGORIES '+JSON.stringify(cats));
+          }
+          NODE

@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs');
+const file='data/recipe-content-fixes-final.js';
+let html=fs.readFileSync('index.html','utf8');
+if(!html.includes(file))html=html.replace('<script src="data/recipe-quality-runtime.js?v=24p2" defer></script>',`<script src="${file}?v=24p2" defer></script>\n  <script src="data/recipe-quality-runtime.js?v=24p2" defer></script>`);
+fs.writeFileSync('index.html',html);
+let sw=fs.readFileSync('service-worker.js','utf8');
+const asset=`'./${file}?v=24p2'`;
+if(!sw.includes(asset))sw=sw.replace("  './app.js?v=24p2'",`  ${asset},\n  './app.js?v=24p2'`);
+fs.writeFileSync('service-worker.js',sw);
+console.log('final content-fix module wired');

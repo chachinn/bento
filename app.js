@@ -2,7 +2,7 @@
   'use strict';
 
   const STORAGE_KEY = 'bento.app.state.v1';
-  const VERSION = 26;
+  const VERSION = 27;
   const BUILTIN_RECIPES = Array.isArray(window.BENTO_RECIPE_LIBRARY) ? window.BENTO_RECIPE_LIBRARY : [];
   const LIBRARY_RECIPE_COUNT = BUILTIN_RECIPES.length;
   const LIBRARY_CUISINE_COUNT = new Set(BUILTIN_RECIPES.filter(r=>!r.gameDish&&!r.gameSeries&&!r.animeDish&&!r.animeSeries).map(r=>r.cuisine).filter(Boolean)).size;

@@ -92,6 +92,7 @@ const CORE=[
   './data/recipe-content-fixes-anime.js?v=24p2',
   './data/recipe-content-fixes-final.js?v=24p2',
   './data/recipe-semantic-alias-fixes.js?v=24p2',
+  './data/recipe-content-fixes-genshin-identity.js?v=24p2',
   './app.js?v=24p2'
 ];
 const OPTIONAL_ICONS=[

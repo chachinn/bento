@@ -2,7 +2,7 @@
 const fs=require('fs'),vm=require('vm');
 const index=fs.readFileSync('index.html','utf8');
 const srcs=[...index.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));
-const context={console,URL,URLSearchParams,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
+const context={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
 context.window=context;context.globalThis=context;vm.createContext(context);
 for(const file of srcs){if(!fs.existsSync(file))throw new Error(`Missing script: ${file}`);try{vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file,timeout:5000})}catch(e){console.error(`EXEC_FAIL ${file}:`,e);process.exit(2)}}
 const lib=Array.isArray(context.BENTO_RECIPE_LIBRARY)?context.BENTO_RECIPE_LIBRARY:[];

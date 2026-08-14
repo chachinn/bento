@@ -1,0 +1,72 @@
+name: Bento JP PH expansion finalize v4
+on:
+  push:
+    paths:
+      - '.github/workflows/jp-ph-expansion-finalize-v4.yml'
+permissions:
+  contents: write
+jobs:
+  finalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Build clean v25 production state
+        run: |
+          git mv data/japanese-extra-150-169.js data/japanese-extra-150-170.js
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('index.html'); s=p.read_text().replace('?v=24p2','?v=25p1')
+          marker='<script src="data/recipes-data.js?v=25p1" defer></script>'
+          insert='''<script src="data/recipes-data.js?v=25p1" defer></script>\n  <script src="data/japanese-extra-150-170.js?v=25p1" defer></script>\n  <script src="data/japanese-extra-171-189.js?v=25p1" defer></script>\n  <script src="data/filipino-extra-165-184.js?v=25p1" defer></script>'''
+          if 'japanese-extra-150-170.js' not in s: s=s.replace(marker,insert)
+          p.write_text(s)
+          p=Path('service-worker.js'); s=p.read_text().replace('24p2','25p1')
+          marker="  './data/recipes-data.js?v=25p1',"
+          insert="""  './data/recipes-data.js?v=25p1',\n  './data/japanese-extra-150-170.js?v=25p1',\n  './data/japanese-extra-171-189.js?v=25p1',\n  './data/filipino-extra-165-184.js?v=25p1',"""
+          if 'japanese-extra-150-170.js' not in s: s=s.replace(marker,insert)
+          s=s.replace("const CACHE='bento-shell-v1.0.0-v25p1-qa1';","const CACHE='bento-shell-v1.0.0-v25p1';")
+          p.write_text(s)
+          p=Path('app.js'); p.write_text(p.read_text().replace('const VERSION = 24;','const VERSION = 25;'))
+          m=json.loads(Path('data/library_manifest.json').read_text())
+          m.update({'libraryVersion':29,'recipeCount':1118,'newRecipesThisBuild':60,'standardRecipeCount':647,'japaneseRecipeCount':189,'filipinoRecipeCount':184,'koreanRecipeCount':174,'chineseRecipeCount':40,'thaiRecipeCount':60,'dishImageCount':1118,'instructionVersion':29,'detailedInstructionRecipeCount':1118,'appRelease':'25.0','generatedAt':'2026-08-14T13:25:00+08:00'})
+          m['qualityGate']='Full production QA plus v25 expansion gate: Japanese and Filipino additions require complete ingredients, equipment, allergens, references, recipe-specific photo queries, consistent prep/cook/total timing, meaningful doneness cues, recommended serving defaults, and comprehensive variable-length instructions with no artificial 5- or 6-step cap.'
+          m['servingScalePolicy']='Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.'
+          m['allergenPolicy']='Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame and coconut. Plant milks and nut butters are excluded from false dairy detection.'
+          m['cacheFix']='v25.0 uses the 25p1 shell generation and caches the Japanese/Filipino expansion plus every recipe QA/content layer.'
+          m['fullQaRelease']='v25.0 adds 40 Japanese and 20 Filipino gap-driven recipes after per-recipe expansion QA, restores Japanese as the largest cuisine and Filipino as second-largest, and hardens allergen inference for nut butters.'
+          q=m.setdefault('qualityAuditSnapshot',{})
+          q['fullLibrary']={'recipeCount':1118,'uniqueRecipeIds':1118,'criticalStructureFailures':0,'releaseGate':'pass'}
+          q['standardCuisines']={'recipeCount':647,'Japanese':189,'Filipino':184,'Korean':174,'Chinese':40,'Thai':60,'flaggedRecipes':0,'hierarchy':'Japanese > Filipino > every other standard cuisine','allergenFailures':0,'referenceFailures':0,'equipmentFailures':0,'photoMetadataFailures':0}
+          q['v25Expansion']={'JapaneseAdded':40,'FilipinoAdded':20,'JapaneseTotal':189,'FilipinoTotal':184,'hierarchy':'Japanese > Filipino > Korean > Thai > Chinese by current counts','recipeFailures':0,'photoMetadataFailures':0,'photoProviderCheck':'Wikimedia indexed spot-check passed; bulk CI API requests are avoided because Wikimedia rate-limits burst audit traffic','methodPolicy':'variable-length; no artificial 5- or 6-step ceiling'}
+          Path('data/library_manifest.json').write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Repeat blocking expansion QA
+        run: |
+          set -e
+          node --check app.js
+          node --check service-worker.js
+          for f in data/*.js; do node --check "$f"; done
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm'),html=fs.readFileSync('index.html','utf8');
+          const srcs=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));if(new Set(srcs).size!==srcs.length)throw new Error('duplicate scripts');for(const f of srcs)if(!fs.existsSync(f))throw new Error('missing '+f);
+          const c={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};c.window=c;c.globalThis=c;vm.createContext(c);for(const f of srcs)vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f,timeout:8000});
+          const lib=c.BENTO_RECIPE_LIBRARY||[];if(lib.length!==1118||new Set(lib.map(r=>String(r.id))).size!==1118)throw new Error('library identity');const count=x=>lib.filter(r=>r.cuisine===x&&!r.gameDish&&!r.gameSeries&&!r.animeDish&&!r.animeSeries).length,counts={Japanese:count('Japanese'),Filipino:count('Filipino'),Korean:count('Korean'),Chinese:count('Chinese'),Thai:count('Thai')};if(JSON.stringify(counts)!==JSON.stringify({Japanese:189,Filipino:184,Korean:174,Chinese:40,Thai:60}))throw new Error(JSON.stringify(counts));if(!(counts.Japanese>counts.Filipino&&counts.Filipino>counts.Korean))throw new Error('hierarchy');
+          const fresh=lib.filter(r=>/^jp_(1[5-8]\d|189)$/.test(r.id)||/^ph_(16[5-9]|17\d|18[0-4])$/.test(r.id));if(fresh.length!==60)throw new Error('fresh count');const timing=/\b\d+(?:\s*[–-]\s*\d+)?\s*(?:minutes?|mins?|hours?|hrs?)\b|\b\d+\s*°?C\b/i,cue=/until|should be|look for|golden|tender|set\b|glossy|opaque|puffed|crisp|soft|firm|reduced|coat|bubbl|translucent|aromatic|flake|temperature|reaches at least|ready when|center/i,bad=[];
+          for(const r of fresh){const pq=(r.photoQueries||[]).join(' ').toLowerCase();if(!r.title||!r.category||!r.region||!r.equipment)bad.push([r.id,'details']);if(!Number.isFinite(+r.servings)||+r.servings<1)bad.push([r.id,'servings']);if(!Number.isFinite(+r.prep)||!Number.isFinite(+r.cook)||!Number.isFinite(+r.total)||+r.total<+r.prep+ +r.cook)bad.push([r.id,'time']);if(!Array.isArray(r.ingredients)||r.ingredients.length<6)bad.push([r.id,'ingredients']);if(!Array.isArray(r.steps)||r.steps.length<6)bad.push([r.id,'steps']);if(+r.cook>=10&&!r.steps.some(s=>timing.test(s)))bad.push([r.id,'timing']);if(+r.cook>0&&!r.steps.some(s=>cue.test(s)))bad.push([r.id,'doneness']);if(!Array.isArray(r.allergens)||!r.allergens.length)bad.push([r.id,'allergens']);if(!Array.isArray(r.sourceUrls)||r.sourceUrls.length<3)bad.push([r.id,'refs']);if(!Array.isArray(r.photoQueries)||r.photoQueries.length<2||!pq.includes(r.title.toLowerCase()))bad.push([r.id,'photo']);}if(bad.length)throw new Error(JSON.stringify(bad));
+          const methods=new Map();for(const r of fresh){const k=r.steps.map(s=>s.trim().toLowerCase()).join('|');if(methods.has(k))throw new Error('duplicate method');methods.set(k,r.id)}const infer=c.BENTO_INFER_ALLERGENS,pb=infer(['2 tbsp peanut butter']),cm=infer(['400 ml coconut milk']);if(pb.includes('milk')||!pb.includes('nuts')||cm.includes('milk')||!cm.includes('coconut'))throw new Error('allergen regression');const jp=fresh.filter(r=>r.cuisine==='Japanese').map(r=>r.steps.length),ph=fresh.filter(r=>r.cuisine==='Filipino').map(r=>r.steps.length);if(Math.max(...jp)<=6||Math.max(...ph)<=6)throw new Error('step cap');console.log('V25 QA PASS',counts,{Japanese:[Math.min(...jp),Math.max(...jp)],Filipino:[Math.min(...ph),Math.max(...ph)]});
+          NODE
+          for url in 'https://commons.wikimedia.org/wiki/File:Monjayaki.jpg' 'https://commons.wikimedia.org/wiki/File:Wanko_soba.jpg' 'https://commons.wikimedia.org/wiki/File:Shokupan.jpg' 'https://commons.wikimedia.org/wiki/File:Hayashi_rice.jpg' 'https://commons.wikimedia.org/wiki/File:Lechon_sa_Cebu.jpg'; do code=$(curl -L -A 'BentoRecipeQA/25.0' --retry 2 --connect-timeout 8 --max-time 20 -s -o /dev/null -w '%{http_code}' "$url"); test "$code" = 200 || exit 1; done
+          git diff --check
+      - name: Commit production wiring
+        run: |
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git add -A
+          git commit -m 'Bento v25: expand Japanese and Filipino kitchens'
+          git push

@@ -1,0 +1,65 @@
+name: Bento v26 Chinese Thai release gate v2
+on:
+  push:
+    paths:
+      - '.github/workflows/cn-thai-v26-release-gate-v2.yml'
+permissions:
+  contents: write
+jobs:
+  release-review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: {fetch-depth: 0}
+      - uses: actions/setup-node@v4
+        with: {node-version: '22'}
+      - name: Wire v26
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('index.html');s=p.read_text().replace('?v=25p1','?v=26p1')
+          cn='''  <script src="data/chinese-runtime.js?v=26p1" defer></script>\n  <script src="data/chinese-extra-041-050.js?v=26p1" defer></script>\n  <script src="data/chinese-extra-051-060.js?v=26p1" defer></script>\n  <script src="data/chinese-extra-061-070.js?v=26p1" defer></script>\n  <script src="data/chinese-extra-071-080.js?v=26p1" defer></script>\n  <script src="data/chinese-extra-081-090.js?v=26p1" defer></script>'''
+          if 'chinese-extra-041-050.js?v=26p1' not in s:s=s.replace('  <script src="data/chinese-runtime.js?v=26p1" defer></script>',cn)
+          th='''  <script src="data/thai-runtime.js?v=26p1" defer></script>\n  <script src="data/thai-extra-061-070.js?v=26p1" defer></script>\n  <script src="data/thai-extra-071-080.js?v=26p1" defer></script>\n  <script src="data/thai-extra-081-090.js?v=26p1" defer></script>'''
+          if 'thai-extra-061-070.js?v=26p1' not in s:s=s.replace('  <script src="data/thai-runtime.js?v=26p1" defer></script>',th)
+          p.write_text(s)
+          p=Path('service-worker.js');sw=p.read_text().replace('25p1','26p1')
+          cn_sw="""  './data/chinese-runtime.js?v=26p1',\n  './data/chinese-extra-041-050.js?v=26p1',\n  './data/chinese-extra-051-060.js?v=26p1',\n  './data/chinese-extra-061-070.js?v=26p1',\n  './data/chinese-extra-071-080.js?v=26p1',\n  './data/chinese-extra-081-090.js?v=26p1',"""
+          if 'chinese-extra-041-050.js?v=26p1' not in sw:sw=sw.replace("  './data/chinese-runtime.js?v=26p1',",cn_sw)
+          th_sw="""  './data/thai-runtime.js?v=26p1',\n  './data/thai-extra-061-070.js?v=26p1',\n  './data/thai-extra-071-080.js?v=26p1',\n  './data/thai-extra-081-090.js?v=26p1',"""
+          if 'thai-extra-061-070.js?v=26p1' not in sw:sw=sw.replace("  './data/thai-runtime.js?v=26p1',",th_sw)
+          p.write_text(sw)
+          p=Path('app.js');a=p.read_text().replace('const VERSION = 25;','const VERSION = 26;');p.write_text(a)
+          p=Path('data/library_manifest.json');m=json.loads(p.read_text());m.update({'libraryVersion':30,'recipeCount':1198,'newRecipesThisBuild':80,'standardRecipeCount':727,'japaneseRecipeCount':189,'filipinoRecipeCount':184,'koreanRecipeCount':174,'chineseRecipeCount':90,'thaiRecipeCount':90,'dishImageCount':1198,'instructionVersion':30,'detailedInstructionRecipeCount':1198,'appRelease':'26.0','generatedAt':'2026-08-14T14:05:00+08:00'});m['qualityGate']='Permanent Bento recipe standard plus v26 Chinese/Thai expansion gate: dish identity, complete ingredients, recommended serving defaults, non-linear salt/pepper scaling behavior, timing, equipment, critical allergens, accurate references, recipe-specific photo routing, doneness cues, semantic consistency, and comprehensive variable-length instructions with no artificial step cap.';m['cacheFix']='v26.0 uses the 26p1 shell generation and caches all eight Chinese/Thai regional expansion modules plus the existing production library.';m['fullQaRelease']='v26.0 adds 50 Chinese and 30 Thai recipes through a gap-driven regional expansion. This is a coverage pass, not a cuisine-size cap; Chinese and Thai remain eligible for future expansion whenever authentic gaps remain.';q=m.setdefault('qualityAuditSnapshot',{});q['fullLibrary']={'recipeCount':1198,'uniqueRecipeIds':1198,'criticalStructureFailures':0,'releaseGate':'pending v26 QA'};q['standardCuisines']={'recipeCount':727,'Japanese':189,'Filipino':184,'Korean':174,'Chinese':90,'Thai':90,'flaggedRecipes':0,'hierarchy':'Japanese > Filipino > every other standard cuisine','allergenFailures':0,'referenceFailures':0,'equipmentFailures':0,'photoMetadataFailures':0};q['PWA']=dict(q.get('PWA',{}),assetVersion='26p1',recipeQualityRuntime=29);q['v26Expansion']={'ChineseAdded':50,'ThaiAdded':30,'ChineseTotal':90,'ThaiTotal':90,'recipeFailures':'pending','photoMetadataFailures':'pending','methodPolicy':'variable-length; no artificial 5- or 6-step ceiling','coveragePolicy':'coverage determines recipe count; this pass does not cap either cuisine'};p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Blocking full library QA
+        run: |
+          set -e
+          node --check app.js; node --check service-worker.js; for f in data/*.js;do node --check "$f";done
+          node - <<'NODE'
+          const fs=require('fs'),vm=require('vm'),html=fs.readFileSync('index.html','utf8');const srcs=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));if(new Set(srcs).size!==srcs.length)throw Error('duplicate script refs');for(const f of srcs)if(!fs.existsSync(f))throw Error('missing '+f);const c={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};c.window=c;c.globalThis=c;vm.createContext(c);for(const f of srcs)vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f,timeout:10000});const lib=c.BENTO_RECIPE_LIBRARY||[],std=r=>!r.gameDish&&!r.gameSeries&&!r.animeDish&&!r.animeSeries;if(lib.length!==1198||new Set(lib.map(r=>String(r.id))).size!==1198)throw Error('library identity '+lib.length);const count=x=>lib.filter(r=>std(r)&&r.cuisine===x).length,counts={Japanese:count('Japanese'),Filipino:count('Filipino'),Korean:count('Korean'),Chinese:count('Chinese'),Thai:count('Thai')},exp={Japanese:189,Filipino:184,Korean:174,Chinese:90,Thai:90};if(JSON.stringify(counts)!==JSON.stringify(exp))throw Error('counts '+JSON.stringify(counts));if(!(counts.Japanese>counts.Filipino&&counts.Filipino>Math.max(counts.Korean,counts.Chinese,counts.Thai)))throw Error('hierarchy');const fresh=lib.filter(r=>/^cn_0(?:4[1-9]|[5-8]\d|90)$/.test(String(r.id))||/^th_0(?:6[1-9]|[7-8]\d|90)$/.test(String(r.id)));if(fresh.length!==80)throw Error('fresh '+fresh.length);
+          const timing=/\b\d+(?:\s*[–-]\s*\d+)?\s*(?:minutes?|mins?|hours?|hrs?)\b|\b\d+\s*°?C\b/i,cue=/until|should be|look for|golden|tender|set\b|glossy|opaque|puffed|crisp|chewy|springy|soft|firm|reduced|coat|bubbl|translucent|aromatic|flake|temperature|reaches at least|ready when|center|fully cooked|piping hot|no raw/i,bad=[];
+          const stdTitles=new Map();for(const r of lib.filter(std)){const k=String(r.title||'').trim().toLowerCase();if(!k)continue;if(stdTitles.has(k)&&fresh.includes(r))bad.push([r.id,'duplicate standard title with '+stdTitles.get(k)]);else stdTitles.set(k,r.id)}
+          for(const r of fresh){if(!r.title||!r.category||!r.region||!r.equipment||!r.difficulty)bad.push([r.id,'details']);if(!Number.isFinite(+r.servings)||+r.servings<1)bad.push([r.id,'servings']);if(!Number.isFinite(+r.prep)||!Number.isFinite(+r.cook)||!Number.isFinite(+r.total)||+r.total<+r.prep+ +r.cook)bad.push([r.id,'time']);if(+r.inactiveMinutes!==+r.total-+r.prep-+r.cook)bad.push([r.id,'inactive']);if(!Array.isArray(r.ingredients)||r.ingredients.length<6)bad.push([r.id,'ingredients']);if(!Array.isArray(r.steps)||r.steps.length<6)bad.push([r.id,'steps']);if(+r.cook>=10&&!r.steps.some(s=>timing.test(String(s))))bad.push([r.id,'timed method']);if(+r.cook>0&&!r.steps.some(s=>cue.test(String(s))))bad.push([r.id,'doneness']);if(!Array.isArray(r.allergens)||!r.allergens.length)bad.push([r.id,'allergens']);if(!r.source||!Array.isArray(r.sourceUrls)||r.sourceUrls.length<3||r.sourceUrls.some(u=>!/^https:\/\//.test(String(u))))bad.push([r.id,'references']);const pq=(r.photoQueries||[]).join(' ').toLowerCase();if(!Array.isArray(r.photoQueries)||r.photoQueries.length<2||!pq.includes(String(r.title).toLowerCase()))bad.push([r.id,'photo routing']);const meth=r.steps.join(' ').toLowerCase();if(/main ingredient|return the protein|listed garnishes|cook until done/.test(meth))bad.push([r.id,'generic wording'])}if(bad.length)throw Error('recipe QA '+JSON.stringify(bad));
+          const groups=new Map();for(const r of fresh){const k=r.steps.map(x=>String(x).trim().toLowerCase()).join('|');if(groups.has(k))throw Error('duplicate method '+groups.get(k)+' '+r.id);groups.set(k,r.id)}const infer=c.BENTO_INFER_ALLERGENS;if(typeof infer!=='function')throw Error('allergen infer missing');for(const r of fresh){for(const a of infer(r.ingredients||[]))if(!(r.allergens||[]).includes(a))throw Error(`allergen ${r.id}: ${a} not in ${JSON.stringify(r.allergens)}`)}const pb=infer(['2 tbsp peanut butter']),cm=infer(['400 ml coconut milk']);if(!pb.includes('nuts')||pb.includes('milk')||!cm.includes('coconut')||cm.includes('milk'))throw Error('allergen regression');const cn=fresh.filter(r=>r.cuisine==='Chinese').map(r=>r.steps.length),th=fresh.filter(r=>r.cuisine==='Thai').map(r=>r.steps.length);if(Math.max(...cn)<=8||Math.max(...th)<=8)throw Error('apparent method cap');const need=(id,parts)=>{const r=fresh.find(x=>x.id===id),txt=[...(r?.ingredients||[]),...(r?.steps||[])].join(' ').toLowerCase();for(const p of parts)if(!txt.includes(p))throw Error(`${id} safety ${p}`)};need('cn_053',['fresh fish','home-fermented']);need('cn_063',['commercially prepared cooked duck blood']);need('cn_064',['protected or luxury wildlife']);need('th_072',['food-grade']);need('th_076',['refrigerate','71°c']);need('th_079',['separate utensils']);console.log('V26 QA PASS',counts,'fresh',fresh.length,'steps',{Chinese:[Math.min(...cn),Math.max(...cn)],Thai:[Math.min(...th),Math.max(...th)]});
+          NODE
+      - name: PWA manifest and representative photo QA
+        run: |
+          set -e
+          grep -q "const VERSION = 26;" app.js; grep -q "const ASSET_VERSION='26p1';" service-worker.js; grep -q 'bento-shell-v1.0.0-v26p1' service-worker.js
+          for f in chinese-extra-041-050 chinese-extra-051-060 chinese-extra-061-070 chinese-extra-071-080 chinese-extra-081-090 thai-extra-061-070 thai-extra-071-080 thai-extra-081-090;do grep -q "data/$f.js?v=26p1" index.html;grep -q "data/$f.js?v=26p1" service-worker.js;done
+          python - <<'PY'
+          import json
+          m=json.load(open('data/library_manifest.json'));assert m['recipeCount']==1198 and m['standardRecipeCount']==727 and m['chineseRecipeCount']==90 and m['thaiRecipeCount']==90 and m['instructionVersion']==30 and m['appRelease']=='26.0' and m['qualityAuditSnapshot']['PWA']['assetVersion']=='26p1'
+          PY
+          for url in 'https://commons.wikimedia.org/wiki/Category:Dongpo_pork' 'https://commons.wikimedia.org/wiki/File:Xinjiang_Ali_Baba_Uyghur_Lamb_Skewers_(1495455534).jpg' 'https://commons.wikimedia.org/wiki/File:Khao_mok_gai.JPG' 'https://commons.wikimedia.org/wiki/File:Sai_krok_isan.jpg';do code=$(curl -L -A 'BentoRecipeQA/26.0' --retry 2 --retry-delay 2 --connect-timeout 8 --max-time 25 -s -o /dev/null -w '%{http_code}' "$url");test "$code" = 200 || { echo "photo provider $code $url";exit 1;};done
+          git diff --check
+      - name: Finalize and commit reviewed production wiring
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          p=Path('data/library_manifest.json');m=json.loads(p.read_text());q=m['qualityAuditSnapshot'];q['fullLibrary']['releaseGate']='pass';q['v26Expansion'].update({'recipeFailures':0,'photoMetadataFailures':0,'photoProviderCheck':'Representative Wikimedia Commons dish-photo routes passed; all 80 additions carry title-specific photo queries and normal app loading remains lazy/on-demand.'});p.write_text(json.dumps(m,ensure_ascii=False,indent=2)+'\n')
+          PY
+          git config user.name chachinn;git config user.email '140357822+chachinn@users.noreply.github.com';git add app.js index.html service-worker.js data/library_manifest.json data/chinese-photo.js;git diff --cached --check;git commit -m 'Bento v26: wire Chinese and Thai regional expansion';git push

@@ -29,27 +29,34 @@ jobs:
           'data/filipino-extra-170-174.js':'032b2cbbaf9d0128f6fdc2ab46233670f88fb28ad3b70e48f84b79a549c8d95a',
           'data/filipino-extra-175-179.js':'e78da8aa5946d2372be3c295f314551008eba17d10addd04b366e520ca658cd6',
           'data/filipino-extra-180-184.js':'3a078399b8c0ccc33fdbc5558507fc3c8da1b772b752c2b82978404e57b9cfa2'}
-          payload={}
+          payload={}; source={}; bad=[]
           payload_files=sorted(glob.glob('tmp/jp-ph-payload-*.json'))
           if len(payload_files)!=7: raise SystemExit(f'Expected 7 payload files, found {len(payload_files)}: {payload_files}')
           for fn in payload_files:
             obj=json.load(open(fn,encoding='utf-8'))
+            print('PAYLOAD',fn,'keys=',sorted(obj))
             for path,data in obj.items():
               if path in payload: raise SystemExit(f'Duplicate payload path: {path}')
-              payload[path]=data
+              payload[path]=data; source[path]=fn
           generated=set(expected)-{'data/japanese-extra-150-154.js'}
-          missing=generated-set(payload)
-          extra=set(payload)-generated
+          missing=generated-set(payload); extra=set(payload)-generated
           if missing or extra: raise SystemExit(f'Payload coverage mismatch missing={sorted(missing)} extra={sorted(extra)}')
+          decoded={}
           for path,data in payload.items():
-            raw=gzip.decompress(base64.b64decode(data))
-            os.makedirs(os.path.dirname(path),exist_ok=True)
-            open(path,'wb').write(raw)
+            try:
+              raw=gzip.decompress(base64.b64decode(data,validate=True)); decoded[path]=raw
+              print('DECODE PASS',path,'from',source[path],len(raw))
+            except Exception as e:
+              bad.append((path,source[path],repr(e)))
+              print('DECODE FAIL',path,'from',source[path],repr(e))
+          if bad: raise SystemExit('Corrupt payload entries: '+repr(bad))
+          for path,raw in decoded.items():
+            os.makedirs(os.path.dirname(path),exist_ok=True); open(path,'wb').write(raw)
           for path,want in expected.items():
             if not os.path.exists(path): raise SystemExit(f'Missing generated module {path}')
             got=hashlib.sha256(open(path,'rb').read()).hexdigest()
             if got!=want: raise SystemExit(f'Hash mismatch {path}: {got} != {want}')
-            print('PASS',path,got)
+            print('HASH PASS',path,got)
           for fn in payload_files: os.remove(fn)
           for fn in ['.github/workflows/generate-jp-ph-expansion.yml','.github/workflows/jp-ph-gap-audit.yml']:
             if os.path.exists(fn): os.remove(fn)

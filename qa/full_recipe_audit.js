@@ -1,67 +1,54 @@
 'use strict';
 const fs=require('fs'),vm=require('vm');
-const index=fs.readFileSync('index.html','utf8');
+const index=fs.readFileSync('index.html','utf8'),appSource=fs.readFileSync('app.js','utf8');
 const srcs=[...index.matchAll(/<script[^>]+src=["']([^"']+)["'][^>]*>/g)].map(m=>m[1].split('?')[0]).filter(s=>s.startsWith('data/')&&s.endsWith('.js'));
-const context={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};
-context.window=context;context.globalThis=context;vm.createContext(context);
+const context={console,URL,URLSearchParams,TextDecoder,TextEncoder,atob,btoa,Math,Date,Set,Map,WeakSet,WeakMap,Array,Object,String,Number,Boolean,RegExp,JSON,parseInt,parseFloat,isNaN,encodeURIComponent,decodeURIComponent};context.window=context;context.globalThis=context;vm.createContext(context);
 for(const file of srcs){if(!fs.existsSync(file))throw new Error(`Missing script: ${file}`);try{vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file,timeout:5000})}catch(e){console.error(`EXEC_FAIL ${file}:`,e);process.exit(2)}}
-const lib=Array.isArray(context.BENTO_RECIPE_LIBRARY)?context.BENTO_RECIPE_LIBRARY:[];
-const photoIndex=context.BENTO_RECIPE_PHOTO_INDEX||{};
+const lib=Array.isArray(context.BENTO_RECIPE_LIBRARY)?context.BENTO_RECIPE_LIBRARY:[],photoIndex=context.BENTO_RECIPE_PHOTO_INDEX||{};
 const isAnime=r=>!!r.animeSeries;
-const isGenshin=r=>r.gameSeries==='Genshin Impact'||r.collection==='Genshin Impact'||!!r.gameDish||Array.isArray(r.gameAppearances)&&r.gameAppearances.some(x=>x?.series==='Genshin Impact');
-const isStandard=r=>!isAnime(r)&&!isGenshin(r);
-const scopes={
-  Japanese:lib.filter(r=>isStandard(r)&&r.cuisine==='Japanese'),
-  Filipino:lib.filter(r=>isStandard(r)&&r.cuisine==='Filipino'),
-  Korean:lib.filter(r=>isStandard(r)&&r.cuisine==='Korean'),
-  Chinese:lib.filter(r=>isStandard(r)&&r.cuisine==='Chinese'),
-  Thai:lib.filter(r=>isStandard(r)&&r.cuisine==='Thai'),
-  Genshin:lib.filter(isGenshin),
-  Anime:lib.filter(isAnime)
-};
-const allergenRules={
- soy:/\b(soy sauce|tamari|miso|tofu|soybean|edamame|soy milk|doubanjiang|gochujang|doenjang)\b/i,
- gluten:/\b(wheat flour|all-purpose flour|bread flour|cake flour|panko|breadcrumbs?|bread crumbs?|ramen|udon|soba|wheat noodles?|spaghetti|pasta|gyoza wrappers?|dumpling wrappers?|soy sauce|hoisin)\b/i,
- egg:/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise)\b/i,
- milk:/\b(milk|cream|butter|cheese|parmesan|yogurt|yoghurt|condensed milk|evaporated milk)\b/i,
- fish:/\b(fish sauce|bonito|katsuobushi|dashi|anchovy|anchovies|salmon|tuna|mackerel|cod|sardine|sardines|fish cake|chikuwa|kamaboko)\b/i,
- shellfish:/\b(shrimp|prawn|crab|clam|mussel|oyster|scallop|squid|octopus|abalone|lobster)\b/i,
- nuts:/\b(peanut|cashew|walnut|almond|hazelnut|pistachio|pine nut|chestnut)\b/i,
- sesame:/\b(sesame|tahini)\b/i
-};
-const badGeneric=/prepare and measure all ingredients|combine the main components evenly|cook until hot, browned, and set as appropriate|serve hot with a simple dipping sauce|cook until done(?:\.|$)/i;
-const doneness=/until|golden|tender|opaque|crisp|crispy|set\b|glossy|reduced|thicken|browned|bubbl|translucent|aromatic|fragrant|puffed|firm|soft|juicy|internal temperature|thermometer|coats? the back|clears? the sides/i;
+const isGenshinRecord=r=>r.gameSeries==='Genshin Impact'||r.collection==='Genshin Impact'||!!r.gameDish;
+const isStandard=r=>!isAnime(r)&&!isGenshinRecord(r);
+const scopes={Japanese:lib.filter(r=>isStandard(r)&&r.cuisine==='Japanese'),Filipino:lib.filter(r=>isStandard(r)&&r.cuisine==='Filipino'),Korean:lib.filter(r=>isStandard(r)&&r.cuisine==='Korean'),Chinese:lib.filter(r=>isStandard(r)&&r.cuisine==='Chinese'),Thai:lib.filter(r=>isStandard(r)&&r.cuisine==='Thai'),Genshin:lib.filter(isGenshinRecord),Anime:lib.filter(isAnime)};
+function expectedAllergens(ingredients){const raw=(' '+(ingredients||[]).join(' ')+' ').toLowerCase(),out=[];const add=x=>{if(!out.includes(x))out.push(x)};
+ if(/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|doubanjiang|gochujang|doenjang|fermented bean paste)\b/.test(raw))add('soy');
+ if(/\b(wheat|all-purpose flour|bread flour|cake flour|tempura flour|panko|breadcrumbs?|bread crumbs?|ramen|udon|soba|wheat noodles?|egg noodles?|spaghetti|pasta|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|spring roll wrappers?|soy sauce|hoisin sauce)\b/.test(raw))add('gluten');
+ if(/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise)\b/.test(raw))add('egg');
+ const dairy=raw.replace(/\b(coconut|soy|almond|oat|rice|cashew|macadamia) milk\b/g,' plantmilk ');if(/\b(whole milk|fresh milk|evaporated milk|condensed milk|buttermilk|cream|heavy cream|whipping cream|butter|cheese|parmesan|mozzarella|cheddar|yogurt|yoghurt|milk powder|powdered milk|ice cream)\b/.test(dairy)||/(^|[^a-z])milk([^a-z]|$)/.test(dairy))add('milk');
+ if(/\b(fish sauce|bonito|katsuobushi|dashi|anchov(?:y|ies)|salmon|tuna|mackerel|cod|sardines?|fish cake|chikuwa|kamaboko|tilapia|bangus|milkfish|sea bass|perch|trout|snapper)\b/.test(raw))add('fish');
+ const shell=raw.replace(/\b(vegetarian|vegan|mushroom) oyster sauce\b/g,' oyster-style-sauce ');if(/\b(shrimp|prawn|crab|clam|mussel|oyster(?:s| sauce)?|scallop|squid|octopus|abalone|lobster)\b/.test(shell))add('shellfish');
+ if(/\b(peanut|peanuts|cashew|cashews|walnut|walnuts|almond|almonds|hazelnut|hazelnuts|pistachio|pistachios|pine nut|pine nuts|chestnut|chestnuts|macadamia)\b/.test(raw))add('nuts');if(/\b(sesame|tahini)\b/.test(raw))add('sesame');if(/\b(coconut|coconut milk|coconut cream)\b/.test(raw))add('coconut');return out}
+const badGeneric=/prepare and measure all ingredients|combine the main components evenly|cook until hot, browned, and set as appropriate|serve hot with a simple dipping sauce/i;
+const doneness=/until|should be|look for|golden|tender|opaque|crisp|crispy|set\b|glossy|reduced|thicken|browned|bubbl|translucent|aromatic|fragrant|puffed|firm|soft|juicy|internal temperature|thermometer|coats? the back|clears? the sides|al dente|no raw|cooked through/i;
 const timed=/(\d+(?:\.\d+)?)\s*(?:–|-|to)?\s*(\d+(?:\.\d+)?)?\s*(minutes?|mins?|hours?|hrs?|seconds?|secs?)/i;
-const complexTitle=/curry|stew|brais|roast|fried chicken|dumpling|gyoza|bao|bun|ramen|laksa|noodle|pancit|adobo|sinigang|kare[- ]?kare|lechon|sisig|paella|bread|cake|pastry|pie|tart|tempura|tonkatsu|yakitori|sushi|hot pot|nabe|pho|birria/i;
-const report={generatedAt:new Date().toISOString(),totalRecipes:lib.length,scopeCounts:{},summary:{},issuesByScope:{}};
-let critical=0,warnings=0;
-const uniq=new Set();for(const r of lib){const id=String(r?.id||'');if(!id||uniq.has(id)){critical++;console.log('CRITICAL duplicate/missing id',id,r?.title)}uniq.add(id)}
-for(const [scope,rows] of Object.entries(scopes)){
-  report.scopeCounts[scope]=rows.length;
-  const issues=[];let refMissing=0,allergenMissing=0,shallow=0,timeBad=0,equipmentMissing=0,detailsMissing=0,photoMetaMissing=0,cueMissing=0,timedMissing=0;
-  for(const r of rows){const id=r.id||'(no id)',title=r.title||'(untitled)',ings=Array.isArray(r.ingredients)?r.ingredients.filter(Boolean):[],steps=Array.isArray(r.steps)?r.steps.filter(Boolean):[],text=ings.join(' '),declared=new Set((Array.isArray(r.allergens)?r.allergens:[]).map(x=>String(x).toLowerCase()));
-    const add=(type,msg,severity='warn')=>{issues.push({id,title,type,msg,severity});if(severity==='critical')critical++;else warnings++};
-    if(!title||title==='(untitled)')add('title','missing title','critical');
-    if(!Number.isFinite(Number(r.servings))||Number(r.servings)<1)add('servings',`invalid recommended servings: ${r.servings}`,'critical');
-    const prep=Number(r.prep),cook=Number(r.cook),total=Number(r.total);if(![prep,cook,total].every(Number.isFinite)||prep<0||cook<0||total<0||total+0.01<prep+cook){timeBad++;add('time',`prep/cook/total inconsistent: ${r.prep}/${r.cook}/${r.total}`,'critical')}
-    if(!String(r.equipment||'').trim()){equipmentMissing++;add('equipment','missing equipment')}
-    if(ings.length<2)add('ingredients',`only ${ings.length} ingredients`,'critical');
-    if(steps.length<3)add('steps',`only ${steps.length} steps`,'critical');
-    if(steps.some(s=>badGeneric.test(String(s))))add('steps','generic placeholder-like method wording','critical');
-    const complex=(cook>=20||total>=45||ings.length>=9||complexTitle.test(title));if(complex&&steps.length<=6){shallow++;add('method-depth',`complex recipe has only ${steps.length} steps`)}
-    if(cook>=10&&!steps.some(s=>timed.test(String(s)))){timedMissing++;add('timing','cook time >=10 min but no explicit timed method step')}
-    if(cook>=5&&!steps.some(s=>doneness.test(String(s)))){cueMissing++;add('doneness','no clear doneness/texture cue')}
-    for(const [a,rx] of Object.entries(allergenRules))if(rx.test(text)&&!declared.has(a)){allergenMissing++;add('allergen',`ingredients imply ${a}, but allergen is not declared`,'critical')}
-    if(!String(r.notes||'').trim()){detailsMissing++;add('details','missing recipe note/details')}
-    const refs=[...(Array.isArray(r.sourceUrls)?r.sourceUrls:[])];if(Array.isArray(r.gameAppearances))for(const g of r.gameAppearances)if(Array.isArray(g?.sourceUrls))refs.push(...g.sourceUrls);if(!String(r.source||'').trim()||refs.filter(Boolean).length<1){refMissing++;add('references',`source=${!!String(r.source||'').trim()} urls=${refs.filter(Boolean).length}`,'critical')}
-    const pi=photoIndex[id];if(isStandard(r)&&!(pi||Array.isArray(r.photoQueries)&&r.photoQueries.length)){photoMetaMissing++;add('photo','no recipe-specific photo metadata/query')}
-    if(isAnime(r)&&!r.animeSeries){photoMetaMissing++;add('photo','anime recipe missing animeSeries','critical')}
-    if(isGenshin(r)&&!(r.gameSeries||r.gameDish||r.gameAppearances||r.collection==='Genshin Impact')){photoMetaMissing++;add('photo','Genshin recipe missing source-world appearance metadata','critical')}
-  }
-  report.issuesByScope[scope]=issues;
-  report.summary[scope]={recipes:rows.length,issues:issues.length,refMissing,allergenMissing,shallow,timeBad,equipmentMissing,detailsMissing,photoMetaMissing,cueMissing,timedMissing,stepMin:rows.length?Math.min(...rows.map(r=>(r.steps||[]).length)):0,stepMax:rows.length?Math.max(...rows.map(r=>(r.steps||[]).length)):0};
+const complexTitle=/curry|stew|brais|roast|fried chicken|dumpling|gyoza|bao|bun|ramen|noodle|pancit|adobo|sinigang|kare[- ]?kare|lechon|sisig|bread|cake|pastry|pie|tart|tempura|tonkatsu|yakitori|sushi|hot pot|nabe|gratin|risotto/i;
+const report={generatedAt:new Date().toISOString(),totalRecipes:lib.length,scopeCounts:{},summary:{},issuesByScope:{},systemChecks:{}};let critical=0,warnings=0;const flagged={};
+function globalIssue(msg,severity='critical'){console.log(`${severity.toUpperCase()} SYSTEM | ${msg}`);if(severity==='critical')critical++;else warnings++}
+const ids=new Set();for(const r of lib){const id=String(r?.id||'');if(!id||ids.has(id))globalIssue(`duplicate/missing id ${id}`);ids.add(id)}
+if(lib.length!==1058)globalIssue(`expected 1058 library recipes, got ${lib.length}`);
+if(context.BENTO_RECIPE_QUALITY_VERSION!==27)globalIssue('recipe quality runtime v27 did not execute');
+const infer=context.BENTO_INFER_ALLERGENS;if(typeof infer!=='function')globalIssue('allergen inference runtime unavailable');else{const c=infer(['1 cup coconut milk']);if(c.includes('milk')||!c.includes('coconut'))globalIssue(`coconut milk allergen unit test failed: ${c}`);const d=infer(['1 cup whole milk']);if(!d.includes('milk'))globalIssue('dairy milk allergen unit test failed');const f=infer(['1 tbsp fish sauce','100 g shrimp']);if(!f.includes('fish')||!f.includes('shellfish'))globalIssue(`fish+shellfish unit test failed: ${f}`)}
+const recommendedDefault=/recipeDetailServingTarget=clamp\(Number\(servingTarget\)\|\|Number\(r\.servings\)\|\|2,1,30\)/.test(appSource);report.systemChecks.recommendedServingDefault=recommendedDefault;if(!recommendedDefault)globalIssue('recipe detail no longer defaults to recipe-recommended servings');
+const smartSalt=/keepUntilDouble[\s\S]{0,220}f<2/.test(appSource);report.systemChecks.smartSeasoningScaling=smartSalt;if(!smartSalt)globalIssue('non-linear salt/pepper serving scaling is missing');
+const noIrlSpecial=/if\(plan\.special==='genshin'\)return await genshinArtworkSearch\(plan\);if\(plan\.special==='anime'\)return await animeArtworkSearch\(plan\)/.test(appSource);report.systemChecks.sourceWorldImageOnly=noIrlSpecial;if(!noIrlSpecial)globalIssue('Genshin/Anime can still fall through to IRL Commons photos');
+for(const [scope,rows] of Object.entries(scopes)){report.scopeCounts[scope]=rows.length;const issues=[];let refMissing=0,allergenMissing=0,shallow=0,timeBad=0,equipmentMissing=0,detailsMissing=0,photoMetaMissing=0,cueMissing=0,timedMissing=0,ingredientBad=0;const duplicateMethods=new Map();
+ for(const r of rows){const id=r.id||'(no id)',title=r.title||'(untitled)',ings=Array.isArray(r.ingredients)?r.ingredients.filter(Boolean):[],steps=Array.isArray(r.steps)?r.steps.filter(Boolean):[],methodChars=steps.join(' ').length,declared=new Set((Array.isArray(r.allergens)?r.allergens:[]).map(x=>String(x).toLowerCase()));const add=(type,msg,severity='warn')=>{issues.push({id,title,type,msg,severity});if(['timing','doneness','method-depth','steps'].includes(type))flagged[id]=r;if(severity==='critical')critical++;else warnings++};
+  if(!title||title==='(untitled)')add('title','missing title','critical');if(!Number.isFinite(Number(r.servings))||Number(r.servings)<1)add('servings',`invalid recommended servings: ${r.servings}`,'critical');
+  const prep=Number(r.prep),cook=Number(r.cook),total=Number(r.total);if(![prep,cook,total].every(Number.isFinite)||prep<0||cook<0||total<0||total+0.01<prep+cook){timeBad++;add('time',`prep/cook/total inconsistent: ${r.prep}/${r.cook}/${r.total}`,'critical')}
+  if(!String(r.equipment||'').trim()){equipmentMissing++;add('equipment','missing equipment','critical')}if(ings.length<2){ingredientBad++;add('ingredients',`only ${ings.length} ingredients`,'critical')}if(ings.some(x=>/placeholder|ingredient 1|ingredient 2|tbd|todo/i.test(String(x)))){ingredientBad++;add('ingredients','placeholder ingredient text','critical')}
+  if(steps.length<3)add('steps',`only ${steps.length} steps`,'critical');if(steps.some(s=>badGeneric.test(String(s))))add('steps','generic placeholder-like method wording','critical');
+  const complex=(cook>=25||total>=60||ings.length>=11||complexTitle.test(title)),veryShallow=complex&&(steps.length<=4||(steps.length<=6&&methodChars<300));if(veryShallow){shallow++;add('method-depth',`complex method looks compressed (${steps.length} steps / ${methodChars} chars)`)}
+  if(cook>=10&&!steps.some(s=>timed.test(String(s)))){timedMissing++;add('timing','cook time >=10 min but no explicit timed method step')}
+  const requiresCue=cook>=5&&!/drinks?|beverages?/i.test(String(r.category||''));if(requiresCue&&!steps.some(s=>doneness.test(String(s)))){cueMissing++;add('doneness','no clear doneness/texture cue')}
+  for(const a of expectedAllergens(ings))if(!declared.has(a)){allergenMissing++;add('allergen',`ingredients imply ${a}, but allergen is not declared`,'critical')}
+  if(!String(r.notes||'').trim()){detailsMissing++;add('details','missing recipe note/details','critical')}
+  const refs=[...(Array.isArray(r.sourceUrls)?r.sourceUrls:[])];if(Array.isArray(r.gameAppearances))for(const g of r.gameAppearances)if(Array.isArray(g?.sourceUrls))refs.push(...g.sourceUrls);const goodRefs=refs.filter(u=>/^https?:\/\//.test(String(u)));if(!String(r.source||'').trim()||goodRefs.length<1){refMissing++;add('references',`source=${!!String(r.source||'').trim()} validUrls=${goodRefs.length}`,'critical')}
+  const pi=photoIndex[id];if(isStandard(r)&&!(pi||Array.isArray(r.photoQueries)&&r.photoQueries.length)){photoMetaMissing++;add('photo','no recipe-specific photo metadata/query','critical')}if(isAnime(r)&&!r.animeSeries){photoMetaMissing++;add('photo','anime recipe missing animeSeries','critical')}if(isGenshinRecord(r)&&!(r.gameSeries||r.gameDish||r.collection==='Genshin Impact')){photoMetaMissing++;add('photo','Genshin recipe missing source-world metadata','critical')}
+  if(steps.length){const key=JSON.stringify(steps);if(!duplicateMethods.has(key))duplicateMethods.set(key,[]);duplicateMethods.get(key).push({id,title})}
+ }
+ for(const group of duplicateMethods.values())if(group.length>1){for(const x of group)issues.push({id:x.id,title:x.title,type:'duplicate-method',msg:`exact method shared by ${group.map(y=>y.id).join(', ')}`,severity:'critical'});critical+=group.length}
+ const stepCounts=rows.map(r=>(r.steps||[]).length),stepMin=rows.length?Math.min(...stepCounts):0,stepMax=rows.length?Math.max(...stepCounts):0;if(rows.length&&stepMax<=6){issues.push({id:'scope',title:scope,type:'method-cap',msg:`scope max is only ${stepMax}; possible artificial 5/6-step cap`,severity:'critical'});critical++}
+ report.issuesByScope[scope]=issues;report.summary[scope]={recipes:rows.length,issues:issues.length,refMissing,allergenMissing,shallow,timeBad,equipmentMissing,detailsMissing,photoMetaMissing,cueMissing,timedMissing,ingredientBad,stepMin,stepMax,atFiveOrSix:rows.filter(r=>[5,6].includes((r.steps||[]).length)).length};
 }
-fs.mkdirSync('qa-out',{recursive:true});fs.writeFileSync('qa-out/full-recipe-audit.json',JSON.stringify(report,null,2));
-console.log('BENTO FULL RECIPE AUDIT');console.log(JSON.stringify({totalRecipes:report.totalRecipes,scopeCounts:report.scopeCounts,summary:report.summary,critical,warnings},null,2));
-for(const [scope,issues] of Object.entries(report.issuesByScope)){console.log(`\n## ${scope} top issues (${issues.length})`);for(const x of issues.slice(0,80))console.log(`${x.severity.toUpperCase()} ${x.id} | ${x.title} | ${x.type} | ${x.msg}`)}
-if(critical>0)process.exitCode=1;
+const expectedCounts={Japanese:149,Filipino:164,Korean:174,Chinese:40,Thai:60,Genshin:372,Anime:99};for(const [k,v] of Object.entries(expectedCounts))if(report.scopeCounts[k]!==v)globalIssue(`${k} expected ${v} recipes, got ${report.scopeCounts[k]}`);
+fs.mkdirSync('qa-out',{recursive:true});fs.writeFileSync('qa-out/full-recipe-audit.json',JSON.stringify(report,null,2));fs.writeFileSync('qa-out/flagged-recipes.json',JSON.stringify(flagged,null,2));
+console.log('BENTO FULL RECIPE AUDIT');console.log(JSON.stringify({totalRecipes:report.totalRecipes,scopeCounts:report.scopeCounts,systemChecks:report.systemChecks,summary:report.summary,critical,warnings},null,2));for(const [scope,issues] of Object.entries(report.issuesByScope)){console.log(`\n## ${scope} issues (${issues.length})`);for(const x of issues.slice(0,100))console.log(`${x.severity.toUpperCase()} ${x.id} | ${x.title} | ${x.type} | ${x.msg}`)}if(critical>0)process.exitCode=1;

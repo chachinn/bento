@@ -87,6 +87,9 @@ const CORE=[
   './data/chinese-photo.js?v=24p2',
   './data/thai-runtime.js?v=24p2',
   './data/recipe-quality-runtime.js?v=24p2',
+  './data/recipe-content-fixes-standard.js?v=24p2',
+  './data/recipe-content-fixes-genshin.js?v=24p2',
+  './data/recipe-content-fixes-anime.js?v=24p2',
   './app.js?v=24p2'
 ];
 const OPTIONAL_ICONS=[

@@ -1,17 +1,18 @@
 {
-  "libraryVersion": 31,
-  "recipeCount": 1328,
-  "newRecipesThisBuild": 130,
-  "cuisineCount": 6,
+  "libraryVersion": 32,
+  "recipeCount": 1499,
+  "newRecipesThisBuild": 171,
+  "cuisineCount": 7,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
     "Korean",
     "Chinese",
     "Thai",
-    "Vietnamese"
+    "Vietnamese",
+    "Indian"
   ],
-  "standardRecipeCount": 857,
+  "standardRecipeCount": 1028,
   "japaneseRecipeCount": 189,
   "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
@@ -68,21 +69,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 1328,
+  "dishImageCount": 1499,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 31,
+  "instructionVersion": 32,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 1328,
+  "detailedInstructionRecipeCount": 1499,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v27.0 uses the 27p1 shell generation and caches the Vietnamese runtime plus all 13 Vietnamese regional recipe modules alongside the existing production library.",
-  "generatedAt": "2026-08-14T14:59:00+08:00",
+  "cacheFix": "v28.0 uses the 28p1 shell generation and caches the Indian runtime plus all 17 Indian regional recipe modules alongside the existing production library.",
+  "generatedAt": "2026-08-14T17:28:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -97,7 +98,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "27.0",
+  "appRelease": "28.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -119,18 +120,18 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "Permanent Bento recipe standard plus v27 Vietnamese cuisine gate: authentic dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, accurate official references, title-specific photo routing, doneness cues, semantic consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling.",
+  "qualityGate": "Permanent Bento recipe standard plus v28 Indian cuisine gate: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, official India Tourism references, title-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling.",
   "servingScalePolicy": "Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
-  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame and coconut. Plant milks and nut butters are excluded from false dairy detection.",
+  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Indian dairy terms such as ghee, paneer, chhena/chhenna, chhurpi, khoya/khoa/mawa, rabri, curd and dahi are recognized; atta/maida/sooji/rava/semolina and common Indian breads are recognized as gluten sources. Plant milks and nut butters are excluded from false dairy detection.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 1328,
-      "uniqueRecipeIds": 1328,
+      "recipeCount": 1499,
+      "uniqueRecipeIds": 1499,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 857,
+      "recipeCount": 1028,
       "Japanese": 189,
       "Filipino": 184,
       "Korean": 174,
@@ -142,7 +143,8 @@
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
-      "photoMetadataFailures": 0
+      "photoMetadataFailures": 0,
+      "Indian": 171
     },
     "methodDepth": {
       "policy": "No fixed step count. The recipe itself determines the number of numbered steps.",
@@ -153,7 +155,8 @@
       "ThaiStepRange": "6-10",
       "GenshinStepRange": "4-12",
       "AnimeStepRange": "4-10",
-      "VietnameseStepRange": "7-10"
+      "VietnameseStepRange": "7-10",
+      "IndianStepRange": "4-12"
     },
     "Genshin": {
       "recipeCount": 372,
@@ -177,8 +180,8 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "27p1",
-      "recipeQualityRuntime": 29,
+      "assetVersion": "28p1",
+      "recipeQualityRuntime": 30,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
     },
@@ -223,12 +226,39 @@
         "National home dishes, sweets and drinks"
       ],
       "photoProviderCheck": "Representative Wikimedia Commons Vietnamese food routes and the Vietnam Tourism food reference passed; all 130 recipes carry title-specific lazy/on-demand photo queries."
+    },
+    "v28Indian": {
+      "IndianAdded": 171,
+      "IndianTotal": 171,
+      "recipeFailures": 0,
+      "preRuntimeAllergenFailures": 0,
+      "photoMetadataFailures": 0,
+      "methodPolicy": "variable-length; no artificial step ceiling",
+      "observedStepRange": "4-12",
+      "coveragePolicy": "coverage determines recipe count; 171 is this reviewed pass, not a cap",
+      "regionalCoverage": [
+        "Punjab / Delhi / North India",
+        "Awadh / Uttar Pradesh",
+        "Bihar / Jharkhand",
+        "Kashmir / Jammu & Kashmir",
+        "Himachal Pradesh / Uttarakhand",
+        "Rajasthan / Gujarat / Malwa",
+        "Maharashtra / Goa",
+        "West Bengal / Odisha / Assam",
+        "Tamil Nadu / Kerala",
+        "Karnataka / Andhra Pradesh / Telangana-Hyderabad",
+        "Nagaland / Manipur / Meghalaya / Sikkim and Eastern Himalayas",
+        "Pan-Indian sweets, street food and drinks"
+      ],
+      "referencePolicy": "All 171 recipes carry four HTTPS references drawn from official Incredible India / India Tourism domains.",
+      "photoPolicy": "All 171 recipes carry at least two title-specific lazy/on-demand food-photo queries."
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v27.0 introduces a 130-recipe Vietnamese library spanning Hanoi/Northern, Hue/Central, Hoi An-Da Nang, South-Central/Central Highlands, Saigon/Southern, Mekong, everyday home dishes, sweets and drinks. 130 is the result of this coverage pass, not a cuisine cap.",
-  "vietnameseRecipeCount": 130
+  "fullQaRelease": "v28.0 introduces a 171-recipe Indian library spanning major North, West, Central, East, Northeast, South and Deccan traditions, including breads, rice, lentils, vegetables, meat, seafood, street food, sweets and drinks. 171 is the result of this reviewed coverage pass, not a cuisine cap.",
+  "vietnameseRecipeCount": 130,
+  "indianRecipeCount": 171
 }

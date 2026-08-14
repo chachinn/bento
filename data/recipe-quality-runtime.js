@@ -6,19 +6,20 @@ const has=(t,rx)=>rx.test(t);
 function inferAllergens(ingredients){
   const raw=(' '+(ingredients||[]).join(' ')+' ').toLowerCase();
   const out=[];
-  if(has(raw,/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|doubanjiang|gochujang|doenjang|fermented bean paste)\b/))out.push('soy');
-  if(has(raw,/\b(wheat|all-purpose flour|bread flour|cake flour|tempura flour|panko|breadcrumbs?|bread crumbs?|ramen|udon|soba|wheat noodles?|egg noodles?|spaghetti|pasta|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|spring roll wrappers?|soy sauce|hoisin sauce)\b/))out.push('gluten');
+  if(has(raw,/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|doubanjiang|gochujang|doenjang|axone|akhuni|fermented soybeans?|fermented bean paste)\b/))out.push('soy');
+  if(has(raw,/\b(wheat|whole wheat|whole-wheat|atta|all-purpose flour|bread flour|cake flour|tempura flour|semolina|sooji|rava|maida|panko|breadcrumbs?|bread crumbs?|ramen|udon|soba|wheat noodles?|egg noodles?|noodles|spaghetti|pasta|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|momo wrappers?|spring roll wrappers?|soy sauce|hoisin sauce|bread|pav|naan|kulcha|bhature?|parotta)\b/))out.push('gluten');
   if(has(raw,/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise)\b/))out.push('egg');
   const dairy=raw
     .replace(/\b(coconut|soy|almond|oat|rice|cashew|macadamia) milk\b/g,' plantmilk ')
     .replace(/\b(peanut|almond|cashew|walnut|hazelnut|pistachio|macadamia|sunflower seed) butter\b/g,' nutbutter ');
-  if(has(dairy,/\b(whole milk|fresh milk|evaporated milk|condensed milk|buttermilk|cream|heavy cream|whipping cream|butter|cheese|parmesan|mozzarella|cheddar|yogurt|yoghurt|milk powder|powdered milk|ice cream)\b/)||/(^|[^a-z])milk([^a-z]|$)/.test(dairy))out.push('milk');
-  if(has(raw,/\b(fish sauce|bonito|katsuobushi|dashi|anchov(?:y|ies)|salmon|tuna|mackerel|cod|sardines?|fish cake|chikuwa|kamaboko|tilapia|bangus|milkfish|sea bass|perch|trout|snapper|shirasu|bonito)\b/))out.push('fish');
+  if(has(dairy,/\b(whole milk|fresh milk|evaporated milk|condensed milk|buttermilk|cream|heavy cream|whipping cream|butter|ghee|cheese|parmesan|mozzarella|cheddar|paneer|chhena|chhenna|chenna|chhurpi|khoya|khoa|mawa|rabri|curd|dahi|yogurt|yoghurt|milk powder|powdered milk|ice cream)\b/)||/(^|[^a-z])milk([^a-z]|$)/.test(dairy))out.push('milk');
+  if(has(raw,/\b(fish|fish sauce|bonito|katsuobushi|dashi|anchov(?:y|ies)|salmon|tuna|mackerel|cod|sardines?|fish cake|chikuwa|kamaboko|tilapia|bangus|milkfish|sea bass|perch|trout|snapper|shirasu|hilsa|ilish|rohu|carp|fermented fish|fermented dried fish)\b/))out.push('fish');
   const shell=raw.replace(/\b(vegetarian|vegan|mushroom) oyster sauce\b/g,' oyster-style-sauce ');
-  if(has(shell,/\b(shrimp|prawn|crab|clam|mussel|oyster(?:s| sauce)?|scallop|squid|octopus|abalone|lobster)\b/))out.push('shellfish');
+  if(has(shell,/\b(shrimp|prawn|prawns|crab|clam|mussel|oyster(?:s| sauce)?|scallop|squid|octopus|abalone|lobster)\b/))out.push('shellfish');
   if(has(raw,/\b(peanut|peanuts|peanut butter|cashew|cashews|walnut|walnuts|almond|almonds|hazelnut|hazelnuts|pistachio|pistachios|pine nut|pine nuts|chestnut|chestnuts|macadamia)\b/))out.push('nuts');
   if(has(raw,/\b(sesame|tahini)\b/))out.push('sesame');
-  if(has(raw,/\b(coconut|coconut milk|coconut cream)\b/))out.push('coconut');
+  if(has(raw,/\b(coconut|coconut milk|coconut cream|coconut water|coconut oil|grated coconut)\b/))out.push('coconut');
+  if(has(raw,/\b(mustard|mustard seeds?|mustard oil|mustard paste|kasundi)\b/))out.push('mustard');
   return uniq(out);
 }
 for(const r of lib){
@@ -31,8 +32,8 @@ for(const r of lib){
     r.photoQueries=[`${r.title} ${r.cuisine||''} food`.trim(),`${r.title} dish`];
     photos[r.id]={queries:r.photoQueries,square:true,source:'Wikimedia Commons runtime search'};
   }
-  r.recipeQualityVersion=29;
+  r.recipeQualityVersion=30;
 }
-window.BENTO_RECIPE_QUALITY_VERSION=29;
+window.BENTO_RECIPE_QUALITY_VERSION=30;
 window.BENTO_INFER_ALLERGENS=inferAllergens;
 })();

@@ -1,7 +1,7 @@
 {
-  "libraryVersion": 28,
-  "recipeCount": 1058,
-  "newRecipesThisBuild": 0,
+  "libraryVersion": 29,
+  "recipeCount": 1118,
+  "newRecipesThisBuild": 60,
   "cuisineCount": 5,
   "verifiedCuisineLibraries": [
     "Japanese",
@@ -10,9 +10,9 @@
     "Chinese",
     "Thai"
   ],
-  "standardRecipeCount": 587,
-  "japaneseRecipeCount": 149,
-  "filipinoRecipeCount": 164,
+  "standardRecipeCount": 647,
+  "japaneseRecipeCount": 189,
+  "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
   "chineseRecipeCount": 40,
   "thaiRecipeCount": 60,
@@ -67,21 +67,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 1058,
+  "dishImageCount": 1118,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 28,
+  "instructionVersion": 29,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 1058,
+  "detailedInstructionRecipeCount": 1118,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v24.1 uses the 24p2 shell generation and caches every recipe QA/content layer, including Genshin source-identity and reviewed source-exception fixes.",
-  "generatedAt": "2026-08-14T12:55:00+08:00",
+  "cacheFix": "v25.0 uses the 25p1 shell generation and caches the Japanese/Filipino expansion plus every recipe QA/content layer.",
+  "generatedAt": "2026-08-14T13:25:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -96,7 +96,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "24.1",
+  "appRelease": "25.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -118,24 +118,25 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "Full production QA covers Japanese, Filipino, Korean, Chinese, Thai, Genshin and Anime. Recipes are checked for recommended servings, ingredient completeness, allergen coverage, prep/cook/total consistency, equipment/details, references, photo/source metadata, explicit cooking timing where needed, doneness/texture cues, and variable-length methods with no artificial 5- or 6-step cap.",
-  "servingScalePolicy": "Recipe detail opens at each recipe's recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
-  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame and coconut. Plant milks such as coconut milk are not treated as dairy milk.",
+  "qualityGate": "Full production QA plus v25 expansion gate: Japanese and Filipino additions require complete ingredients, equipment, allergens, references, recipe-specific photo queries, consistent prep/cook/total timing, meaningful doneness cues, recommended serving defaults, and comprehensive variable-length instructions with no artificial 5- or 6-step cap.",
+  "servingScalePolicy": "Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
+  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame and coconut. Plant milks and nut butters are excluded from false dairy detection.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 1058,
-      "uniqueRecipeIds": 1058,
+      "recipeCount": 1118,
+      "uniqueRecipeIds": 1118,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 587,
-      "Japanese": 149,
-      "Filipino": 164,
+      "recipeCount": 647,
+      "Japanese": 189,
+      "Filipino": 184,
       "Korean": 174,
       "Chinese": 40,
       "Thai": 60,
       "flaggedRecipes": 0,
+      "hierarchy": "Japanese > Filipino > every other standard cuisine",
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
@@ -177,11 +178,22 @@
       "recipeQualityRuntime": 27,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
+    },
+    "v25Expansion": {
+      "JapaneseAdded": 40,
+      "FilipinoAdded": 20,
+      "JapaneseTotal": 189,
+      "FilipinoTotal": 184,
+      "hierarchy": "Japanese > Filipino > Korean > Thai > Chinese by current counts",
+      "recipeFailures": 0,
+      "photoMetadataFailures": 0,
+      "photoProviderCheck": "Wikimedia indexed spot-check passed; bulk CI API requests are avoided because Wikimedia rate-limits burst audit traffic",
+      "methodPolicy": "variable-length; no artificial 5- or 6-step ceiling"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v24.1 audits and repairs Japanese, Filipino, Korean, Chinese, Thai, Genshin and Anime recipes; adds cross-library allergen inference, smart seasoning scaling, source-world-only Genshin/Anime image routing, recipe-specific timing/doneness corrections, and Genshin dish-identity/source-exception QA."
+  "fullQaRelease": "v25.0 adds 40 Japanese and 20 Filipino gap-driven recipes after per-recipe expansion QA, restores Japanese as the largest cuisine and Filipino as second-largest, and hardens allergen inference for nut butters."
 }

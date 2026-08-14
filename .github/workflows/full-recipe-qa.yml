@@ -43,6 +43,8 @@ jobs:
           node --check app.js
           node --check service-worker.js
           find data -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Export full library
+        run: node qa/export_full_library.js
       - name: Full recipe audit
         run: node qa/full_recipe_audit.js
       - name: Upload audit report

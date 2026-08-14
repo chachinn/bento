@@ -1,15 +1,16 @@
 {
-  "libraryVersion": 24,
-  "recipeCount": 998,
-  "newRecipesThisBuild": 2,
-  "cuisineCount": 4,
+  "libraryVersion": 26,
+  "recipeCount": 1058,
+  "newRecipesThisBuild": 60,
+  "cuisineCount": 5,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
     "Korean",
-    "Chinese"
+    "Chinese",
+    "Thai"
   ],
-  "standardRecipeCount": 527,
+  "standardRecipeCount": 587,
   "japaneseRecipeCount": 149,
   "filipinoRecipeCount": 164,
   "koreanRecipeCount": 174,
@@ -64,21 +65,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 998,
+  "dishImageCount": 1058,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Real online food photography from Wikimedia Commons; anime screenshots, character art, manga panels and game artwork are not used as recipe photography.",
   "photoMode": "online-only",
-  "instructionVersion": 24,
+  "instructionVersion": 26,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 998,
+  "detailedInstructionRecipeCount": 1058,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v23.2 uses the 23p3 shell generation for the short usability release.",
-  "generatedAt": "2026-08-13T23:50:00+08:00",
+  "cacheFix": "v24.0 uses the 24p1 shell generation and caches the Chinese/Thai method-depth layer plus the reviewed Thai library.",
+  "generatedAt": "2026-08-14T10:05:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -93,7 +94,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote photos are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "23.2",
+  "appRelease": "24.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -115,19 +116,20 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "v23.0 adds 40 reviewed Chinese recipes on top of the audited v22.2 library; IDs, counts, metadata and method structure are regression checked.",
+  "qualityGate": "Chinese and Thai methods are reviewed against the variable-length v22.2 standard. Simple dishes stay concise; complex dishes retain every meaningful preparation, cooking, doneness, resting and finishing stage. No maximum step count is imposed.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 998,
-      "uniqueRecipeIds": 998,
+      "recipeCount": 1058,
+      "uniqueRecipeIds": 1058,
       "criticalStructureFailures": 0
     },
     "standardCuisines": {
-      "recipeCount": 527,
+      "recipeCount": 587,
       "Japanese": 149,
       "Filipino": 164,
       "Korean": 174,
       "Chinese": 40,
+      "Thai": 60,
       "flaggedRecipes": 0
     },
     "Genshin": {
@@ -144,39 +146,44 @@
       "recipesWithoutStrongDonenessCue": 0
     },
     "methodDepth": {
-      "recipesReviewed": 956,
-      "recipesWithMethodChanges": 288,
-      "Japanese": 45,
-      "Filipino": 102,
-      "Korean": 59,
-      "Genshin": 45,
-      "Anime": 37,
-      "manualMethodRewrites": 14,
-      "stepHistogram": {
-        "4": 14,
-        "5": 153,
-        "6": 410,
-        "7": 220,
-        "8": 61,
-        "9": 47,
-        "10": 25,
-        "11": 15,
-        "12": 6,
-        "13": 4,
-        "14": 1
+      "policy": "No fixed step count. The recipe itself determines the number of numbered steps.",
+      "benchmark": "Japanese, Filipino and Korean method-depth review from v22.2",
+      "Chinese": {
+        "recipesReviewed": 40,
+        "recipesRewritten": 40,
+        "complexRecipesAllowedPastFiveSteps": true
       },
-      "maximumSteps": 14,
-      "minimumPolicy": "No fixed step count. Methods use as many numbered steps as the dish requires."
+      "Thai": {
+        "recipesReviewed": 60,
+        "recipesRewrittenForDepth": 40,
+        "alreadyDetailedExpansionRecipesReviewed": 20,
+        "complexRecipesAllowedPastFiveSteps": true
+      }
     },
     "Chinese": {
       "recipeCount": 40,
       "uniqueRecipeIds": 40,
-      "methodStructureFailures": 0
+      "methodStructureFailures": 0,
+      "methodPolicy": "variable-length; no artificial maximum"
+    },
+    "Thai": {
+      "recipeCount": 60,
+      "uniqueRecipeIds": 60,
+      "methodStructureFailures": 0,
+      "methodPolicy": "variable-length; no artificial maximum",
+      "regionalCoverage": [
+        "Central Thailand",
+        "Northern Thailand",
+        "Isan/Northeastern Thailand",
+        "Southern Thailand"
+      ]
     }
   },
   "cookingExperience": "v22 adds a before-you-start guide, timed-step summary, likely-current ingredients, next-step preview, missing-only grocery action, and serving-accurate Pantry deduction review.",
   "cleanupRelease": "v22.2 completes the method-depth cleanup before Chinese cuisine expansion. Existing recipes are no longer authored toward an artificial 5–8-step ceiling; simple dishes remain concise and complex dishes may use 9–14+ steps as needed.",
   "chineseRecipeCount": 40,
-  "chineseRelease": "v23.1 keeps the 40 reviewed Chinese recipes and completes native-name integration: Chinese characters are searchable and shown with pinyin on recipe surfaces.",
-  "shortUpdateRelease": "v23.2 adds Pork Estofado and Japanese Soufflé Pancakes; fixes the top search action; adds collapsible Genshin regions; prefers source-world visuals for Genshin and Anime with real-food fallback; makes planned recipes directly openable with planned serving counts; adds searchable meal selection; and adds compact bulk grocery/pantry controls."
+  "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
+  "shortUpdateRelease": "v23.2 adds Pork Estofado and Japanese Soufflé Pancakes; fixes the top search action; adds collapsible Genshin regions; prefers source-world visuals for Genshin and Anime with real-food fallback; makes planned recipes directly openable with planned serving counts; adds searchable meal selection; and adds compact bulk grocery/pantry controls.",
+  "thaiRecipeCount": 60,
+  "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks."
 }

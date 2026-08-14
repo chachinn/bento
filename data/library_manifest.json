@@ -1,16 +1,17 @@
 {
-  "libraryVersion": 30,
-  "recipeCount": 1198,
-  "newRecipesThisBuild": 80,
-  "cuisineCount": 5,
+  "libraryVersion": 31,
+  "recipeCount": 1328,
+  "newRecipesThisBuild": 130,
+  "cuisineCount": 6,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
     "Korean",
     "Chinese",
-    "Thai"
+    "Thai",
+    "Vietnamese"
   ],
-  "standardRecipeCount": 727,
+  "standardRecipeCount": 857,
   "japaneseRecipeCount": 189,
   "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
@@ -67,21 +68,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 1198,
+  "dishImageCount": 1328,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 30,
+  "instructionVersion": 31,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 1198,
+  "detailedInstructionRecipeCount": 1328,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v26.0 uses the 26p1 shell generation and caches all eight Chinese/Thai regional expansion modules plus the existing production library.",
-  "generatedAt": "2026-08-14T14:05:00+08:00",
+  "cacheFix": "v27.0 uses the 27p1 shell generation and caches the Vietnamese runtime plus all 13 Vietnamese regional recipe modules alongside the existing production library.",
+  "generatedAt": "2026-08-14T14:59:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -96,7 +97,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "26.0",
+  "appRelease": "27.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -118,21 +119,22 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "Permanent Bento recipe standard plus v26 Chinese/Thai expansion gate: dish identity, complete ingredients, recommended serving defaults, non-linear salt/pepper scaling behavior, timing, equipment, critical allergens, accurate references, recipe-specific photo routing, doneness cues, semantic consistency, and comprehensive variable-length instructions with no artificial step cap.",
+  "qualityGate": "Permanent Bento recipe standard plus v27 Vietnamese cuisine gate: authentic dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, accurate official references, title-specific photo routing, doneness cues, semantic consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling.",
   "servingScalePolicy": "Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
   "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame and coconut. Plant milks and nut butters are excluded from false dairy detection.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 1198,
-      "uniqueRecipeIds": 1198,
+      "recipeCount": 1328,
+      "uniqueRecipeIds": 1328,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 727,
+      "recipeCount": 857,
       "Japanese": 189,
       "Filipino": 184,
       "Korean": 174,
+      "Vietnamese": 130,
       "Chinese": 90,
       "Thai": 90,
       "flaggedRecipes": 0,
@@ -150,7 +152,8 @@
       "ChineseStepRange": "5-12",
       "ThaiStepRange": "6-10",
       "GenshinStepRange": "4-12",
-      "AnimeStepRange": "4-10"
+      "AnimeStepRange": "4-10",
+      "VietnameseStepRange": "7-10"
     },
     "Genshin": {
       "recipeCount": 372,
@@ -174,7 +177,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "26p1",
+      "assetVersion": "27p1",
       "recipeQualityRuntime": 29,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -200,11 +203,32 @@
       "methodPolicy": "variable-length; no artificial 5- or 6-step ceiling",
       "coveragePolicy": "coverage determines recipe count; this pass does not cap either cuisine",
       "photoProviderCheck": "Representative Wikimedia Commons dish-photo routes passed; all 80 additions carry title-specific photo queries and normal app loading remains lazy/on-demand."
+    },
+    "v27Vietnamese": {
+      "VietnameseAdded": 130,
+      "VietnameseTotal": 130,
+      "recipeFailures": 0,
+      "preRuntimeAllergenFailures": 0,
+      "photoMetadataFailures": 0,
+      "methodPolicy": "variable-length; no artificial 5- or 6-step ceiling",
+      "coveragePolicy": "coverage determines recipe count; 130 is this pass, not a cap",
+      "regionalCoverage": [
+        "Hanoi / Northern",
+        "Red River and northern regional",
+        "Hue / Central",
+        "Quang Nam / Hoi An / Da Nang",
+        "South-Central / Central Highlands",
+        "Ho Chi Minh City / Southern",
+        "Mekong Delta",
+        "National home dishes, sweets and drinks"
+      ],
+      "photoProviderCheck": "Representative Wikimedia Commons Vietnamese food routes and the Vietnam Tourism food reference passed; all 130 recipes carry title-specific lazy/on-demand photo queries."
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v26.0 adds 50 Chinese and 30 Thai recipes through a gap-driven regional expansion. This is a coverage pass, not a cuisine-size cap; Chinese and Thai remain eligible for future expansion whenever authentic gaps remain."
+  "fullQaRelease": "v27.0 introduces a 130-recipe Vietnamese library spanning Hanoi/Northern, Hue/Central, Hoi An-Da Nang, South-Central/Central Highlands, Saigon/Southern, Mekong, everyday home dishes, sweets and drinks. 130 is the result of this coverage pass, not a cuisine cap.",
+  "vietnameseRecipeCount": 130
 }

@@ -1,0 +1,188 @@
+name: Build Bento Chinese and Thai method-depth review v2
+
+on:
+  push:
+    branches: [bento-cn-thai-method-depth]
+    paths:
+      - '.github/workflows/cn-thai-method-depth-release-v2.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build clean review from current main
+        run: |
+          set -euo pipefail
+          git fetch origin main bento-thai-v24 bento-cn-thai-method-depth
+          git checkout -B bento-v24-cn-thai-review origin/main
+
+          for f in \
+            data/thai-recipes-00.js \
+            data/thai-recipes-01.js \
+            data/thai-recipes-02.js \
+            data/thai-recipes-03.js \
+            data/thai-recipes-04.js \
+            data/thai-recipes-05.js \
+            data/thai-recipes-06.js \
+            data/thai-extra-041-050.js \
+            data/thai-extra-051-060.js \
+            data/thai-runtime.js
+          do
+            git show "origin/bento-thai-v24:$f" > "$f"
+          done
+          git show "origin/bento-cn-thai-method-depth:data/cuisine-method-depth.js" > data/cuisine-method-depth.js
+
+      - name: Wire release
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import json
+
+          p=Path('app.js'); s=p.read_text()
+          assert 'const VERSION = 23;' in s
+          p.write_text(s.replace('const VERSION = 23;','const VERSION = 24;',1))
+
+          p=Path('data/chinese-meta-core.js'); s=p.read_text()
+          assert 'instructionVersion:23' in s
+          p.write_text(s.replace('instructionVersion:23','instructionVersion:26',1))
+
+          p=Path('data/thai-runtime.js'); s=p.read_text()
+          assert 'instructionVersion:25' in s
+          s=s.replace('instructionVersion:25','instructionVersion:26',1)
+          s=s.replace("auditStatus:'Thai library reviewed · 2026'","auditStatus:'Method depth reviewed · 2026'",1)
+          p.write_text(s)
+
+          p=Path('index.html'); s=p.read_text().replace('23p3','24p1')
+          anchor='  <script src="data/chinese-runtime.js?v=24p1" defer></script>'
+          assert anchor in s
+          before='\n'.join([f'  <script src="data/thai-recipes-{i:02d}.js?v=24p1" defer></script>' for i in range(7)] + [
+            '  <script src="data/thai-extra-041-050.js?v=24p1" defer></script>',
+            '  <script src="data/thai-extra-051-060.js?v=24p1" defer></script>',
+            '  <script src="data/cuisine-method-depth.js?v=24p1" defer></script>'
+          ])
+          s=s.replace(anchor,before+'\n'+anchor,1)
+          app='  <script src="app.js?v=24p1" defer></script>'
+          assert app in s
+          s=s.replace(app,'  <script src="data/thai-runtime.js?v=24p1" defer></script>\n'+app,1)
+          p.write_text(s)
+
+          p=Path('service-worker.js'); s=p.read_text()
+          assert "const CACHE='bento-shell-v0.9.2-v23p3';" in s
+          s=s.replace("const CACHE='bento-shell-v0.9.2-v23p3';","const CACHE='bento-shell-v1.0.0-v24p1';",1)
+          s=s.replace("const ASSET_VERSION='23p3';","const ASSET_VERSION='24p1';",1).replace('?v=23p3','?v=24p1')
+          anchor="  './data/chinese-runtime.js?v=24p1',"
+          assert anchor in s
+          before='\n'.join([f"  './data/thai-recipes-{i:02d}.js?v=24p1'," for i in range(7)] + [
+            "  './data/thai-extra-041-050.js?v=24p1',",
+            "  './data/thai-extra-051-060.js?v=24p1',",
+            "  './data/cuisine-method-depth.js?v=24p1',"
+          ])
+          s=s.replace(anchor,before+'\n'+anchor,1)
+          app="  './app.js?v=24p1'"
+          assert app in s
+          s=s.replace(app,"  './data/thai-runtime.js?v=24p1',\n"+app,1)
+          p.write_text(s)
+
+          p=Path('data/library_manifest.json'); d=json.loads(p.read_text())
+          d.update({
+            'libraryVersion':26,'recipeCount':1058,'newRecipesThisBuild':60,'cuisineCount':5,
+            'verifiedCuisineLibraries':['Japanese','Filipino','Korean','Chinese','Thai'],
+            'standardRecipeCount':587,'chineseRecipeCount':40,'thaiRecipeCount':60,
+            'dishImageCount':1058,'instructionVersion':26,
+            'instructionStyle':'comprehensive-variable-length','detailedInstructionRecipeCount':1058,
+            'appRelease':'24.0','generatedAt':'2026-08-14T10:05:00+08:00',
+            'cacheFix':'v24.0 uses the 24p1 shell generation and caches the Chinese/Thai method-depth layer plus the reviewed Thai library.',
+            'qualityGate':'Chinese and Thai methods are reviewed against the variable-length v22.2 standard. Simple dishes stay concise; complex dishes retain every meaningful preparation, cooking, doneness, resting and finishing stage. No maximum step count is imposed.',
+            'chineseRelease':'v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.',
+            'thaiRelease':'v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.'
+          })
+          q=d.setdefault('qualityAuditSnapshot',{})
+          q['fullLibrary']={'recipeCount':1058,'uniqueRecipeIds':1058,'criticalStructureFailures':0}
+          q['standardCuisines']={'recipeCount':587,'Japanese':149,'Filipino':164,'Korean':174,'Chinese':40,'Thai':60,'flaggedRecipes':0}
+          q['methodDepth']={
+            'policy':'No fixed step count. The recipe itself determines the number of numbered steps.',
+            'benchmark':'Japanese, Filipino and Korean method-depth review from v22.2',
+            'Chinese':{'recipesReviewed':40,'recipesRewritten':40,'complexRecipesAllowedPastFiveSteps':True},
+            'Thai':{'recipesReviewed':60,'recipesRewrittenForDepth':40,'alreadyDetailedExpansionRecipesReviewed':20,'complexRecipesAllowedPastFiveSteps':True}
+          }
+          q['Chinese']={'recipeCount':40,'uniqueRecipeIds':40,'methodStructureFailures':0,'methodPolicy':'variable-length; no artificial maximum'}
+          q['Thai']={'recipeCount':60,'uniqueRecipeIds':60,'methodStructureFailures':0,'methodPolicy':'variable-length; no artificial maximum','regionalCoverage':['Central Thailand','Northern Thailand','Isan/Northeastern Thailand','Southern Thailand']}
+          p.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n')
+          PY
+
+      - name: Syntax and full-library QA
+        run: |
+          set -euo pipefail
+          node --check app.js
+          node --check service-worker.js
+          for f in data/*.js; do node --check "$f"; done
+          node <<'NODE'
+          const fs=require('fs'),vm=require('vm'); global.window=global;
+          const html=fs.readFileSync('index.html','utf8');
+          const scripts=[...html.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1].split('?')[0]).filter(x=>x.startsWith('data/')&&x.endsWith('.js'));
+          if(new Set(scripts).size!==scripts.length) throw new Error('duplicate data script reference');
+          for(const f of scripts){if(!fs.existsSync(f))throw new Error('missing '+f);vm.runInThisContext(fs.readFileSync(f,'utf8'),{filename:f});}
+          const rows=global.BENTO_RECIPE_LIBRARY||[], ids=rows.map(r=>String(r.id||''));
+          if(rows.length!==1058||new Set(ids).size!==1058) throw new Error(`library count/id failure ${rows.length}/${new Set(ids).size}`);
+          const cn=rows.filter(r=>r.cuisine==='Chinese'), th=rows.filter(r=>r.cuisine==='Thai');
+          if(cn.length!==40||th.length!==60) throw new Error(`cuisine count failure ${cn.length}/${th.length}`);
+          const required=r=>r.id&&r.title&&r.localName&&r.romanization&&r.region&&Array.isArray(r.ingredients)&&r.ingredients.length>=2&&Array.isArray(r.steps)&&r.steps.length>=1;
+          const bad=[...cn,...th].filter(r=>!required(r)); if(bad.length)throw new Error('structure: '+bad.map(r=>r.id));
+          const cnMax=Math.max(...cn.map(r=>r.steps.length)), thMax=Math.max(...th.map(r=>r.steps.length));
+          if(cnMax<=5||thMax<=5) throw new Error(`step ceiling remains ${cnMax}/${thMax}`);
+          const byId=new Map(rows.map(r=>[r.id,r]));
+          const minima={cn_001:9,cn_006:10,cn_011:12,cn_016:10,cn_018:11,cn_020:10,cn_026:11,cn_027:12,th_001:9,th_005:10,th_007:10,th_013:10,th_015:10,th_016:10,th_023:10,th_026:10,th_028:10,th_034:10};
+          for(const [id,n] of Object.entries(minima)){const r=byId.get(id);if(!r||r.steps.length<n)throw new Error(`${id} depth ${r?.steps?.length}`);}
+          const k=r=>r.steps.map(x=>String(x).trim().toLowerCase()).join(' || ');
+          for(const [name,list] of [['Chinese',cn],['Thai',th]]){const m=new Map();for(const r of list){const x=k(r);(m.get(x)||m.set(x,[]).get(x)).push(r.id);}const d=[...m.values()].filter(x=>x.length>1);if(d.length)throw new Error(`${name} duplicate methods ${JSON.stringify(d)}`);}
+          const timed=/\b\d+(?:\s*[–-]\s*\d+)?\s*(?:seconds?|secs?|minutes?|mins?|hours?|hrs?)\b/i;
+          const missing=[...cn,...th].filter(r=>Number(r.cook||0)>=10&&!r.steps.some(s=>timed.test(String(s))));if(missing.length)throw new Error('timing: '+missing.map(r=>r.id));
+          for(const region of ['Central','Northern','Isan','Southern'])if(!th.some(r=>String(r.region||'').includes(region)))throw new Error('Thai region '+region);
+          const dist=list=>{const d={};for(const r of list)d[r.steps.length]=(d[r.steps.length]||0)+1;return d;};
+          console.log(JSON.stringify({fullLibrary:rows.length,uniqueIds:new Set(ids).size,Chinese:{count:cn.length,min:Math.min(...cn.map(r=>r.steps.length)),max:cnMax,distribution:dist(cn)},Thai:{count:th.length,min:Math.min(...th.map(r=>r.steps.length)),max:thMax,distribution:dist(th)}},null,2));
+          NODE
+
+      - name: PWA, clean scope, and publish review
+        run: |
+          set -euo pipefail
+          grep -q "const VERSION = 24;" app.js
+          grep -q "bento-shell-v1.0.0-v24p1" service-worker.js
+          for f in cuisine-method-depth.js thai-extra-051-060.js thai-runtime.js; do
+            grep -q "$f?v=24p1" index.html
+            grep -q "$f?v=24p1" service-worker.js
+          done
+          test ! -e tmp/thai07.b64
+          test ! -e tmp/thai10.b64
+          git diff --check
+
+          git add \
+            app.js index.html service-worker.js \
+            data/library_manifest.json data/chinese-meta-core.js data/cuisine-method-depth.js \
+            data/thai-runtime.js data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js \
+            data/thai-recipes-03.js data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js \
+            data/thai-extra-041-050.js data/thai-extra-051-060.js
+
+          actual="$(git diff --cached --name-only origin/main | sort | tr '\n' ' ')"
+          expected="$(printf '%s\n' \
+            app.js data/chinese-meta-core.js data/cuisine-method-depth.js data/library_manifest.json \
+            data/thai-extra-041-050.js data/thai-extra-051-060.js \
+            data/thai-recipes-00.js data/thai-recipes-01.js data/thai-recipes-02.js data/thai-recipes-03.js \
+            data/thai-recipes-04.js data/thai-recipes-05.js data/thai-recipes-06.js data/thai-runtime.js \
+            index.html service-worker.js | sort | tr '\n' ' ')"
+          if [ "$actual" != "$expected" ]; then
+            echo "Unexpected release scope"
+            echo "ACTUAL:   $actual"
+            echo "EXPECTED: $expected"
+            exit 1
+          fi
+
+          git config user.name 'chachinn'
+          git config user.email '140357822+chachinn@users.noreply.github.com'
+          git commit -m 'Bento v24: deepen Chinese and Thai cooking methods'
+          git push origin HEAD:refs/heads/bento-v24-cn-thai-review --force

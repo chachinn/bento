@@ -6,6 +6,14 @@ function normalizeStoredAllergens(o){
   const allergens=Array.from(new Set((Array.isArray(o?.allergens)?o.allergens:[]).filter(Boolean).map(x=>String(x).toLowerCase())));
   return allergens.filter(a=>a!=='gluten'||GLUTEN_RX.test(raw));
 }
+function normalizeIngredients(o){
+  const ingredients=Array.isArray(o?.ingredients)?[...o.ingredients]:[];
+  if(o?.id==='ind_075'){
+    const matches=[];ingredients.forEach((x,i)=>{if(String(x).trim()==='1/2 tsp cumin seeds')matches.push(i)});
+    if(matches.length===2){ingredients[matches[0]]='1/2 tsp cumin seeds, for khichdi';ingredients[matches[1]]='1/2 tsp cumin seeds, for kadhi tempering';}
+  }
+  return ingredients;
+}
 window.BENTO_INDIAN_ADD=rows=>{
   const lib=Array.isArray(window.BENTO_RECIPE_LIBRARY)?window.BENTO_RECIPE_LIBRARY:(window.BENTO_RECIPE_LIBRARY=[]);
   const seen=new Set(lib.map(r=>String(r.id||'')));
@@ -20,7 +28,7 @@ window.BENTO_INDIAN_ADD=rows=>{
       auditStatus:'Indian v28 integrity hardening · 2026-08-17',
       inactiveMinutes:Math.max(0,Number(o.total||0)-Number(o.prep||0)-Number(o.cook||0)),
       source:'Bento Indian Kitchen · reviewed August 2026 against official Incredible India / India Tourism regional food guides. Quantities and sequencing are practical Bento home-cooking adaptations; regional, religious, community and household versions vary.',
-      ...o,allergens:normalizeStoredAllergens(o),sourceUrls:refs
+      ...o,ingredients:normalizeIngredients(o),allergens:normalizeStoredAllergens(o),sourceUrls:refs
     };
     lib.push(r);seen.add(String(r.id));
   }

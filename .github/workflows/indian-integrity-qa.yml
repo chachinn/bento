@@ -3,6 +3,8 @@ on:
   push:
     branches: [fix-indian-v28-integrity]
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -11,7 +13,20 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Prepare production release metadata and cache generation
+        run: node qa/prepare-indian-integrity-release.js
       - name: Run Indian semantic integrity audit
         run: node qa/indian-integrity-audit.js
       - name: Run full Bento regression audit
         run: node qa/full-library-regression.js
+      - name: Commit verified production release files
+        run: |
+          if git diff --quiet -- index.html service-worker.js data/library_manifest.json; then
+            echo "Production release files already prepared."
+            exit 0
+          fi
+          git config user.name "chachinn"
+          git config user.email "140357822+chachinn@users.noreply.github.com"
+          git add index.html service-worker.js data/library_manifest.json
+          git commit -m "fix: release Indian v28 integrity hardening"
+          git push origin HEAD:fix-indian-v28-integrity

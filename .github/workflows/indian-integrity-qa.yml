@@ -1,4 +1,4 @@
-name: Indian Integrity QA
+name: Bento Staging QA
 on:
   push:
     branches: [fix-indian-v28-integrity]
@@ -13,3 +13,5 @@ jobs:
           node-version: '22'
       - name: Run Indian semantic integrity audit
         run: node qa/indian-integrity-audit.js
+      - name: Run full Bento regression audit
+        run: node qa/full-library-regression.js

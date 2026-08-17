@@ -56,6 +56,9 @@ const CULINARY_PATCHES={
     'Stir in garam masala and cilantro. The beans should be creamy inside and the gravy thick enough to coat a spoon without being pasty.',
     'Serve the rajma hot over the basmati rice; the rice should remain fluffy enough to absorb the gravy rather than becoming mushy.'
   ]},
+  ind_031:{ingredients:[
+    '300 g whole wheat flour','100 g moong dal','500 g potatoes','1 tsp fine salt','60 ml neutral oil or ghee, for pastry','120–150 ml water for kachori dough, as needed','15 g fresh ginger, grated','1 tsp cumin seeds','1 tsp fennel seeds','1 tsp ground coriander','1/2 tsp turmeric','1 tsp red chilli powder','1 tsp amchur','1/2 tsp asafoetida','400 ml water for potato sabzi, plus more as needed','neutral oil, for deep-frying'
+  ]},
   ind_037:{ingredients:[
     '300 g dried black chickpeas (kala chana) or dried yellow peas','1 large onion, thinly sliced','15 g fresh ginger, grated','4 garlic cloves, minced','2 green chillies, chopped','1 bay leaf','1 tsp cumin seeds','1/2 tsp ground turmeric','1 tsp ground coriander','1/2 tsp red chilli powder','1/2 tsp freshly ground black pepper','1/2 tsp roasted cumin powder','1 tsp fine salt','900 ml water for cooking, plus more as needed','1 small onion, finely chopped, for garnish','1 green chilli, finely chopped, for garnish','1 tbsp lemon juice','2 tbsp chopped cilantro'
   ],steps:[
@@ -70,6 +73,9 @@ const CULINARY_PATCHES={
   ]},
   ind_058:{ingredients:[
     '220 g mixed toor, moong and chana dal','350 g whole wheat flour (atta)','120 g ghee, divided','90 g jaggery, grated','1 medium onion, finely chopped','2 ripe tomatoes, chopped','15 g fresh ginger, grated','3 garlic cloves, minced','1 green chilli, chopped','1 tsp cumin seeds','1/2 tsp turmeric','1 tsp ground coriander','1/2 tsp red chilli powder','1 tsp fine salt','650 ml water for cooking the dal, plus more as needed','120–150 ml water for the baati dough, as needed'
+  ]},
+  ind_073:{ingredients:[
+    '200 g toor dal','200 g whole wheat flour (atta)','40 g peanuts','40 g jaggery','1 tbsp tamarind pulp','1/2 tsp turmeric','1 tsp red chilli powder','1 tsp ground coriander','1 tsp fine salt','1 tbsp neutral oil','1 tsp mustard seeds','1/2 tsp cumin seeds','10 curry leaves','1/8 tsp asafoetida (hing; use gluten-free if needed)','900 ml water for cooking and thinning the dal, plus more as needed','90–120 ml water for dhokli dough, as needed','2 tbsp chopped cilantro'
   ]},
   ind_078:{ingredients:[
     '220 g mixed toor, chana and moong dal','350 g whole wheat flour','80 g plain yogurt','100 g ghee','1 medium onion, finely sliced','2 ripe tomatoes, chopped','20 g fresh ginger, grated','4 garlic cloves, minced','2 green chillies, slit','1 tsp cumin seeds','1/2 tsp ground turmeric','1 1/2 tsp ground coriander','1 tsp red chilli powder','1 tsp garam masala','2 tbsp neutral oil','1 1/4 tsp fine salt','650 ml water for cooking the dal, plus more as needed','120–160 ml water for the bafla dough, as needed','2 litres water for boiling the bafla'
@@ -110,7 +116,7 @@ window.BENTO_INDIAN_ADD=rows=>{
       cuisine:'Indian',country:'India',countryCode:'IN',recipeType:'Reviewed regional classic',
       energy:'normal',cleanup:2,freezer:'no',collection:'Indian Kitchen',favorite:false,builtIn:true,dietTags:[],
       libraryVersion:32,instructionVersion:32,instructionStyle:'comprehensive-variable-length',
-      createdAt:'2026-08-14T17:28:00+08:00',updatedAt:'2026-08-17T22:35:00+08:00',verifiedAt:'2026-08-17',
+      createdAt:'2026-08-14T17:28:00+08:00',updatedAt:'2026-08-17T22:45:00+08:00',verifiedAt:'2026-08-17',
       auditStatus:'Indian v28 culinary accuracy hardening · 2026-08-17',
       inactiveMinutes:Math.max(0,Number(o.total||0)-Number(o.prep||0)-Number(o.cook||0)),
       source:'Bento Indian Kitchen · reviewed August 2026 against official Incredible India / India Tourism regional food guides and established Indian culinary references. Quantities and sequencing are practical Bento home-cooking adaptations; regional, religious, community and household versions vary.',

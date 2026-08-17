@@ -1,0 +1,15 @@
+name: Indian Culinary Accuracy Audit
+on:
+  push:
+    branches: [audit-indian-culinary-accuracy]
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run culinary audit
+        run: node qa/indian-culinary-audit.js

@@ -82,8 +82,8 @@
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v28.0 uses the 28p1 shell generation and caches the Indian runtime plus all 17 Indian regional recipe modules alongside the existing production library.",
-  "generatedAt": "2026-08-14T17:28:00+08:00",
+  "cacheFix": "v28.0 integrity patch uses the 28p2 shell generation so installed Bento PWAs receive the corrected Indian runtime and all existing production assets without stale-cache carryover.",
+  "generatedAt": "2026-08-17T22:20:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -180,7 +180,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "28p1",
+      "assetVersion": "28p2",
       "recipeQualityRuntime": 30,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -252,13 +252,40 @@
       ],
       "referencePolicy": "All 171 recipes carry four HTTPS references drawn from official Incredible India / India Tourism domains.",
       "photoPolicy": "All 171 recipes carry at least two title-specific lazy/on-demand food-photo queries."
+    },
+    "v28IndianIntegrity": {
+      "auditedAt": "2026-08-17",
+      "IndianTotal": 171,
+      "uniqueIndianIds": 171,
+      "uniqueIndianTitles": 171,
+      "observedStepRange": "4-12",
+      "hardFailures": 0,
+      "coveragePreserved": true,
+      "fixes": [
+        "Corrected false gluten metadata for cornmeal/makki-atta Indian recipes by validating stored gluten labels against actual gluten-bearing ingredients before recipes enter the library.",
+        "Disambiguated the two intentional 1/2 tsp cumin-seed uses in Gujarati Kadhi Khichdi as khichdi cumin and kadhi-tempering cumin without changing the recipe quantity."
+      ],
+      "regression": {
+        "totalRecipeRecords": 1499,
+        "uniqueRecipeIds": 1499,
+        "standardRecipeCount": 1028,
+        "Japanese": 189,
+        "Filipino": 184,
+        "Korean": 174,
+        "Chinese": 90,
+        "Thai": 90,
+        "Vietnamese": 130,
+        "Indian": 171,
+        "hardFailures": 0
+      },
+      "status": "passed"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v28.0 introduces a 171-recipe Indian library spanning major North, West, Central, East, Northeast, South and Deccan traditions, including breads, rice, lentils, vegetables, meat, seafood, street food, sweets and drinks. 171 is the result of this reviewed coverage pass, not a cuisine cap.",
+  "fullQaRelease": "v28.0 Indian integrity hardening re-audits the 171-recipe Indian library, corrects false stored gluten metadata and an ambiguous duplicate cumin ingredient label, preserves all cuisine coverage, and passes the 1,499-record full-library regression.",
   "vietnameseRecipeCount": 130,
   "indianRecipeCount": 171
 }

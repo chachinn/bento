@@ -82,8 +82,8 @@
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v28.0 integrity patch uses the 28p2 shell generation so installed Bento PWAs receive the corrected Indian runtime and all existing production assets without stale-cache carryover.",
-  "generatedAt": "2026-08-17T22:20:00+08:00",
+  "cacheFix": "v28.0 culinary accuracy patch uses the 28p3 shell generation so installed Bento PWAs receive the corrected Indian quantities, methods and regional-identity hardening without stale-cache carryover.",
+  "generatedAt": "2026-08-17T22:50:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -180,7 +180,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "28p2",
+      "assetVersion": "28p3",
       "recipeQualityRuntime": 30,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -279,13 +279,72 @@
         "hardFailures": 0
       },
       "status": "passed"
+    },
+    "v28IndianCulinaryAccuracy": {
+      "auditedAt": "2026-08-17",
+      "IndianTotal": 171,
+      "coveragePreserved": true,
+      "methodology": "All 171 Indian recipes were machine-scanned for method depth, repeated ingredient-template similarity, duplicate identity and multi-component quantity ambiguity. High-risk flagged dishes were then manually reviewed against official India Tourism/Incredible India material and established Indian culinary references; fixes were applied only where the evidence supported a concrete correction.",
+      "stepDistribution": {
+        "4": 1,
+        "5": 5,
+        "6": 7,
+        "7": 38,
+        "8": 92,
+        "9": 18,
+        "10": 7,
+        "11": 2,
+        "12": 1
+      },
+      "exactFiveStepRecipes": [
+        "Sweet Lassi",
+        "Masala Chai",
+        "Kahwa",
+        "Sol Kadhi",
+        "South Indian Filter Coffee"
+      ],
+      "exactFiveStepPercent": 2.9,
+      "methodPolicy": "The recipe determines its method length; no artificial 5- or 6-step target or ceiling.",
+      "correctedRecipes": [
+        "ind_001 Butter Chicken (Murgh Makhani)",
+        "ind_002 Dal Makhani",
+        "ind_006 Chole Bhature",
+        "ind_007 Pindi Chole",
+        "ind_008 Rajma Chawal",
+        "ind_031 Banarasi Kachori Sabzi",
+        "ind_037 Chana Ghugni",
+        "ind_058 Dal Baati Churma",
+        "ind_073 Dal Dhokli",
+        "ind_078 Dal Bafla"
+      ],
+      "corrections": [
+        "Separated component-specific water quantities where one generic water line had been doing multiple jobs such as cooking legumes/rice and hydrating dough.",
+        "Hardened Butter Chicken sequencing and sauce balance with charred chicken, restrained added water, kasuri methi and cream finish.",
+        "Restored a drier tangy Pindi Chole identity and a lighter legume-forward Bihari Chana Ghugni identity rather than allowing both to collapse into the same generic tomato-masala template.",
+        "Made Dal Bafla explicitly boil before baking and separated dal, dough and boiling water.",
+        "Clarified Banarasi Kachori Sabzi dough water versus potato-sabzi water and Dal Dhokli dal water versus dhokli-dough water."
+      ],
+      "similarityReview": {
+        "initialHighSimilarityPairs": 11,
+        "remainingReviewedPairs": 7,
+        "status": "reviewed as legitimate regional relatives or dishes with clearly distinct defining ingredients/methods"
+      },
+      "verificationScope": "Risk-based culinary accuracy audit across the full 171-recipe set; this records a full-library scan plus manual verification of flagged/high-risk recipes, not a claim that every individual gram in all 171 recipes was independently benchmarked against multiple published recipes.",
+      "regression": {
+        "totalRecipeRecords": 1499,
+        "uniqueRecipeIds": 1499,
+        "standardRecipeCount": 1028,
+        "Indian": 171,
+        "hardFailures": 0
+      },
+      "status": "passed"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v28.0 Indian integrity hardening re-audits the 171-recipe Indian library, corrects false stored gluten metadata and an ambiguous duplicate cumin ingredient label, preserves all cuisine coverage, and passes the 1,499-record full-library regression.",
+  "fullQaRelease": "v28.0 Indian culinary accuracy hardening audits all 171 Indian recipes for step depth and culinary-risk signals, applies targeted quantity/method/regional-identity corrections to 10 recipes, preserves all 171 dishes, and passes the 1,499-record full-library regression.",
   "vietnameseRecipeCount": 130,
   "indianRecipeCount": 171
 }

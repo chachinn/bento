@@ -1,6 +1,6 @@
-const CACHE='bento-shell-v1.0.0-v28p3';
+const CACHE='bento-shell-v1.0.0-v29p1';
 const SHELL_PREFIX='bento-shell-';
-const ASSET_VERSION='28p3';
+const ASSET_VERSIONS=new Set(['28p3','29p1']);
 const CORE=[
   './index.html',
   './style.css?v=28p3',
@@ -129,6 +129,29 @@ const CORE=[
   './data/indian-recipes-141-150.js?v=28p3',
   './data/indian-recipes-151-160.js?v=28p3',
   './data/indian-recipes-161-171.js?v=28p3',
+  './data/italian-runtime.js?v=29p1',
+  './data/italian-recipes-001-005.js?v=29p1',
+  './data/italian-recipes-006-010.js?v=29p1',
+  './data/italian-recipes-011-015.js?v=29p1',
+  './data/italian-recipes-016-020.js?v=29p1',
+  './data/italian-recipes-021-025.js?v=29p1',
+  './data/italian-recipes-026-030.js?v=29p1',
+  './data/italian-recipes-031-035.js?v=29p1',
+  './data/italian-recipes-036-040.js?v=29p1',
+  './data/italian-recipes-041-050.js?v=29p1',
+  './data/italian-recipes-051-060.js?v=29p1',
+  './data/italian-recipes-061-070.js?v=29p1',
+  './data/italian-recipes-071-080.js?v=29p1',
+  './data/italian-recipes-081-090.js?v=29p1',
+  './data/italian-recipes-091-100.js?v=29p1',
+  './data/italian-recipes-101-110.js?v=29p1',
+  './data/italian-recipes-111-120.js?v=29p1',
+  './data/italian-recipes-121-130.js?v=29p1',
+  './data/italian-recipes-131-140.js?v=29p1',
+  './data/italian-recipes-141-150.js?v=29p1',
+  './data/italian-recipes-151-155.js?v=29p1',
+  './data/italian-recipes-156-160.js?v=29p1',
+  './data/italian-recipes-161-165.js?v=29p1',
   './data/recipe-quality-runtime.js?v=28p3',
   './data/recipe-content-fixes-standard.js?v=28p3',
   './data/recipe-content-fixes-genshin.js?v=28p3',
@@ -193,7 +216,7 @@ self.addEventListener('fetch',event=>{
     event.respondWith(fetchWithTimeout(event.request).then(response=>{if(response.ok)caches.open(CACHE).then(cache=>cache.put('./index.html',response.clone()));return response}).catch(()=>caches.match('./index.html')));
     return;
   }
-  const versioned=url.searchParams.get('v')===ASSET_VERSION;
+  const versioned=ASSET_VERSIONS.has(url.searchParams.get('v'));
   if(versioned){
     event.respondWith(caches.open(CACHE).then(async cache=>{const hit=await cache.match(event.request);if(hit)return hit;const response=await fetch(event.request);if(response.ok)cache.put(event.request,response.clone());return response}));
     return;

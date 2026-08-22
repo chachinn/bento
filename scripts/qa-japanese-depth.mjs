@@ -52,8 +52,8 @@ for(const r of newRows.filter(Boolean)){
  if(/soy sauce|miso|tofu|aburaage|atsuage|soybean/.test(text)) assert(has('soy'),`${r.id}: missing soy`);
  if(/all-purpose flour|wheat|ramen noodles|udon|kishimen|yakisoba|chikuwa|fish cakes/.test(text)) assert(has('gluten'),`${r.id}: missing gluten`);
  if(/\beggs?\b|egg white|egg yolk/.test(text)) assert(has('egg'),`${r.id}: missing egg`);
- if(/mackerel|salmon|trout|bonito|fish|eel|anago|dashi/.test(text)&&!/kombu dashi/.test(text)) assert(has('fish'),`${r.id}: possible missing fish`);
- if(/shrimp|squid|abalone/.test(text)) assert(has('shellfish'),`${r.id}: missing shellfish`);
+ if(/\bmackerel\b|\bsalmon\b|\btrout\b|\bbonito\b|\bfish\b|\beel\b|\banago\b|\bdashi\b/.test(text)&&!/kombu dashi/.test(text)) assert(has('fish'),`${r.id}: possible missing fish`);
+ if(/\bshrimp\b|\bsquid\b|\babalone\b/.test(text)) assert(has('shellfish'),`${r.id}: missing shellfish`);
  if(/sesame/.test(text)&&!/sesame-free/.test(text)) assert(has('sesame'),`${r.id}: missing sesame`);
  if(/mustard/.test(text)&&!/mustard leaves|mustard leaf|mustard spinach/.test(text)) assert(has('mustard'),`${r.id}: missing mustard`);
 }

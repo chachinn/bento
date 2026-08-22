@@ -50,7 +50,7 @@ for(const r of recipes){
   if(/niboshi|bonito|salmon|mackerel|horse-mackerel|sea bream|kamaboko|fish stock/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
   if(/scallop|shrimp|prawn|crab|lobster/.test(hay)) assert(has('shellfish'),`${r.id}: expected shellfish from ingredient text`);
   if(/whole milk|\bmilk\b|cream|butter|cheese/.test(hay)) assert(has('milk'),`${r.id}: expected milk from ingredient text`);
-  if(/sesame/.test(hay)) assert(has('sesame'),`${r.id}: expected sesame from ingredient text`);
+  if(/(?:ground|toasted) sesame|sesame seeds?|sesame oil/.test(hay)) assert(has('sesame'),`${r.id}: expected sesame from ingredient text`);
   if(/mustard/.test(hay)) assert(has('mustard'),`${r.id}: expected mustard from ingredient text`);
 }
 

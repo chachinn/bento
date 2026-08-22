@@ -6,7 +6,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: write
+  contents: read
 jobs:
   qa:
     runs-on: ubuntu-latest
@@ -17,17 +17,7 @@ jobs:
           node-version: '22'
       - name: Run Japanese depth full-library QA
         run: node scripts/qa-japanese-depth.mjs
-      - name: Stage Japanese v31.2 integration
+      - name: Verify committed Japanese v31.2 integration is idempotent
         run: node scripts/integrate-japanese-depth.mjs
       - name: Run Japanese v31.2 release regression
         run: node scripts/qa-japanese-depth-release.mjs
-      - name: Commit integrated release files to branch
-        if: github.event_name == 'push'
-        run: |
-          if ! git diff --quiet -- index.html service-worker.js data/library_manifest.json; then
-            git config user.name 'chachinn'
-            git config user.email '140357822+chachinn@users.noreply.github.com'
-            git add index.html service-worker.js data/library_manifest.json
-            git commit -m 'Integrate Japanese v31.2 regional depth'
-            git push origin HEAD:bento-v31-2-japanese-depth
-          fi

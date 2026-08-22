@@ -7,11 +7,13 @@ const dataDir=path.join(root,'data');
 const moduleNames=fs.readdirSync(dataDir)
   .filter(n=>/^spanish-recipes-\d{3}-\d{3}\.js$/.test(n))
   .sort((a,b)=>Number(a.match(/-(\d{3})-/)[1])-Number(b.match(/-(\d{3})-/)[1]));
+const fixName='spanish-v31-quality-fixes.js';
 
 const window={BENTO_RECIPE_LIBRARY:[]};
 const ctx=vm.createContext({window,console});
 vm.runInContext(fs.readFileSync(path.join(dataDir,'spanish-runtime.js'),'utf8'),ctx,{filename:'spanish-runtime.js'});
 for(const name of moduleNames) vm.runInContext(fs.readFileSync(path.join(dataDir,name),'utf8'),ctx,{filename:name});
+vm.runInContext(fs.readFileSync(path.join(dataDir,fixName),'utf8'),ctx,{filename:fixName});
 const spanish=window.BENTO_RECIPE_LIBRARY;
 if(spanish.length!==215) throw new Error(`Expected 215 Spanish recipes, got ${spanish.length}`);
 for(let i=0;i<spanish.length;i++){
@@ -25,10 +27,11 @@ const minSteps=Math.min(...stepCounts), maxSteps=Math.max(...stepCounts);
 
 const spanishIndexRefs=[
   '  <script src="data/spanish-runtime.js?v=31p1" defer></script>',
-  ...moduleNames.map(n=>`  <script src="data/${n}?v=31p1" defer></script>`)
+  ...moduleNames.map(n=>`  <script src="data/${n}?v=31p1" defer></script>`),
+  `  <script src="data/${fixName}?v=31p1" defer></script>`
 ];
 let index=fs.readFileSync('index.html','utf8');
-index=index.replace(/^\s*<script src="data\/spanish-(?:runtime|recipes-[^"]+)\.js\?v=[^"]+" defer><\/script>\r?\n/gm,'');
+index=index.replace(/^\s*<script src="data\/spanish-(?:runtime|recipes-[^"]+|v31-quality-fixes)\.js\?v=[^"]+" defer><\/script>\r?\n/gm,'');
 index=index.replace(/  <script src="data\/recipe-quality-runtime\.js\?v=[^"]+" defer><\/script>/,
   `${spanishIndexRefs.join('\n')}\n  <script src="data/recipe-quality-runtime.js?v=31p1" defer></script>`);
 fs.writeFileSync('index.html',index);
@@ -40,9 +43,9 @@ sw=sw.replace(/const ASSET_VERSIONS=new Set\(\[([^\]]*)\]\);/,(_,body)=>{
   vals.push('31p1');
   return `const ASSET_VERSIONS=new Set([${vals.map(v=>`'${v}'`).join(',')}]);`;
 });
-sw=sw.replace(/^\s*'\.\/data\/spanish-(?:runtime|recipes-[^']+)\.js\?v=[^']+',\r?\n/gm,'');
+sw=sw.replace(/^\s*'\.\/data\/spanish-(?:runtime|recipes-[^']+|v31-quality-fixes)\.js\?v=[^']+',\r?\n/gm,'');
 sw=sw.replace(/  '\.\/data\/recipe-quality-runtime\.js\?v=[^']+',/,
-  `${['./data/spanish-runtime.js',...moduleNames.map(n=>`./data/${n}`)].map(p=>`  '${p}?v=31p1',`).join('\n')}\n  './data/recipe-quality-runtime.js?v=31p1',`);
+  `${['./data/spanish-runtime.js',...moduleNames.map(n=>`./data/${n}`),`./data/${fixName}`].map(p=>`  '${p}?v=31p1',`).join('\n')}\n  './data/recipe-quality-runtime.js?v=31p1',`);
 fs.writeFileSync('service-worker.js',sw);
 
 const manifestPath=path.join(dataDir,'library_manifest.json');
@@ -56,7 +59,7 @@ m.standardRecipeCount=1583;
 m.dishImageCount=2054;
 m.instructionVersion=35;
 m.detailedInstructionRecipeCount=2054;
-m.cacheFix='v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime and all recipe modules, and refreshes the shared allergen runtime without churning unrelated asset URLs.';
+m.cacheFix='v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime/modules plus its stored-metadata correction, and refreshes the shared allergen runtime without churning unrelated asset URLs.';
 m.generatedAt='2026-08-22T18:40:00+08:00';
 m.appRelease='31.0';
 m.cuisineRoadmap=['Japanese','Filipino','Korean','Chinese','Thai','Vietnamese','Indian','Italian','French','Spanish','American','Greek','Turkish','Mexican','Brazilian','Peruvian','Moroccan','British'];
@@ -85,8 +88,8 @@ qa.v31Spanish={
   coveragePolicy:'coverage determines recipe count; 215 closes this reviewed regional and national pass and is not a permanent cap',
   regionalCoverage:['Andalusia','Catalonia','Region of Valencia','Region of Murcia','Balearic Islands','Community of Madrid','Castile-La Mancha','Castile and León','Extremadura','Aragón','Navarra','La Rioja','Basque Country','Cantabria','Asturias','Galicia','Canary Islands','Ceuta','Melilla','National tapas, staples and desserts'],
   referencePolicy:'All 215 recipes carry HTTPS culinary references, prioritizing official Spain.info national and regional gastronomy pages and dish-specific tourism material.',
-  photoPolicy:'All 215 recipes carry at least two title-specific lazy/on-demand real-food photo queries.',
-  allergenAudit:'Stored Spanish allergens were checked against ingredient-based inference; the shared runtime was narrowly hardened for Spanish fish, mollusc and pastry vocabulary and to avoid false dairy on milk-fed lamb.',
+  photoPolicy:'All 215 recipes carry at least two dish-specific lazy/on-demand real-food photo queries.',
+  allergenAudit:'Stored Spanish allergens were checked against ingredient-based inference; optional snails in Paella Valenciana are explicitly represented as shellfish metadata, and the shared runtime was narrowly hardened for Spanish fish, mollusc and pastry vocabulary and to avoid false dairy on milk-fed lamb.',
   similarityReview:'The complete set is checked for exact duplicate titles, ingredient bodies and method bodies; close regional relatives are retained only when their defining ingredients, methods or geographic identities differ.',
   regression:{totalRecipeRecords:2054,uniqueRecipeIds:2054,standardRecipeCount:1583,Japanese:189,Filipino:184,Korean:174,Chinese:90,Thai:90,Vietnamese:130,Indian:171,Italian:165,French:175,Spanish:215,Genshin:372,Anime:99,dataScriptExecutionFailures:0,missingIndexAssets:0,missingServiceWorkerAssets:0,hardFailures:0},
   status:'passed'
@@ -94,4 +97,4 @@ qa.v31Spanish={
 m.fullQaRelease='v31.0 adds 215 reviewed Spanish recipes across every autonomous community plus Ceuta, Melilla and national classics, advances the PWA shell to 31p1, and passes the additive 2,054-record/2,054-unique-ID release regression while preserving prior cuisines and Genshin/Anime isolation.';
 m.spanishRecipeCount=215;
 fs.writeFileSync(manifestPath,JSON.stringify(m,null,2)+'\n');
-console.log(`Integrated Spanish v31: ${spanish.length} recipes, ${moduleNames.length} modules, step range ${minSteps}-${maxSteps}`);
+console.log(`Integrated Spanish v31: ${spanish.length} recipes, ${moduleNames.length} modules + quality fix, step range ${minSteps}-${maxSteps}`);

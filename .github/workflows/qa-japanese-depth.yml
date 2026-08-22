@@ -17,3 +17,7 @@ jobs:
           node-version: '22'
       - name: Run Japanese depth full-library QA
         run: node scripts/qa-japanese-depth.mjs
+      - name: Stage Japanese v31.2 integration
+        run: node scripts/integrate-japanese-depth.mjs
+      - name: Run Japanese v31.2 release regression
+        run: node scripts/qa-japanese-depth-release.mjs

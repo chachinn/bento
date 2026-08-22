@@ -24,6 +24,7 @@ jobs:
         run: |
           node --check data/japanese-extra-190-194.js
           node --check data/japanese-extra-195-198.js
+          node --check data/japanese-extra-199-207.js
       - name: Audit full Japanese coverage inventory
         run: node scripts/audit-japanese-coverage.mjs
       - name: Run Japanese regional gap QA

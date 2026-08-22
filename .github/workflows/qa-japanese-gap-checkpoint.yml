@@ -31,3 +31,7 @@ jobs:
         run: node scripts/qa-japanese-gap-checkpoint.mjs
       - name: Run corrected full-runtime Japanese QA
         run: node scripts/qa-japanese-runtime-final.mjs
+      - name: Stage Japanese v31.1 integration
+        run: node scripts/integrate-japanese-gap.mjs
+      - name: Run full Japanese release regression
+        run: node scripts/qa-japanese-release.mjs

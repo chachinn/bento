@@ -2,6 +2,8 @@ name: Bento Filipino inventory audit
 on:
   push:
     branches: [bento-v31-3-filipino-depth]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read

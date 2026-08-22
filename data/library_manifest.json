@@ -1,7 +1,7 @@
 {
-  "libraryVersion": 35,
-  "recipeCount": 2054,
-  "newRecipesThisBuild": 215,
+  "libraryVersion": 36,
+  "recipeCount": 2072,
+  "newRecipesThisBuild": 18,
   "cuisineCount": 10,
   "verifiedCuisineLibraries": [
     "Japanese",
@@ -15,8 +15,8 @@
     "French",
     "Spanish"
   ],
-  "standardRecipeCount": 1583,
-  "japaneseRecipeCount": 189,
+  "standardRecipeCount": 1601,
+  "japaneseRecipeCount": 207,
   "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
   "chineseRecipeCount": 90,
@@ -72,21 +72,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 2054,
+  "dishImageCount": 2072,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 35,
+  "instructionVersion": 36,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 2054,
+  "detailedInstructionRecipeCount": 2072,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime and all recipe modules, and refreshes the shared allergen runtime without churning unrelated asset URLs.",
-  "generatedAt": "2026-08-22T18:44:00+08:00",
+  "cacheFix": "v31.1 completes the Japanese regional gap pass with 18 reviewed recipes under the 31j1 shell generation, caches the three additive Japanese modules, and preserves prior asset generations for unchanged files.",
+  "generatedAt": "2026-08-23T07:15:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -101,7 +101,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "31.0",
+  "appRelease": "31.1",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -128,21 +128,21 @@
   "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Plant milks and nut butters remain excluded from false dairy detection; milk-fed meat is not dairy. Spanish hardening adds conservative recognition for common named fish, molluscs and wheat pastry terms while preserving naturally gluten-free flour behavior.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 2054,
-      "uniqueRecipeIds": 2054,
+      "recipeCount": 2072,
+      "uniqueRecipeIds": 2072,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 1583,
-      "Japanese": 189,
+      "recipeCount": 1601,
+      "Japanese": 207,
       "Filipino": 184,
       "Korean": 174,
       "Vietnamese": 130,
       "Chinese": 90,
       "Thai": 90,
       "flaggedRecipes": 0,
-      "hierarchy": "Spanish > Japanese > Filipino > French > Korean > Indian > Italian > Vietnamese > Chinese = Thai by reviewed recipe count; no filler was added to force a numerical hierarchy.",
+      "hierarchy": "Spanish 215 > Japanese 207 > Filipino 184 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90 by reviewed recipe count; cuisine selector order remains Japanese first and Filipino second by product rule.",
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
@@ -189,7 +189,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "31p1",
+      "assetVersion": "31j1",
       "recipeQualityRuntime": 32,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -547,6 +547,45 @@
         "missingServiceWorkerAssets": 0,
         "hardFailures": 0
       },
+      "status": "passed"
+    },
+    "japaneseRegionalCompletion": {
+      "auditedAt": "2026-08-23",
+      "added": 18,
+      "JapaneseTotal": 207,
+      "firstNewId": "jp_190",
+      "lastNewId": "jp_207",
+      "legacyStableId": "jp_149_souffle_pancakes",
+      "legacyStableTitle": "Japanese Soufflé Pancakes",
+      "canonicalHistoricalGap": "jp_149 is intentionally absent because the historical soufflé-pancake record uses a stable legacy ID",
+      "coveragePolicy": "coverage determines recipe count; no filler or arbitrary round target",
+      "completedRegionalGaps": [
+        "Fukushima",
+        "Ibaraki",
+        "Tochigi",
+        "Gunma",
+        "Saitama",
+        "Chiba",
+        "Shizuoka",
+        "Shiga",
+        "Nara",
+        "Tottori",
+        "Okayama",
+        "Tokushima",
+        "Saga"
+      ],
+      "additionalReviewedRegions": [
+        "Nagano",
+        "Ishikawa",
+        "Niigata",
+        "Shimane",
+        "Ehime"
+      ],
+      "duplicateIds": 0,
+      "duplicateTitles": 0,
+      "allergenFailures": 0,
+      "sourceFailures": 0,
+      "structureFailures": 0,
       "status": "passed"
     }
   },

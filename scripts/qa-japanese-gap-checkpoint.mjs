@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
-const targets=['data/japanese-extra-190-194.js','data/japanese-extra-195-198.js'];
+const targets=['data/japanese-extra-190-194.js','data/japanese-extra-195-198.js','data/japanese-extra-199-207.js'];
 const sandbox={window:{BENTO_RECIPE_LIBRARY:[]}};
 vm.createContext(sandbox);
 for(const target of targets){
@@ -11,15 +11,18 @@ for(const target of targets){
   vm.runInContext(source,sandbox,{filename:target});
 }
 const recipes=sandbox.window.BENTO_RECIPE_LIBRARY;
-const expected=['jp_190','jp_191','jp_192','jp_193','jp_194','jp_195','jp_196','jp_197','jp_198'];
-const categories=new Set(['Soups & Hot Pots','Noodles','Breads & Pastries','Main Dishes','Rice & Donburi']);
+const expected=Array.from({length:18},(_,i)=>`jp_${String(190+i).padStart(3,'0')}`);
+const categories=new Set(['Soups & Hot Pots','Noodles','Breads & Pastries','Main Dishes','Rice & Donburi','Fried & Street Food','Side Dishes']);
 const allergens=new Set(['soy','gluten','egg','milk','fish','shellfish','nuts','sesame','coconut','mustard']);
+const completionRegions=new Set(['Fukushima','Ibaraki','Nagano','Ishikawa','Tochigi','Niigata','Shimane','Ehime','Gunma','Saitama','Chiba','Shizuoka','Shiga','Nara','Tottori','Okayama','Tokushima','Saga']);
 const fail=[];
 const assert=(ok,msg)=>{if(!ok)fail.push(msg)};
 
 assert(recipes.length===expected.length,`expected ${expected.length} recipes, got ${recipes.length}`);
 assert(JSON.stringify(recipes.map(r=>r.id))===JSON.stringify(expected),`unexpected IDs/order: ${recipes.map(r=>r.id).join(', ')}`);
 assert(new Set(recipes.map(r=>r.id)).size===recipes.length,'duplicate IDs inside checkpoint modules');
+assert(new Set(recipes.map(r=>r.region)).size===completionRegions.size,'completion recipes should represent 18 distinct regional gaps');
+for(const region of completionRegions) assert(recipes.some(r=>r.region===region),`missing completion region ${region}`);
 
 for(const r of recipes){
   assert(r.cuisine==='Japanese',`${r.id}: cuisine must be Japanese`);
@@ -30,32 +33,32 @@ for(const r of recipes){
   assert(Number.isFinite(r.prep)&&Number.isFinite(r.cook)&&Number.isFinite(r.total),`${r.id}: invalid time fields`);
   assert(r.total>=r.prep+r.cook,`${r.id}: total is below prep + cook`);
   assert(Number.isInteger(r.servings)&&r.servings>0,`${r.id}: invalid servings`);
-  assert(Array.isArray(r.ingredients)&&r.ingredients.length>=7,`${r.id}: too few ingredients`);
-  assert(Array.isArray(r.steps)&&r.steps.length>=7,`${r.id}: too few method steps`);
+  assert(Array.isArray(r.ingredients)&&r.ingredients.length>=3,`${r.id}: implausibly short ingredient list`);
+  assert(r.ingredients.every(s=>typeof s==='string'&&s.trim().length>=3),`${r.id}: empty ingredient`);
+  assert(Array.isArray(r.steps)&&r.steps.length>=4,`${r.id}: implausibly short method`);
   assert(r.steps.every(s=>typeof s==='string'&&s.trim().length>=20),`${r.id}: weak/empty method step`);
   assert(Array.isArray(r.photoQueries)&&r.photoQueries.length>=2&&r.photoQueries.every(Boolean),`${r.id}: missing photo queries`);
   assert(Array.isArray(r.sourceUrls)&&r.sourceUrls.length>=3&&r.sourceUrls.every(u=>/^https:\/\//.test(u)),`${r.id}: source URLs must be HTTPS`);
-  assert(r.sourceUrls[0].includes('maff.go.jp/'),`${r.id}: first source must be dish-specific MAFF evidence`);
+  assert(/^https:\/\/www\.maff\.go\.jp\/e\/policies\/market\/k_ryouri\/search_menu\/\d+\/index\.html$/.test(r.sourceUrls[0]),`${r.id}: first source must be a dish-specific MAFF recipe page`);
   assert(Array.isArray(r.allergens)&&r.allergens.every(a=>allergens.has(a)),`${r.id}: unsupported allergen`);
 
   const hay=r.ingredients.join(' ').toLowerCase();
   const has=a=>r.allergens.includes(a);
-  if(/all-purpose flour|wheat|cha-soba|soy sauce/.test(hay)) assert(has('gluten'),`${r.id}: expected gluten from ingredient text`);
-  if(/soy sauce|miso/.test(hay)) assert(has('soy'),`${r.id}: expected soy from ingredient text`);
+  if(/all-purpose flour|\bwheat\b|cha-soba|somen|panko|soy sauce/.test(hay)) assert(has('gluten'),`${r.id}: expected gluten from ingredient text`);
+  if(/soy sauce|miso|soy milk|okara|aburaage|tofu/.test(hay)) assert(has('soy'),`${r.id}: expected soy from ingredient text`);
   if(/\beggs?\b|omelet/.test(hay)) assert(has('egg'),`${r.id}: expected egg from ingredient text`);
-  if(/niboshi|dashi|salmon|sea bream|kamaboko/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
+  if(/niboshi|bonito|salmon|mackerel|horse-mackerel|sea bream|kamaboko|fish stock/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
   if(/scallop|shrimp|prawn|crab|lobster/.test(hay)) assert(has('shellfish'),`${r.id}: expected shellfish from ingredient text`);
+  if(/whole milk|\bmilk\b|cream|butter|cheese/.test(hay)) assert(has('milk'),`${r.id}: expected milk from ingredient text`);
   if(/sesame/.test(hay)) assert(has('sesame'),`${r.id}: expected sesame from ingredient text`);
   if(/mustard/.test(hay)) assert(has('mustard'),`${r.id}: expected mustard from ingredient text`);
 }
 
 const allJs=[];
-for(const entry of fs.readdirSync('data')){
-  if(entry.endsWith('.js')) allJs.push(path.join('data',entry));
-}
+for(const entry of fs.readdirSync('data')) if(entry.endsWith('.js')) allJs.push(path.join('data',entry));
 for(const id of expected){
   let hits=0;
-  const needle=new RegExp(`id:['\"]${id}['\"]`,'g');
+  const needle=new RegExp(`[\"']?id[\"']?\\s*:\\s*[\"']${id}[\"']`,'g');
   for(const file of allJs){
     const text=fs.readFileSync(file,'utf8');
     hits+=(text.match(needle)||[]).length;

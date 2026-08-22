@@ -1,8 +1,8 @@
 {
-  "libraryVersion": 32,
-  "recipeCount": 1499,
-  "newRecipesThisBuild": 171,
-  "cuisineCount": 7,
+  "libraryVersion": 33,
+  "recipeCount": 1664,
+  "newRecipesThisBuild": 165,
+  "cuisineCount": 8,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
@@ -10,9 +10,10 @@
     "Chinese",
     "Thai",
     "Vietnamese",
-    "Indian"
+    "Indian",
+    "Italian"
   ],
-  "standardRecipeCount": 1028,
+  "standardRecipeCount": 1193,
   "japaneseRecipeCount": 189,
   "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
@@ -69,21 +70,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 1499,
+  "dishImageCount": 1664,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 32,
+  "instructionVersion": 33,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 1499,
+  "detailedInstructionRecipeCount": 1664,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v28.0 culinary accuracy patch uses the 28p3 shell generation so installed Bento PWAs receive the corrected Indian quantities, methods and regional-identity hardening without stale-cache carryover.",
-  "generatedAt": "2026-08-17T22:50:00+08:00",
+  "cacheFix": "v29.0 adds the Italian library under the 29p1 shell generation. The new shell re-fetches the unchanged 28p3 production assets with cache:no-store during install, caches the new Italian 29p1 modules, and recognizes both asset generations so installed PWAs update without stale-cache carryover or unnecessary churn of unchanged asset URLs.",
+  "generatedAt": "2026-08-22T10:50:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -98,7 +99,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "28.0",
+  "appRelease": "29.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -120,18 +121,18 @@
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "Permanent Bento recipe standard plus v28 Indian cuisine gate: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, official India Tourism references, title-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling.",
+  "qualityGate": "Permanent Bento recipe standard plus v28 Indian and v29 Italian gates: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, authoritative tourism/cultural references, title-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling or cuisine-size cap.",
   "servingScalePolicy": "Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
-  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Indian dairy terms such as ghee, paneer, chhena/chhenna, chhurpi, khoya/khoa/mawa, rabri, curd and dahi are recognized; atta/maida/sooji/rava/semolina and common Indian breads are recognized as gluten sources. Plant milks and nut butters are excluded from false dairy detection.",
+  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Indian dairy terms such as ghee, paneer, chhena/chhenna, chhurpi, khoya/khoa/mawa, rabri, curd and dahi are recognized; atta/maida/sooji/rava/semolina and common Indian breads are recognized as gluten sources. Plant milks and nut butters are excluded from false dairy detection. Italian source metadata is checked against actual ingredients so naturally gluten-free chickpea, chestnut and cornmeal preparations are not mislabeled merely because they are flours.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 1499,
-      "uniqueRecipeIds": 1499,
+      "recipeCount": 1664,
+      "uniqueRecipeIds": 1664,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 1028,
+      "recipeCount": 1193,
       "Japanese": 189,
       "Filipino": 184,
       "Korean": 174,
@@ -139,12 +140,13 @@
       "Chinese": 90,
       "Thai": 90,
       "flaggedRecipes": 0,
-      "hierarchy": "Japanese > Filipino > every other standard cuisine",
+      "hierarchy": "Japanese > Filipino > Korean > Indian > Italian > Vietnamese > Chinese = Thai",
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
       "photoMetadataFailures": 0,
-      "Indian": 171
+      "Indian": 171,
+      "Italian": 165
     },
     "methodDepth": {
       "policy": "No fixed step count. The recipe itself determines the number of numbered steps.",
@@ -156,7 +158,8 @@
       "GenshinStepRange": "4-12",
       "AnimeStepRange": "4-10",
       "VietnameseStepRange": "7-10",
-      "IndianStepRange": "4-12"
+      "IndianStepRange": "4-12",
+      "ItalianStepRange": "6-10"
     },
     "Genshin": {
       "recipeCount": 372,
@@ -180,7 +183,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "28p3",
+      "assetVersion": "29p1",
       "recipeQualityRuntime": 30,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -338,13 +341,79 @@
         "hardFailures": 0
       },
       "status": "passed"
+    },
+    "v29Italian": {
+      "auditedAt": "2026-08-22",
+      "ItalianAdded": 165,
+      "ItalianTotal": 165,
+      "uniqueItalianIds": 165,
+      "uniqueItalianTitles": 165,
+      "recipeFailures": 0,
+      "preRuntimeAllergenFailures": 0,
+      "photoMetadataFailures": 0,
+      "hardFailures": 0,
+      "coveragePreserved": true,
+      "methodPolicy": "variable-length; no artificial step target or ceiling",
+      "observedStepRange": "6-10",
+      "stepDistribution": {
+        "6": 10,
+        "7": 50,
+        "8": 64,
+        "9": 37,
+        "10": 4
+      },
+      "coveragePolicy": "coverage determines recipe count; 165 is this reviewed regional pass, not a permanent cap",
+      "regionalCoverage": [
+        "Piedmont",
+        "Lombardy",
+        "Veneto",
+        "Liguria",
+        "Emilia-Romagna",
+        "Tuscany",
+        "Lazio",
+        "Campania",
+        "Puglia",
+        "Calabria",
+        "Sicily",
+        "Sardinia",
+        "Abruzzo",
+        "Umbria",
+        "Marche",
+        "Trentino-Alto Adige",
+        "Friuli-Venezia Giulia",
+        "Valle d'Aosta",
+        "Molise",
+        "Basilicata"
+      ],
+      "referencePolicy": "All 165 recipes carry HTTPS references on official Italia.it regional food guides or dish-relevant official tourism pages; niche regional dishes were spot-checked again before release.",
+      "photoPolicy": "All 165 recipes carry at least two title-specific lazy/on-demand food-photo queries.",
+      "allergenAudit": "Ingredient-aware pre-runtime audit passed 165/165. Pane Frattau and Cassata Siciliana explicitly include gluten; Farinata di Ceci and Castagnaccio Ligure avoid false gluten labels from naturally gluten-free flours; Saltimbocca's culinary 'veal scallops' does not trigger shellfish.",
+      "similarityReview": "No exact duplicate ingredient bodies or exact duplicate method bodies; close regional relatives were retained only when their defining ingredients or techniques remain distinct.",
+      "regression": {
+        "totalRecipeRecords": 1664,
+        "uniqueRecipeIds": 1664,
+        "standardRecipeCount": 1193,
+        "Japanese": 189,
+        "Filipino": 184,
+        "Korean": 174,
+        "Chinese": 90,
+        "Thai": 90,
+        "Vietnamese": 130,
+        "Indian": 171,
+        "Italian": 165,
+        "Genshin": 372,
+        "Anime": 99,
+        "hardFailures": 0
+      },
+      "status": "passed"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v28.0 Indian culinary accuracy hardening audits all 171 Indian recipes for step depth and culinary-risk signals, applies targeted quantity/method/regional-identity corrections to 10 recipes, preserves all 171 dishes, and passes the 1,499-record full-library regression.",
+  "fullQaRelease": "v29.0 adds 165 reviewed Italian recipes across all 20 regions without changing the existing 1,499-record v28 dataset, updates the PWA shell to 29p1, and passes the additive 1,664-record/1,664-unique-ID release regression with existing Genshin and Anime isolation preserved.",
   "vietnameseRecipeCount": 130,
-  "indianRecipeCount": 171
+  "indianRecipeCount": 171,
+  "italianRecipeCount": 165
 }

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - bento-v31-spanish
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -28,6 +31,7 @@ jobs:
       - name: Run Bento v31 release QA
         run: node scripts/qa-v31-spanish.mjs
       - name: Commit verified production integration
+        if: github.event_name == 'push'
         run: |
           if git diff --quiet -- index.html service-worker.js data/library_manifest.json; then
             echo "No production integration changes to commit."

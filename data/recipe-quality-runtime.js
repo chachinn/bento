@@ -16,7 +16,7 @@ function inferAllergens(ingredients){
   if(has(dairy,/\b(whole milk|fresh milk|evaporated milk|condensed milk|buttermilk|cream|heavy cream|whipping cream|crème fraîche|butter|ghee|cheese|parmesan|mozzarella|cheddar|beaufort|comté|emmental|gruyère|reblochon|fromage blanc|tomme|cantal|paneer|chhena|chhenna|chenna|chhurpi|khoya|khoa|mawa|rabri|curd|dahi|yogurt|yoghurt|milk powder|powdered milk|ice cream)\b/)||/(^|[^a-z])milk([^a-z]|$)/.test(dairy))out.push('milk');
   if(has(raw,/\b(fish|fish sauce|bonito|katsuobushi|dashi|anchov(?:y|ies)|salmon|tuna|mackerel|cod|sardines?|fish cake|chikuwa|kamaboko|tilapia|catfish|bangus|milkfish|sea bass|sea bream|bream|monkfish|hake|dogfish|swordfish|marlin|rockfish|whitebait|whiting|eel|perch|trout|snapper|sole|zander|lamprey|shirasu|hilsa|ilish|rohu|carp|fermented fish|fermented dried fish)\b/))out.push('fish');
   const shell=raw.replace(/\b(vegetarian|vegan|mushroom) oyster sauce\b/g,' oyster-style-sauce ');
-  if(has(shell,/\b(shrimp|prawns?|crabs?|clams?|mussels?|oyster(?:s| sauce)?|scallops?|squid|octopus|abalone|lobster|langoustines?|cuttlefish|limpets?|snails?|cockles?|razor clams?)\b/))out.push('shellfish');
+  if(has(shell,/\b(shrimp|prawns?|crawfish|crabs?|clams?|mussels?|oyster(?:s| sauce)?|scallops?|squid|octopus|abalone|lobster|langoustines?|cuttlefish|limpets?|snails?|cockles?|razor clams?)\b/))out.push('shellfish');
   if(has(raw,/\b(peanuts?|peanut butter|cashews?|walnuts?|almonds?|hazelnuts?|pistachios?|pine nuts?|chestnuts?|pecans?|macadamia)\b/))out.push('nuts');
   if(has(raw,/\b(sesame|tahini)\b/))out.push('sesame');
   if(has(raw,/\b(coconut|coconut milk|coconut cream|coconut water|coconut oil|grated coconut)\b/))out.push('coconut');
@@ -33,8 +33,8 @@ for(const r of lib){
     r.photoQueries=[`${r.title} ${r.cuisine||''} food`.trim(),`${r.title} dish`];
     photos[r.id]={queries:r.photoQueries,square:true,source:'Wikimedia Commons runtime search'};
   }
-  r.recipeQualityVersion=36;
+  r.recipeQualityVersion=37;
 }
-window.BENTO_RECIPE_QUALITY_VERSION=36;
+window.BENTO_RECIPE_QUALITY_VERSION=37;
 window.BENTO_INFER_ALLERGENS=inferAllergens;
 })();

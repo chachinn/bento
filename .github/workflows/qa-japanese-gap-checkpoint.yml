@@ -29,5 +29,5 @@ jobs:
         run: node scripts/audit-japanese-coverage.mjs
       - name: Run Japanese regional gap QA
         run: node scripts/qa-japanese-gap-checkpoint.mjs
-      - name: Run full-runtime Japanese diagnostic
-        run: node scripts/qa-japanese-runtime-diagnostic.mjs
+      - name: Run corrected full-runtime Japanese QA
+        run: node scripts/qa-japanese-runtime-final.mjs

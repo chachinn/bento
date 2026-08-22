@@ -7,13 +7,23 @@ const dataDir=path.join(root,'data');
 const moduleNames=fs.readdirSync(dataDir)
   .filter(n=>/^spanish-recipes-\d{3}-\d{3}\.js$/.test(n))
   .sort((a,b)=>Number(a.match(/-(\d{3})-/)[1])-Number(b.match(/-(\d{3})-/)[1]));
-const fixName='spanish-v31-quality-fixes.js';
+
+// Fold the one confirmed stored-allergen correction into the source record.
+const paellaPath=path.join(dataDir,'spanish-recipes-027-031.js');
+let paellaSource=fs.readFileSync(paellaPath,'utf8');
+if(!/"id":"es_027"[\s\S]*?"allergens":\["shellfish"\]/.test(paellaSource)){
+  const before=paellaSource;
+  paellaSource=paellaSource.replace(/("id":"es_027"[\s\S]*?"allergens":)\[\]/,'$1["shellfish"]');
+  if(paellaSource===before)throw new Error('Could not fold es_027 shellfish correction into source');
+  fs.writeFileSync(paellaPath,paellaSource);
+}
+const temporaryFixPath=path.join(dataDir,'spanish-v31-quality-fixes.js');
+if(fs.existsSync(temporaryFixPath))fs.unlinkSync(temporaryFixPath);
 
 const window={BENTO_RECIPE_LIBRARY:[]};
 const ctx=vm.createContext({window,console});
 vm.runInContext(fs.readFileSync(path.join(dataDir,'spanish-runtime.js'),'utf8'),ctx,{filename:'spanish-runtime.js'});
 for(const name of moduleNames) vm.runInContext(fs.readFileSync(path.join(dataDir,name),'utf8'),ctx,{filename:name});
-vm.runInContext(fs.readFileSync(path.join(dataDir,fixName),'utf8'),ctx,{filename:fixName});
 const spanish=window.BENTO_RECIPE_LIBRARY;
 if(spanish.length!==215) throw new Error(`Expected 215 Spanish recipes, got ${spanish.length}`);
 for(let i=0;i<spanish.length;i++){
@@ -27,8 +37,7 @@ const minSteps=Math.min(...stepCounts), maxSteps=Math.max(...stepCounts);
 
 const spanishIndexRefs=[
   '  <script src="data/spanish-runtime.js?v=31p1" defer></script>',
-  ...moduleNames.map(n=>`  <script src="data/${n}?v=31p1" defer></script>`),
-  `  <script src="data/${fixName}?v=31p1" defer></script>`
+  ...moduleNames.map(n=>`  <script src="data/${n}?v=31p1" defer></script>`)
 ];
 let index=fs.readFileSync('index.html','utf8');
 index=index.replace(/^\s*<script src="data\/spanish-(?:runtime|recipes-[^"]+|v31-quality-fixes)\.js\?v=[^"]+" defer><\/script>\r?\n/gm,'');
@@ -45,7 +54,7 @@ sw=sw.replace(/const ASSET_VERSIONS=new Set\(\[([^\]]*)\]\);/,(_,body)=>{
 });
 sw=sw.replace(/^\s*'\.\/data\/spanish-(?:runtime|recipes-[^']+|v31-quality-fixes)\.js\?v=[^']+',\r?\n/gm,'');
 sw=sw.replace(/  '\.\/data\/recipe-quality-runtime\.js\?v=[^']+',/,
-  `${['./data/spanish-runtime.js',...moduleNames.map(n=>`./data/${n}`),`./data/${fixName}`].map(p=>`  '${p}?v=31p1',`).join('\n')}\n  './data/recipe-quality-runtime.js?v=31p1',`);
+  `${['./data/spanish-runtime.js',...moduleNames.map(n=>`./data/${n}`)].map(p=>`  '${p}?v=31p1',`).join('\n')}\n  './data/recipe-quality-runtime.js?v=31p1',`);
 fs.writeFileSync('service-worker.js',sw);
 
 const manifestPath=path.join(dataDir,'library_manifest.json');
@@ -59,11 +68,11 @@ m.standardRecipeCount=1583;
 m.dishImageCount=2054;
 m.instructionVersion=35;
 m.detailedInstructionRecipeCount=2054;
-m.cacheFix='v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime/modules plus its stored-metadata correction, and refreshes the shared allergen runtime without churning unrelated asset URLs.';
-m.generatedAt='2026-08-22T18:40:00+08:00';
+m.cacheFix='v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime and all recipe modules, and refreshes the shared allergen runtime without churning unrelated asset URLs.';
+m.generatedAt='2026-08-22T18:44:00+08:00';
 m.appRelease='31.0';
 m.cuisineRoadmap=['Japanese','Filipino','Korean','Chinese','Thai','Vietnamese','Indian','Italian','French','Spanish','American','Greek','Turkish','Mexican','Brazilian','Peruvian','Moroccan','British'];
-m.qualityGate='Permanent Bento recipe standard plus v28 Indian, v29 Italian, v30 French and v31 Spanish gates: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, stored and inferred critical-allergen coverage, authoritative tourism/cultural references, title-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling or cuisine-size cap.';
+m.qualityGate='Permanent Bento recipe standard plus v28 Indian, v29 Italian, v30 French and v31 Spanish gates: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, stored and inferred critical-allergen coverage, authoritative tourism/cultural references, dish-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling or cuisine-size cap.';
 m.allergenPolicy='Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Plant milks and nut butters remain excluded from false dairy detection; milk-fed meat is not dairy. Spanish hardening adds conservative recognition for common named fish, molluscs and wheat pastry terms while preserving naturally gluten-free flour behavior.';
 const qa=m.qualityAuditSnapshot;
 qa.fullLibrary.recipeCount=2054;
@@ -97,4 +106,4 @@ qa.v31Spanish={
 m.fullQaRelease='v31.0 adds 215 reviewed Spanish recipes across every autonomous community plus Ceuta, Melilla and national classics, advances the PWA shell to 31p1, and passes the additive 2,054-record/2,054-unique-ID release regression while preserving prior cuisines and Genshin/Anime isolation.';
 m.spanishRecipeCount=215;
 fs.writeFileSync(manifestPath,JSON.stringify(m,null,2)+'\n');
-console.log(`Integrated Spanish v31: ${spanish.length} recipes, ${moduleNames.length} modules + quality fix, step range ${minSteps}-${maxSteps}`);
+console.log(`Integrated Spanish v31: ${spanish.length} recipes, ${moduleNames.length} modules, step range ${minSteps}-${maxSteps}`);

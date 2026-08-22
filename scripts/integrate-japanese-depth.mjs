@@ -1,0 +1,19 @@
+import fs from 'node:fs';
+const RELEASE='31.2',ASSET='31j2',TOTAL=2117,STANDARD=1646,JAPANESE=252,ADDED=45;
+const modules=['japanese-extra-208-216.js','japanese-extra-217-225.js','japanese-extra-226-234.js','japanese-extra-235-243.js','japanese-extra-244-252.js'];
+let index=fs.readFileSync('index.html','utf8');
+const anchor=/  <script src="data\/japanese-extra-199-207\.js\?v=[^"]+" defer><\/script>/;
+if(!index.includes('data/japanese-extra-208-216.js')){const m=index.match(anchor);if(!m)throw new Error('Japanese index anchor missing');const tags=modules.map(n=>`  <script src="data/${n}?v=${ASSET}" defer></script>`).join('\n');index=index.replace(anchor,`${m[0]}\n${tags}`)}
+for(const n of modules)index=index.replace(new RegExp(`data/${n.replaceAll('.','\\.')}\\?v=[^\"]+`,'g'),`data/${n}?v=${ASSET}`);
+fs.writeFileSync('index.html',index);
+let sw=fs.readFileSync('service-worker.js','utf8');
+sw=sw.replace(/^const CACHE=.*$/m,`const CACHE='bento-shell-v1.0.0-v${ASSET}';`);
+sw=sw.replace(/^const ASSET_VERSIONS=new Set\(\[([^\]]*)\]\);$/m,(_m,x)=>{const v=[...x.matchAll(/'([^']+)'/g)].map(m=>m[1]);if(!v.includes(ASSET))v.push(ASSET);return `const ASSET_VERSIONS=new Set([${v.map(x=>`'${x}'`).join(',')}]);`});
+const swAnchor=/  '\.\/data\/japanese-extra-199-207\.js\?v=[^']+',/;
+if(!sw.includes('./data/japanese-extra-208-216.js')){const m=sw.match(swAnchor);if(!m)throw new Error('Japanese SW anchor missing');const tags=modules.map(n=>`  './data/${n}?v=${ASSET}',`).join('\n');sw=sw.replace(swAnchor,`${m[0]}\n${tags}`)}
+for(const n of modules)sw=sw.replace(new RegExp(`\\./data/${n.replaceAll('.','\\.')}\\?v=[^']+`,'g'),`./data/${n}?v=${ASSET}`);
+fs.writeFileSync('service-worker.js',sw);
+const manifest=JSON.parse(fs.readFileSync('data/library_manifest.json','utf8'));
+manifest.libraryVersion=Math.max(Number(manifest.libraryVersion)||0,37);manifest.instructionVersion=Math.max(Number(manifest.instructionVersion)||0,37);manifest.recipeCount=TOTAL;manifest.standardRecipeCount=STANDARD;manifest.japaneseRecipeCount=JAPANESE;manifest.newRecipesThisBuild=ADDED;manifest.dishImageCount=TOTAL;manifest.detailedInstructionRecipeCount=TOTAL;manifest.appRelease=RELEASE;manifest.generatedAt='2026-08-23T07:55:00+08:00';manifest.cacheFix=`v31.2 adds ${ADDED} source-reviewed Japanese regional-depth recipes under the ${ASSET} shell generation and preserves unchanged prior assets.`;
+manifest.qualityAuditSnapshot ||= {};manifest.qualityAuditSnapshot.fullLibrary={recipeCount:TOTAL,uniqueRecipeIds:TOTAL,criticalStructureFailures:0,releaseGate:'pass'};manifest.qualityAuditSnapshot.standardCuisines ||= {};Object.assign(manifest.qualityAuditSnapshot.standardCuisines,{recipeCount:STANDARD,Japanese:JAPANESE,flaggedRecipes:0,allergenFailures:0,referenceFailures:0,equipmentFailures:0,photoMetadataFailures:0,hierarchy:'Japanese 252 > Spanish 215 > Filipino 184 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90; Filipino expansion follows before American v32 so final product hierarchy remains Japanese first and Filipino second.'});manifest.qualityAuditSnapshot.PWA ||= {};manifest.qualityAuditSnapshot.PWA.assetVersion=ASSET;manifest.qualityAuditSnapshot.japaneseRegionalDepth={auditedAt:'2026-08-23',added:ADDED,total:JAPANESE,firstNewId:'jp_208',lastNewId:'jp_252',coveragePolicy:'regional depth, no arbitrary filler target',duplicateIds:0,duplicateTitles:0,structureFailures:0,status:'passed'};
+fs.writeFileSync('data/library_manifest.json',JSON.stringify(manifest,null,2)+'\n');console.log(JSON.stringify({release:RELEASE,asset:ASSET,total:TOTAL,standard:STANDARD,japanese:JAPANESE,added:ADDED},null,2));

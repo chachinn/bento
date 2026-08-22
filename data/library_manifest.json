@@ -1,8 +1,8 @@
 {
-  "libraryVersion": 34,
-  "recipeCount": 1839,
-  "newRecipesThisBuild": 175,
-  "cuisineCount": 9,
+  "libraryVersion": 35,
+  "recipeCount": 2054,
+  "newRecipesThisBuild": 215,
+  "cuisineCount": 10,
   "verifiedCuisineLibraries": [
     "Japanese",
     "Filipino",
@@ -12,9 +12,10 @@
     "Vietnamese",
     "Indian",
     "Italian",
-    "French"
+    "French",
+    "Spanish"
   ],
-  "standardRecipeCount": 1368,
+  "standardRecipeCount": 1583,
   "japaneseRecipeCount": 189,
   "filipinoRecipeCount": 184,
   "koreanRecipeCount": 174,
@@ -71,21 +72,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 1839,
+  "dishImageCount": 2054,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 34,
+  "instructionVersion": 35,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 1839,
+  "detailedInstructionRecipeCount": 2054,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v30.0 adds the French library under the 30p1 shell generation. The shell preserves the 28p3 and 29p1 asset generations, caches all 36 French 30p1 modules, and advances the cache name so installed PWAs receive the additive library without needless URL churn for unchanged assets.",
-  "generatedAt": "2026-08-22T14:39:57+08:00",
+  "cacheFix": "v31.0 adds the 215-recipe Spanish library under the 31p1 shell generation, keeps prior 28p3/29p1/30p1 generations valid for unchanged assets, caches the Spanish runtime and all recipe modules, and refreshes the shared allergen runtime without churning unrelated asset URLs.",
+  "generatedAt": "2026-08-22T18:44:00+08:00",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -100,7 +101,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "30.0",
+  "appRelease": "31.0",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -112,28 +113,28 @@
     "Italian",
     "French",
     "Spanish",
+    "American",
     "Greek",
     "Turkish",
     "Mexican",
-    "American",
     "Brazilian",
     "Peruvian",
     "Moroccan",
     "British"
   ],
   "cuisineRoadmapPolicy": "Only fully reviewed cuisine libraries appear in the live cuisine selector; planned cuisines remain hidden until their recipes pass quality review.",
-  "qualityGate": "Permanent Bento recipe standard plus v28 Indian, v29 Italian and v30 French gates: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, pre-runtime critical-allergen coverage, authoritative tourism/cultural references, title-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling or cuisine-size cap.",
+  "qualityGate": "Permanent Bento recipe standard plus v28 Indian, v29 Italian, v30 French and v31 Spanish gates: authentic regional dish identity, complete ingredients, recipe-recommended serving defaults, nonlinear salt/pepper scaling regression protection, time math, equipment, stored and inferred critical-allergen coverage, authoritative tourism/cultural references, dish-specific photo routing, doneness cues, semantic ingredient-method consistency, safety adaptations where warranted, and variable-length methods with no artificial step ceiling or cuisine-size cap.",
   "servingScalePolicy": "Recipe detail opens at each recipe recommended serving count. User adjustments scale ordinary measurable ingredients linearly, while salt and pepper-style seasoning stays at the base amount below 2x and scales when the recipe reaches 2x or more.",
-  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Indian dairy and flour terms remain recognized, and plant milks and nut butters remain excluded from false dairy detection. French inference adds explicit wheat pastry and baguette terms, named Alpine cheeses, cannelloni, sole, zander, lamprey and plural mussels; ingredient wording distinguishes anchovy-containing Worcestershire and broad Nuts metadata covers chestnut while naturally gluten-free chestnut flour is never treated as wheat.",
+  "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Plant milks and nut butters remain excluded from false dairy detection; milk-fed meat is not dairy. Spanish hardening adds conservative recognition for common named fish, molluscs and wheat pastry terms while preserving naturally gluten-free flour behavior.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 1839,
-      "uniqueRecipeIds": 1839,
+      "recipeCount": 2054,
+      "uniqueRecipeIds": 2054,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 1368,
+      "recipeCount": 1583,
       "Japanese": 189,
       "Filipino": 184,
       "Korean": 174,
@@ -141,14 +142,15 @@
       "Chinese": 90,
       "Thai": 90,
       "flaggedRecipes": 0,
-      "hierarchy": "Japanese > Filipino > French > Korean > Indian > Italian > Vietnamese > Chinese = Thai",
+      "hierarchy": "Spanish > Japanese > Filipino > French > Korean > Indian > Italian > Vietnamese > Chinese = Thai by reviewed recipe count; no filler was added to force a numerical hierarchy.",
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
       "photoMetadataFailures": 0,
       "Indian": 171,
       "Italian": 165,
-      "French": 175
+      "French": 175,
+      "Spanish": 215
     },
     "methodDepth": {
       "policy": "No fixed step count. The recipe itself determines the number of numbered steps.",
@@ -162,7 +164,8 @@
       "VietnameseStepRange": "7-10",
       "IndianStepRange": "4-12",
       "ItalianStepRange": "6-10",
-      "FrenchStepRange": "5-11"
+      "FrenchStepRange": "5-11",
+      "SpanishStepRange": "5-9"
     },
     "Genshin": {
       "recipeCount": 372,
@@ -186,8 +189,8 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "30p1",
-      "recipeQualityRuntime": 31,
+      "assetVersion": "31p1",
+      "recipeQualityRuntime": 32,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
     },
@@ -475,15 +478,86 @@
         "hardFailures": 0
       },
       "status": "passed"
+    },
+    "v31Spanish": {
+      "auditedAt": "2026-08-22",
+      "SpanishAdded": 215,
+      "SpanishTotal": 215,
+      "uniqueSpanishIds": 215,
+      "uniqueSpanishTitles": 215,
+      "recipeFailures": 0,
+      "preRuntimeAllergenFailures": 0,
+      "photoMetadataFailures": 0,
+      "hardFailures": 0,
+      "coveragePreserved": true,
+      "methodPolicy": "variable-length; no artificial step target or ceiling",
+      "observedStepRange": "5-9",
+      "stepDistribution": {
+        "5": 2,
+        "6": 27,
+        "7": 155,
+        "8": 29,
+        "9": 2
+      },
+      "coveragePolicy": "coverage determines recipe count; 215 closes this reviewed regional and national pass and is not a permanent cap",
+      "regionalCoverage": [
+        "Andalusia",
+        "Catalonia",
+        "Region of Valencia",
+        "Region of Murcia",
+        "Balearic Islands",
+        "Community of Madrid",
+        "Castile-La Mancha",
+        "Castile and León",
+        "Extremadura",
+        "Aragón",
+        "Navarra",
+        "La Rioja",
+        "Basque Country",
+        "Cantabria",
+        "Asturias",
+        "Galicia",
+        "Canary Islands",
+        "Ceuta",
+        "Melilla",
+        "National tapas, staples and desserts"
+      ],
+      "referencePolicy": "All 215 recipes carry HTTPS culinary references, prioritizing official Spain.info national and regional gastronomy pages and dish-specific tourism material.",
+      "photoPolicy": "All 215 recipes carry at least two dish-specific lazy/on-demand real-food photo queries.",
+      "allergenAudit": "Stored Spanish allergens were checked against ingredient-based inference; optional snails in Paella Valenciana are explicitly represented as shellfish metadata, and the shared runtime was narrowly hardened for Spanish fish, mollusc and pastry vocabulary and to avoid false dairy on milk-fed lamb.",
+      "similarityReview": "The complete set is checked for exact duplicate titles, ingredient bodies and method bodies; close regional relatives are retained only when their defining ingredients, methods or geographic identities differ.",
+      "regression": {
+        "totalRecipeRecords": 2054,
+        "uniqueRecipeIds": 2054,
+        "standardRecipeCount": 1583,
+        "Japanese": 189,
+        "Filipino": 184,
+        "Korean": 174,
+        "Chinese": 90,
+        "Thai": 90,
+        "Vietnamese": 130,
+        "Indian": 171,
+        "Italian": 165,
+        "French": 175,
+        "Spanish": 215,
+        "Genshin": 372,
+        "Anime": 99,
+        "dataScriptExecutionFailures": 0,
+        "missingIndexAssets": 0,
+        "missingServiceWorkerAssets": 0,
+        "hardFailures": 0
+      },
+      "status": "passed"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",
   "cleanupRelease": "v24.1 completes a seven-library recipe QA. Methods are not authored toward a 5- or 6-step ceiling; simple dishes remain concise while complex dishes retain the stages needed to cook them reliably.",
   "chineseRelease": "v24.0 re-reviews all 40 existing Chinese recipes for full cookable method depth while preserving stable IDs, Chinese names, pinyin, regions and search metadata.",
   "thaiRelease": "v24.0 adds 60 reviewed Thai recipes without a cuisine-size cap, spanning Central, Northern/Lanna, Isan/Northeastern and Southern Thai cooking, street food, breakfast, desserts and drinks.",
-  "fullQaRelease": "v30.0 adds 175 reviewed French recipes without changing the existing 1,664-record v29 dataset, updates the PWA shell to 30p1, and passes the additive 1,839-record/1,839-unique-ID release regression with all prior cuisine counts and Genshin/Anime isolation preserved.",
+  "fullQaRelease": "v31.0 adds 215 reviewed Spanish recipes across every autonomous community plus Ceuta, Melilla and national classics, advances the PWA shell to 31p1, and passes the additive 2,054-record/2,054-unique-ID release regression while preserving prior cuisines and Genshin/Anime isolation.",
   "vietnameseRecipeCount": 130,
   "indianRecipeCount": 171,
   "italianRecipeCount": 165,
-  "frenchRecipeCount": 175
+  "frenchRecipeCount": 175,
+  "spanishRecipeCount": 215
 }

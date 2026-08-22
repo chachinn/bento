@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   checkpoint-qa:
@@ -22,22 +22,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Stage v32 integration in QA workspace
+      - name: Stage or verify v32 integration in QA workspace
         run: node scripts/integrate-v32-american.mjs
       - name: Run American cuisine checkpoint QA
         run: node scripts/qa-v32-american-checkpoint.mjs
       - name: Run full v32 release regression
         run: node scripts/qa-v32-american-release.mjs
-      - name: Commit verified v32 production integration
-        if: success()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- index.html service-worker.js data/library_manifest.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Integrate American v32 production library"
-            git push origin HEAD:bento-v32-american
-          fi
       - name: Package current v32 integrated changes
         if: success()
         run: |

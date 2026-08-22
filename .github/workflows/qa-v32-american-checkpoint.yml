@@ -22,13 +22,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node scripts/qa-v32-american-checkpoint.mjs
-      - name: Package current v32 changes
+      - name: Stage v32 integration in QA workspace
+        run: node scripts/integrate-v32-american.mjs
+      - name: Run American cuisine checkpoint QA
+        run: node scripts/qa-v32-american-checkpoint.mjs
+      - name: Run full v32 release regression
+        run: node scripts/qa-v32-american-release.mjs
+      - name: Package current v32 integrated changes
         if: success()
         run: |
           zip -r bento-v32-american-changes.zip \
             .github/workflows/qa-v32-american-checkpoint.yml \
+            scripts/integrate-v32-american.mjs \
             scripts/qa-v32-american-checkpoint.mjs \
+            scripts/qa-v32-american-release.mjs \
+            index.html \
+            service-worker.js \
+            data/library_manifest.json \
             data/american-runtime.js \
             data/american-recipes-*.js \
             data/recipe-quality-runtime.js

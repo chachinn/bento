@@ -1,6 +1,6 @@
-const CACHE='bento-shell-v1.0.0-v31j1';
+const CACHE='bento-shell-v1.0.0-v31j2';
 const SHELL_PREFIX='bento-shell-';
-const ASSET_VERSIONS=new Set(['28p3','29p1','30p1','31p1','31j1']);
+const ASSET_VERSIONS=new Set(['28p3','29p1','30p1','31p1','31j1','31j2']);
 const CORE=[
   './index.html',
   './style.css?v=28p3',
@@ -10,6 +10,11 @@ const CORE=[
   './data/japanese-extra-190-194.js?v=31j1',
   './data/japanese-extra-195-198.js?v=31j1',
   './data/japanese-extra-199-207.js?v=31j1',
+  './data/japanese-extra-208-216.js?v=31j2',
+  './data/japanese-extra-217-225.js?v=31j2',
+  './data/japanese-extra-226-234.js?v=31j2',
+  './data/japanese-extra-235-243.js?v=31j2',
+  './data/japanese-extra-244-252.js?v=31j2',
   './data/filipino-extra-165-184.js?v=28p3',
   './data/photo-index.js?v=28p3',
   './data/library_manifest.json',

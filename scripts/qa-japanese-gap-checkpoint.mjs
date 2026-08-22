@@ -2,22 +2,24 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
-const target='data/japanese-extra-190-194.js';
-const source=fs.readFileSync(target,'utf8');
-new vm.Script(source,{filename:target});
+const targets=['data/japanese-extra-190-194.js','data/japanese-extra-195-198.js'];
 const sandbox={window:{BENTO_RECIPE_LIBRARY:[]}};
 vm.createContext(sandbox);
-vm.runInContext(source,sandbox,{filename:target});
+for(const target of targets){
+  const source=fs.readFileSync(target,'utf8');
+  new vm.Script(source,{filename:target});
+  vm.runInContext(source,sandbox,{filename:target});
+}
 const recipes=sandbox.window.BENTO_RECIPE_LIBRARY;
-const expected=['jp_190','jp_191','jp_192','jp_193','jp_194'];
-const categories=new Set(['Soups & Hot Pots','Noodles','Breads & Pastries','Main Dishes']);
+const expected=['jp_190','jp_191','jp_192','jp_193','jp_194','jp_195','jp_196','jp_197','jp_198'];
+const categories=new Set(['Soups & Hot Pots','Noodles','Breads & Pastries','Main Dishes','Rice & Donburi']);
 const allergens=new Set(['soy','gluten','egg','milk','fish','shellfish','nuts','sesame','coconut','mustard']);
 const fail=[];
 const assert=(ok,msg)=>{if(!ok)fail.push(msg)};
 
-assert(recipes.length===5,`expected 5 recipes, got ${recipes.length}`);
+assert(recipes.length===expected.length,`expected ${expected.length} recipes, got ${recipes.length}`);
 assert(JSON.stringify(recipes.map(r=>r.id))===JSON.stringify(expected),`unexpected IDs/order: ${recipes.map(r=>r.id).join(', ')}`);
-assert(new Set(recipes.map(r=>r.id)).size===recipes.length,'duplicate IDs inside checkpoint module');
+assert(new Set(recipes.map(r=>r.id)).size===recipes.length,'duplicate IDs inside checkpoint modules');
 
 for(const r of recipes){
   assert(r.cuisine==='Japanese',`${r.id}: cuisine must be Japanese`);
@@ -41,7 +43,10 @@ for(const r of recipes){
   if(/all-purpose flour|wheat|cha-soba|soy sauce/.test(hay)) assert(has('gluten'),`${r.id}: expected gluten from ingredient text`);
   if(/soy sauce|miso/.test(hay)) assert(has('soy'),`${r.id}: expected soy from ingredient text`);
   if(/\beggs?\b|omelet/.test(hay)) assert(has('egg'),`${r.id}: expected egg from ingredient text`);
-  if(/niboshi|dashi/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
+  if(/niboshi|dashi|salmon|sea bream|kamaboko/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
+  if(/scallop|shrimp|prawn|crab|lobster/.test(hay)) assert(has('shellfish'),`${r.id}: expected shellfish from ingredient text`);
+  if(/sesame/.test(hay)) assert(has('sesame'),`${r.id}: expected sesame from ingredient text`);
+  if(/mustard/.test(hay)) assert(has('mustard'),`${r.id}: expected mustard from ingredient text`);
 }
 
 const allJs=[];

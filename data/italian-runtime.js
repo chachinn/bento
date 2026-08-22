@@ -6,7 +6,7 @@ window.BENTO_ITALIAN_ADD=rows=>{
   for(const o of rows||[]){
     if(!o||seen.has(String(o.id||'')))continue;
     const r={
-      cuisine:'Italian',country:'Italy',countryCode:'IT',recipeType:'Reviewed regional classic',
+      cuisine:'Italian',country:'Italy',countryCode:'IT',recipeType:'Reviewed classic',
       energy:'normal',cleanup:2,freezer:'no',collection:'Italian Kitchen',favorite:false,builtIn:true,dietTags:[],
       libraryVersion:33,instructionVersion:33,instructionStyle:'comprehensive-variable-length',
       createdAt:'2026-08-22T09:42:00+08:00',updatedAt:'2026-08-22T09:42:00+08:00',verifiedAt:'2026-08-22',

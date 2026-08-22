@@ -1,0 +1,17 @@
+name: Bento Japanese depth QA
+on:
+  push:
+    branches: [bento-v31-2-japanese-depth]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Japanese depth full-library QA
+        run: node scripts/qa-japanese-depth.mjs

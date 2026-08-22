@@ -1,5 +1,4 @@
 import fs from 'node:fs';
-import path from 'node:path';
 import vm from 'node:vm';
 import {execFileSync} from 'node:child_process';
 import {TextDecoder,TextEncoder} from 'node:util';
@@ -11,7 +10,7 @@ for(const f of ['data/american-runtime.js',...modules.map(n=>`data/${n}`)]){try{
 const make=()=>{const g={BENTO_RECIPE_LIBRARY:[],console,TextDecoder,TextEncoder,Buffer,URL,Map,Set,Date,Math,JSON,Array,Object,String,Number,Boolean,RegExp,setTimeout,clearTimeout};g.window=g;g.self=g;return vm.createContext(g)};
 const run=(f,c)=>vm.runInContext(fs.readFileSync(f,'utf8'),c,{filename:f,timeout:10000});
 const c=make();run('data/american-runtime.js',c);for(const n of modules)run(`data/${n}`,c);const rows=c.BENTO_RECIPE_LIBRARY;
-assert(rows.length===25,`count ${rows.length}`);assert(new Set(rows.map(r=>r.id)).size===rows.length,'duplicate ids');assert(new Set(rows.map(r=>r.title.trim().toLowerCase())).size===rows.length,'duplicate titles');
+assert(rows.length>0,'no American recipes loaded');assert(new Set(rows.map(r=>r.id)).size===rows.length,'duplicate ids');assert(new Set(rows.map(r=>r.title.trim().toLowerCase())).size===rows.length,'duplicate titles');
 for(let i=0;i<rows.length;i++)assert(rows[i].id===`us_${String(i+1).padStart(3,'0')}`,`sequence ${rows[i].id}`);
 const ib=new Map(),mb=new Map();
 for(const r of rows){

@@ -40,7 +40,7 @@ for(const r of recipes){
   const has=a=>r.allergens.includes(a);
   if(/all-purpose flour|wheat|cha-soba|soy sauce/.test(hay)) assert(has('gluten'),`${r.id}: expected gluten from ingredient text`);
   if(/soy sauce|miso/.test(hay)) assert(has('soy'),`${r.id}: expected soy from ingredient text`);
-  if(/\begg|omelet/.test(hay)) assert(has('egg'),`${r.id}: expected egg from ingredient text`);
+  if(/\beggs?\b|omelet/.test(hay)) assert(has('egg'),`${r.id}: expected egg from ingredient text`);
   if(/niboshi|dashi/.test(hay)) assert(has('fish'),`${r.id}: expected fish from ingredient text`);
 }
 

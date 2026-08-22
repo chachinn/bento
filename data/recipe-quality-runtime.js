@@ -7,7 +7,7 @@ function inferAllergens(ingredients){
   const raw=(' '+(ingredients||[]).join(' ')+' ').toLowerCase();
   const out=[];
   if(has(raw,/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|doubanjiang|gochujang|doenjang|axone|akhuni|fermented soybeans?|fermented bean paste)\b/))out.push('soy');
-  if(has(raw,/\b(wheat|whole wheat|whole-wheat|atta|all-purpose flour|bread flour|cake flour|tempura flour|pâte brisée|semolina|sooji|rava|maida|panko|breadcrumbs?|bread crumbs?|puff pastry|filo pastry|phyllo pastry|pastry sheets?|ramen|udon|soba|wheat noodles?|egg noodles?|noodles|spaghetti|pasta|cannelloni|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|momo wrappers?|spring roll wrappers?|soy sauce|hoisin sauce|bread|baguette|pav|naan|kulcha|bhature?|parotta)\b/))out.push('gluten');
+  if(has(raw,/\b(wheat|whole wheat|whole-wheat|atta|all-purpose flour|bread flour|cake flour|tempura flour|pâte brisée|semolina|sooji|rava|maida|panko|breadcrumbs?|bread crumbs?|puff pastry|filo pastry|phyllo pastry|pastry sheets?|ramen|udon|soba|wheat noodles?|egg noodles?|noodles|spaghetti|pasta|cannelloni|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|momo wrappers?|spring roll wrappers?|soy sauce|hoisin sauce|bread|baguette|hot dog buns?|hamburger buns?|oyster crackers?|pav|naan|kulcha|bhature?|parotta)\b/))out.push('gluten');
   if(has(raw,/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise)\b/))out.push('egg');
   const dairy=raw
     .replace(/\bmilk[- ]fed\b/g,' young-fed ')
@@ -33,8 +33,8 @@ for(const r of lib){
     r.photoQueries=[`${r.title} ${r.cuisine||''} food`.trim(),`${r.title} dish`];
     photos[r.id]={queries:r.photoQueries,square:true,source:'Wikimedia Commons runtime search'};
   }
-  r.recipeQualityVersion=32;
+  r.recipeQualityVersion=33;
 }
-window.BENTO_RECIPE_QUALITY_VERSION=32;
+window.BENTO_RECIPE_QUALITY_VERSION=33;
 window.BENTO_INFER_ALLERGENS=inferAllergens;
 })();

@@ -1,0 +1,26 @@
+name: Bento Japanese gap checkpoint QA
+
+on:
+  push:
+    branches:
+      - bento-japanese-gap-expansion
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checkpoint-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check Japanese extension syntax
+        run: node --check data/japanese-extra-190-194.js
+      - name: Run Japanese regional gap QA
+        run: node scripts/qa-japanese-gap-checkpoint.mjs

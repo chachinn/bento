@@ -8,7 +8,8 @@ function inferAllergens(ingredients){
   const out=[];
   if(has(raw,/\b(soy sauce|tamari|miso|tofu|soybean|soybeans|edamame|soy milk|doubanjiang|gochujang|doenjang|axone|akhuni|fermented soybeans?|fermented bean paste)\b/))out.push('soy');
   if(has(raw,/\b(wheat|whole wheat|whole-wheat|atta|all-purpose flour|bread flour|cake flour|tempura flour|pâte brisée|semolina|sooji|rava|maida|panko|breadcrumbs?|bread crumbs?|puff pastry|filo pastry|phyllo pastry|pastry sheets?|ramen|udon|soba|wheat noodles?|egg noodles?|noodles|spaghetti|pasta|cannelloni|gyoza wrappers?|dumpling wrappers?|wonton wrappers?|momo wrappers?|spring roll wrappers?|soy sauce|hoisin sauce|bread|baguette|hot dog buns?|hamburger buns?|oyster crackers?|pav|naan|kulcha|bhature?|parotta)\b/))out.push('gluten');
-  if(has(raw,/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise)\b/))out.push('egg');
+  const egg=raw.replace(/\b(vegan|egg[- ]free) tartar sauce\b/g,' eggfree-tartar-sauce ');
+  if(has(egg,/\b(egg|eggs|egg yolks?|egg whites?|mayonnaise|mayo|hollandaise|tartar sauce)\b/))out.push('egg');
   const dairy=raw
     .replace(/\bmilk[- ]fed\b/g,' young-fed ')
     .replace(/\b(coconut|soy|almond|oat|rice|cashew|macadamia) milk\b/g,' plantmilk ')
@@ -33,8 +34,8 @@ for(const r of lib){
     r.photoQueries=[`${r.title} ${r.cuisine||''} food`.trim(),`${r.title} dish`];
     photos[r.id]={queries:r.photoQueries,square:true,source:'Wikimedia Commons runtime search'};
   }
-  r.recipeQualityVersion=37;
+  r.recipeQualityVersion=38;
 }
-window.BENTO_RECIPE_QUALITY_VERSION=37;
+window.BENTO_RECIPE_QUALITY_VERSION=38;
 window.BENTO_INFER_ALLERGENS=inferAllergens;
 })();

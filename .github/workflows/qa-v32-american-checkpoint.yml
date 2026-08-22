@@ -1,0 +1,22 @@
+name: Bento v32 American checkpoint QA
+
+on:
+  push:
+    branches:
+      - bento-v32-american
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  checkpoint-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: bento-v32-american
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/qa-v32-american-checkpoint.mjs

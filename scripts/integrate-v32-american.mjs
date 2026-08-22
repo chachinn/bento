@@ -80,7 +80,7 @@ Object.assign(manifest.qualityAuditSnapshot.standardCuisines,{
   hierarchy:'American 243 > Spanish 215 > Japanese 189 > Filipino 184 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90 at the v32 American checkpoint; Japanese/Filipino ranking restoration is a separate gap-driven follow-up before public v1 rather than filler inside the American release.'
 });
 manifest.qualityAuditSnapshot.methodDepth ||= {};
-manifest.qualityAuditSnapshot.methodDepth.AmericanStepRange='4-9';
+manifest.qualityAuditSnapshot.methodDepth.AmericanStepRange='5-10';
 manifest.qualityAuditSnapshot.PWA ||= {};
 manifest.qualityAuditSnapshot.PWA.assetVersion=ASSET;
 manifest.qualityAuditSnapshot.PWA.recipeQualityRuntime=40;

@@ -1,0 +1,12 @@
+import fs from 'node:fs';import vm from 'node:vm';
+const root=process.cwd();
+const read=p=>fs.readFileSync(`${root}/${p}`,'utf8');
+const modules=['data/recipes-data.js','data/japanese-extra-150-170.js','data/japanese-extra-171-189.js','data/japanese-extra-190-194.js','data/japanese-extra-195-198.js','data/japanese-extra-199-207.js','data/japanese-extra-208-216.js','data/japanese-extra-217-225.js','data/japanese-extra-226-234.js','data/japanese-extra-235-243.js','data/japanese-extra-244-252.js'];
+const ctx={window:{BENTO_RECIPE_LIBRARY:[]},console};ctx.window.window=ctx.window;vm.createContext(ctx);for(const p of modules)vm.runInContext(read(p),ctx,{filename:p});
+const lib=ctx.window.BENTO_RECIPE_LIBRARY,jp=lib.filter(r=>r.cuisine==='Japanese');
+const fail=(m)=>{throw new Error(m)};if(jp.length!==252)fail(`Japanese count ${jp.length} != 252`);const ids=jp.map(r=>String(r.id));if(new Set(ids).size!==ids.length)fail('duplicate Japanese IDs');
+for(let n=208;n<=252;n++){const id=`jp_${n}`;if(!ids.includes(id))fail(`missing ${id}`)}
+const titles=new Set();for(const r of jp){const t=String(r.title||'').trim().toLowerCase();if(titles.has(t))fail(`duplicate title ${r.title}`);titles.add(t);if(!Number.isFinite(+r.servings)||+r.servings<1)fail(`bad servings ${r.id}`);if(!Array.isArray(r.ingredients)||r.ingredients.length<2)fail(`ingredients ${r.id}`);if(!Array.isArray(r.steps)||r.steps.length<3)fail(`steps ${r.id}`);if(!r.equipment)fail(`equipment ${r.id}`);if(+r.total < +r.prep + +r.cook)fail(`time math ${r.id}`);if(!Array.isArray(r.allergens))fail(`allergens ${r.id}`);if(!Array.isArray(r.sourceUrls)||r.sourceUrls.length<1||r.sourceUrls.some(u=>!String(u).startsWith('https://')))fail(`sources ${r.id}`);if(!Array.isArray(r.photoQueries)||r.photoQueries.length<2)fail(`photos ${r.id}`)}
+const index=read('index.html'),sw=read('service-worker.js');for(const p of modules.slice(6)){if(!index.includes(p.replace('data/','')))fail(`index missing ${p}`);if(!sw.includes(p))fail(`sw missing ${p}`)}if(!sw.includes("v31j2"))fail('cache not v31j2');
+const manifest=JSON.parse(read('data/library_manifest.json'));if(manifest.japaneseRecipeCount!==252)fail('manifest Japanese count');if(manifest.recipeCount!==2117)fail('manifest total');if(manifest.standardRecipeCount!==1646)fail('manifest standard count');
+console.log(`PASS Japanese v31.2: ${jp.length} Japanese recipes; IDs unique; jp_208–jp_252 present; structure/time/source/photo/PWA/manifest gates green.`);

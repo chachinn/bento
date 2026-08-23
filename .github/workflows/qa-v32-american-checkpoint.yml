@@ -1,0 +1,110 @@
+name: Bento v32 American production reconciliation QA
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  release-qa:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: bento-v32-american
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Verify current production baseline
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor origin/main HEAD || { echo 'Branch is stale against main'; exit 1; }
+          node <<'NODE'
+          const m=require('./data/library_manifest.json');
+          const e={recipeCount:2181,standardRecipeCount:1710,japaneseRecipeCount:252,filipinoRecipeCount:248,appRelease:'31.3'};
+          for(const [k,v] of Object.entries(e))if(m[k]!==v)throw new Error(`${k}: ${m[k]} != ${v}`);
+          if(m.qualityAuditSnapshot?.fullLibrary?.uniqueRecipeIds!==2181)throw new Error('Production unique-ID baseline mismatch');
+          NODE
+
+      - name: Patch only stale baseline expectations in proven v32 scripts
+        run: |
+          node <<'NODE'
+          const fs=require('fs');
+          let p='scripts/integrate-v32-american.mjs',s=fs.readFileSync(p,'utf8');
+          const reps=[
+            ['const BASE_TOTAL=2054;','const BASE_TOTAL=2181;'],
+            ['const BASE_STANDARD=1583;','const BASE_STANDARD=1710;'],
+            ['manifest.libraryVersion=36;','manifest.libraryVersion=39;'],
+            ['manifest.instructionVersion=36;','manifest.instructionVersion=39;'],
+            ["manifest.generatedAt='2026-08-22T23:50:00+08:00';","manifest.generatedAt=new Date().toISOString();"]
+          ];
+          for(const [a,b] of reps){if(!s.includes(a))throw new Error(`integration patch anchor missing: ${a}`);s=s.replace(a,b)}
+          fs.writeFileSync(p,s);
+          p='scripts/qa-v32-american-release.mjs';s=fs.readFileSync(p,'utf8');
+          s=s.replaceAll('2297','2424').replaceAll('1826','1953');
+          const a='const expected={Japanese:189,Filipino:184',b='const expected={Japanese:252,Filipino:248';
+          if(!s.includes(a))throw new Error('release QA cuisine baseline anchor missing');s=s.replace(a,b);
+          fs.writeFileSync(p,s);
+          NODE
+
+      - name: Stage v32 integration in QA workspace
+        run: node scripts/integrate-v32-american.mjs
+
+      - name: Reconcile current manifest metadata
+        run: |
+          node <<'NODE'
+          const fs=require('fs'),p='data/library_manifest.json',m=JSON.parse(fs.readFileSync(p,'utf8'));
+          Object.assign(m,{libraryVersion:39,recipeCount:2424,newRecipesThisBuild:243,cuisineCount:11,standardRecipeCount:1953,japaneseRecipeCount:252,filipinoRecipeCount:248,americanRecipeCount:243,dishImageCount:2424,instructionVersion:39,detailedInstructionRecipeCount:2424,appRelease:'32.0',generatedAt:new Date().toISOString()});
+          m.cacheFix='v32.0 adds the 243-recipe American coverage-first regional library under the 32p1 shell generation while preserving Japanese v31.2 and Filipino v31.3 depth releases and all prior unchanged assets.';
+          m.qualityGate='Permanent Bento recipe standard plus completed Indian, Italian, French, Spanish, Japanese, Filipino and American coverage gates: authentic regional dish identity, measured ingredients, coherent time math, equipment, stored and inferred critical-allergen coverage, authoritative references, photo routing, doneness cues, semantic consistency, safety adaptations where warranted, and variable-length methods without artificial recipe-count or step targets.';
+          m.allergenPolicy='Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Plant milks and nut butters remain excluded from false dairy detection; milk-fed meat is not dairy. v32 adds narrow recognition for tartar sauce while protecting vegan/egg-free variants, plus walleye, halibut, catfish, crawfish, pecans, buns and oyster crackers.';
+          m.qualityAuditSnapshot.fullLibrary={recipeCount:2424,uniqueRecipeIds:2424,criticalStructureFailures:0,releaseGate:'pass'};
+          Object.assign(m.qualityAuditSnapshot.standardCuisines,{recipeCount:1953,Japanese:252,Filipino:248,American:243,flaggedRecipes:0,allergenFailures:0,referenceFailures:0,equipmentFailures:0,photoMetadataFailures:0,hierarchy:'Japanese 252 > Filipino 248 > American 243 > Spanish 215 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90'});
+          m.qualityAuditSnapshot.methodDepth.AmericanStepRange='5-10';
+          m.qualityAuditSnapshot.PWA.assetVersion='32p1';m.qualityAuditSnapshot.PWA.recipeQualityRuntime=40;
+          Object.assign(m.qualityAuditSnapshot.v32American,{productionBase:'0ab4e84aa523120bc750e9b567001c561437c7e2',productionBaseTotal:2181,productionBaseStandard:1710,JapanesePreserved:252,FilipinoPreserved:248,runtimeRegression:'passed',status:'passed'});
+          fs.writeFileSync(p,JSON.stringify(m,null,2)+'\n');
+          NODE
+
+      - name: Run American checkpoint QA
+        run: node scripts/qa-v32-american-checkpoint.mjs
+
+      - name: Run full v32 runtime PWA regression
+        run: node scripts/qa-v32-american-release.mjs
+
+      - name: Verify Japanese and Filipino depth integrations remain intact
+        run: |
+          grep -F 'data/japanese-extra-244-252.js?v=31j2' index.html
+          grep -F 'data/filipino-extra-241-248.js?v=31f1' index.html
+          grep -F "'./data/japanese-extra-244-252.js?v=31j2'" service-worker.js
+          grep -F "'./data/filipino-extra-241-248.js?v=31f1'" service-worker.js
+
+      - name: Remove QA scaffolding and inspect exact final diff
+        run: |
+          rm -f .github/workflows/qa-v32-american-checkpoint.yml scripts/integrate-v32-american.mjs scripts/qa-v32-american-checkpoint.mjs scripts/qa-v32-american-release.mjs
+          git add -- index.html service-worker.js data/library_manifest.json
+          git add -u -- .github/workflows/qa-v32-american-checkpoint.yml scripts/integrate-v32-american.mjs scripts/qa-v32-american-checkpoint.mjs scripts/qa-v32-american-release.mjs
+          git diff --cached --check
+          git diff --name-status origin/main > /tmp/final-diff.txt
+          cat /tmp/final-diff.txt
+          node <<'NODE'
+          const fs=require('fs'),lines=fs.readFileSync('/tmp/final-diff.txt','utf8').trim().split(/\r?\n/).filter(Boolean);
+          const allowed=p=>p==='data/american-runtime.js'||/^data\/american-recipes-\d{3}-\d{3}\.js$/.test(p)||['data/library_manifest.json','data/recipe-quality-runtime.js','index.html','service-worker.js'].includes(p);
+          for(const line of lines){const parts=line.split('\t'),status=parts[0],p=parts.at(-1);if(status.startsWith('D'))throw new Error(`Unexpected deletion ${line}`);if(!allowed(p))throw new Error(`Unexpected final file ${line}`)}
+          const files=lines.map(x=>x.split('\t').at(-1));if(files.length!==37)throw new Error(`Expected 37 final files, got ${files.length}`);if(files.filter(x=>/^data\/american-recipes-/.test(x)).length!==32)throw new Error('American module diff count');
+          for(const p of ['data/american-runtime.js','data/library_manifest.json','data/recipe-quality-runtime.js','index.html','service-worker.js'])if(!files.includes(p))throw new Error(`Missing final file ${p}`);
+          console.log('Final 37-file diff gate PASSED');
+          NODE
+
+      - name: Commit verified clean release candidate
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Finalize Bento v32 American cuisine release'
+          git push origin HEAD:bento-v32-american

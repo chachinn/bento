@@ -21,14 +21,18 @@ const evid={
  egg:/\b(egg|eggs|egg yolks?|egg whites?)\b/,
  milk:/\b(whole milk|fresh milk|condensed milk|powdered milk|milk powder|heavy cream|whipping cream|butter|margarine|ice cream|frozen yogurt)\b/,
  fish:/\b(fish|fish sauce|tilapia|tuna|mackerel|cod|bangus|milkfish|snapper|stingray|skate|dried fish|burong isda|\bburo\b)\b/,
- shellfish:/\b(shrimp|prawn|crab|clam|diwal|squid|snail|sea urchin|curacha|oyster|mussel|scallop|lobster|bagoong|alamang)\b/,
+ shellfish:/\b(shrimp|prawns?|crabs?|clams?|diwal|squid|snails?|sea urchins?|curacha|oysters?|mussels?|scallops?|lobsters?|bagoong|alamang)\b/,
  nuts:/\b(peanut|peanuts|peanut butter|cashew|almond|hazelnut|pistachio|walnut|nuts)\b/,
  sesame:/\b(sesame|tahini)\b/,
  coconut:/\b(coconut milk|coconut cream|coconut oil|grated coconut|fresh coconut|gata)\b/,
  mustard:/\b(mustard)\b/
 };
 const ingredientEvidence=(a,text)=>{
- const t=a==='milk'?text.replace(/\bcoconut (milk|cream)\b/g,'plant-coconut'):text;
+ let t=text;
+ if(a==='milk'){
+   t=t.replace(/\b(coconut|soy|almond|oat|rice|cashew|macadamia) (milk|cream)\b/g,' plantmilk ')
+      .replace(/\b(peanut|almond|cashew|walnut|hazelnut|pistachio|macadamia|sunflower seed) butter\b/g,' nutbutter ');
+ }
  return evid[a].test(t);
 };
 for(const r of recipes){

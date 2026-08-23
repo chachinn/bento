@@ -1,6 +1,0 @@
-import fs from 'node:fs';import path from 'node:path';
-const files=fs.readdirSync('data').filter(f=>f.endsWith('.js')).map(f=>path.join('data',f));const rows=[];
-for(const file of files){const t=fs.readFileSync(file,'utf8');for(const m of t.matchAll(/["']?id["']?\s*:\s*["'](ph_[^"']+)["']/g)){const start=m.index,end=Math.min(t.length,start+14000),c=t.slice(start,end);const get=n=>c.match(new RegExp(`["']?${n}["']?\\s*:\\s*["']([^"']+)["']`))?.[1]||'';rows.push({id:m[1],title:get('title'),region:get('region'),category:get('category'),file})}}
-const byId=new Map();for(const r of rows){if(!byId.has(r.id))byId.set(r.id,r)}const u=[...byId.values()].sort((a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true}));
-console.log('FILIPINO_COUNT='+u.length);console.log('FILIPINO_INVENTORY_BEGIN');for(const r of u)console.log(`${r.id}\t${r.region||'-'}\t${r.category||'-'}\t${r.title||'-'}\t${r.file}`);console.log('FILIPINO_INVENTORY_END');
-const n=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();const titles=new Map();for(const r of u){const k=n(r.title);if(!titles.has(k))titles.set(k,[]);titles.get(k).push(r.id)};console.log('DUP_TITLES='+JSON.stringify([...titles].filter(([,v])=>v.length>1)));if(u.length!==184)process.exitCode=1;

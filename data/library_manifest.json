@@ -1,7 +1,7 @@
 {
-  "libraryVersion": 37,
-  "recipeCount": 2117,
-  "newRecipesThisBuild": 45,
+  "libraryVersion": 38,
+  "recipeCount": 2181,
+  "newRecipesThisBuild": 64,
   "cuisineCount": 10,
   "verifiedCuisineLibraries": [
     "Japanese",
@@ -15,9 +15,9 @@
     "French",
     "Spanish"
   ],
-  "standardRecipeCount": 1646,
+  "standardRecipeCount": 1710,
   "japaneseRecipeCount": 252,
-  "filipinoRecipeCount": 184,
+  "filipinoRecipeCount": 248,
   "koreanRecipeCount": 174,
   "chineseRecipeCount": 90,
   "thaiRecipeCount": 90,
@@ -72,21 +72,21 @@
     "navigation": "Compact Anime series dropdown with All Anime plus per-series recipe counts.",
     "isolation": "Anime records are excluded from Cuisines, Meals, Desserts, Drinks, standard cuisine counts, Kitchen Magic, Cook With pantry matching, and generic automatic recommendations."
   },
-  "dishImageCount": 2117,
+  "dishImageCount": 2181,
   "ingredientImageCount": 0,
   "hasRecipeImages": true,
   "hasIngredientImages": false,
   "photoStrategy": "Standard cuisine recipes use real online food photography from Wikimedia Commons. Genshin and Anime use source-world artwork/search only and never fall through to unrelated IRL food photography.",
   "photoMode": "online-on-demand",
-  "instructionVersion": 37,
+  "instructionVersion": 38,
   "instructionStyle": "comprehensive-variable-length",
-  "detailedInstructionRecipeCount": 2117,
+  "detailedInstructionRecipeCount": 2181,
   "navigation": "Cuisines, Meals, Desserts and Drinks use compact selectors; Games and Anime remain dedicated icon tabs.",
   "gameIsolation": "Game recipes are excluded from ordinary cuisine/meal/dessert/drink and automatic recommendation surfaces.",
   "animeIsolation": "Anime recipes are discoverable only under Anime unless directly opened/saved/planned; search inside Anime indexes anime series, episode, dish and adaptation metadata.",
   "cuisineNavigation": "Compact cuisine selector sourced from the full standard library, including user-created cuisines.",
-  "cacheFix": "v31.2 adds 45 source-reviewed Japanese regional-depth recipes under the 31j2 shell generation and preserves unchanged prior assets.",
-  "generatedAt": "2026-08-23T07:55:00+08:00",
+  "cacheFix": "v31.3 adds 64 source-reviewed Filipino regional-depth recipes under the 31f1 shell generation while preserving the complete v31.2 Japanese library and all prior assets.",
+  "generatedAt": "2026-08-23T03:01:53.887Z",
   "dessertTaxonomy": [
     "Rice & traditional",
     "Cakes & baked",
@@ -101,7 +101,7 @@
     "Traditional"
   ],
   "performance": "Recipe cards render in batches of 20; card photos are off by default, remote/source-world images are lazy/on-demand, and temporary object URLs are released after image load.",
-  "appRelease": "31.2",
+  "appRelease": "31.3",
   "cuisineRoadmap": [
     "Japanese",
     "Filipino",
@@ -128,21 +128,21 @@
   "allergenPolicy": "Allergen metadata is merged with ingredient-based inference for soy, gluten, egg, milk, fish, shellfish, nuts, sesame, coconut and mustard. Plant milks and nut butters remain excluded from false dairy detection; milk-fed meat is not dairy. Spanish hardening adds conservative recognition for common named fish, molluscs and wheat pastry terms while preserving naturally gluten-free flour behavior.",
   "qualityAuditSnapshot": {
     "fullLibrary": {
-      "recipeCount": 2117,
-      "uniqueRecipeIds": 2117,
+      "recipeCount": 2181,
+      "uniqueRecipeIds": 2181,
       "criticalStructureFailures": 0,
       "releaseGate": "pass"
     },
     "standardCuisines": {
-      "recipeCount": 1646,
+      "recipeCount": 1710,
       "Japanese": 252,
-      "Filipino": 184,
+      "Filipino": 248,
       "Korean": 174,
       "Vietnamese": 130,
       "Chinese": 90,
       "Thai": 90,
       "flaggedRecipes": 0,
-      "hierarchy": "Japanese 252 > Spanish 215 > Filipino 184 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90; Filipino expansion follows before American v32 so final product hierarchy remains Japanese first and Filipino second.",
+      "hierarchy": "Japanese 252 > Filipino 248 > Spanish 215 > French 175 > Korean 174 > Indian 171 > Italian 165 > Vietnamese 130 > Chinese 90 = Thai 90",
       "allergenFailures": 0,
       "referenceFailures": 0,
       "equipmentFailures": 0,
@@ -189,7 +189,7 @@
       "nonLinearSeasoningScaling": true
     },
     "PWA": {
-      "assetVersion": "31j2",
+      "assetVersion": "31f1",
       "recipeQualityRuntime": 32,
       "genshinIdentityRuntime": 28,
       "genshinSourceExceptionRuntime": 28
@@ -599,6 +599,21 @@
       "duplicateTitles": 0,
       "structureFailures": 0,
       "status": "passed"
+    },
+    "v31_3FilipinoDepth": {
+      "auditedAt": "2026-08-23",
+      "FilipinoAdded": 64,
+      "FilipinoTotal": 248,
+      "JapanesePreserved": 252,
+      "totalRecipeRecords": 2181,
+      "uniqueRecipeIds": 2181,
+      "standardRecipeCount": 1710,
+      "moduleCount": 8,
+      "firstId": "ph_185",
+      "lastId": "ph_248",
+      "coveragePolicy": "Coverage-driven regional depth; no artificial recipe-count or method-step target.",
+      "runtimeRegression": "passed",
+      "pwaAssetVersion": "31f1"
     }
   },
   "cookingExperience": "Recipe detail defaults to the recipe's recommended serving size; cooking mode includes step-specific ingredient cues, timer suggestions, doneness/texture guidance, equipment/details, allergens and accuracy/reference disclosure.",

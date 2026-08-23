@@ -16,16 +16,20 @@ assert(new Set(recipes.map(r=>r.id)).size===64,'duplicate IDs in Filipino depth 
 const norm=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,' ').trim();
 assert(new Set(recipes.map(r=>norm(r.title))).size===64,'duplicate normalized titles inside depth modules');
 const evid={
- soy:/\b(soy sauce|tofu|soybean|soy milk|miso)\b/,
+ soy:/\b(soy sauce|tofu|soybean|soy milk|miso|fermented black beans?)\b/,
  gluten:/\b(all-purpose flour|wheat|breadcrumbs?|panko|egg noodles?|soy sauce|bread|spaghetti|pasta)\b/,
  egg:/\b(egg|eggs|egg yolks?|egg whites?)\b/,
- milk:/\b(whole milk|fresh milk|condensed milk|powdered milk|milk powder|heavy cream|cream|butter|margarine|ice cream|frozen yogurt)\b/,
- fish:/\b(fish|fish sauce|tilapia|tuna|mackerel|cod|bangus|milkfish|snapper|stingray|skate|dried fish)\b/,
- shellfish:/\b(shrimp|prawn|crab|clam|diwal|squid|snail|sea urchin|curacha|oyster|mussel|scallop|lobster)\b/,
- nuts:/\b(peanut|peanuts|peanut butter|cashew|almond|hazelnut|pistachio|walnut)\b/,
+ milk:/\b(whole milk|fresh milk|condensed milk|powdered milk|milk powder|heavy cream|whipping cream|butter|margarine|ice cream|frozen yogurt)\b/,
+ fish:/\b(fish|fish sauce|tilapia|tuna|mackerel|cod|bangus|milkfish|snapper|stingray|skate|dried fish|burong isda|\bburo\b)\b/,
+ shellfish:/\b(shrimp|prawn|crab|clam|diwal|squid|snail|sea urchin|curacha|oyster|mussel|scallop|lobster|bagoong|alamang)\b/,
+ nuts:/\b(peanut|peanuts|peanut butter|cashew|almond|hazelnut|pistachio|walnut|nuts)\b/,
  sesame:/\b(sesame|tahini)\b/,
- coconut:/\b(coconut|gata)\b/,
+ coconut:/\b(coconut milk|coconut cream|coconut oil|grated coconut|fresh coconut|gata)\b/,
  mustard:/\b(mustard)\b/
+};
+const ingredientEvidence=(a,text)=>{
+ const t=a==='milk'?text.replace(/\bcoconut (milk|cream)\b/g,'plant-coconut'):text;
+ return evid[a].test(t);
 };
 for(const r of recipes){
  assert(r.cuisine==='Filipino'&&r.country==='Philippines'&&r.countryCode==='PH',`${r.id}: identity metadata`);
@@ -45,8 +49,8 @@ for(const r of recipes){
  assert(Array.isArray(r.sourceUrls)&&r.sourceUrls.length>=1&&r.sourceUrls.every(u=>/^https:\/\//.test(u)),`${r.id}: HTTPS sources`);
  assert(Array.isArray(r.allergens)&&r.allergens.every(a=>supported.has(a)),`${r.id}: unsupported allergen`);
  const text=r.ingredients.join(' ').toLowerCase();
- for(const [a,rx] of Object.entries(evid)) if(rx.test(text)) assert(r.allergens.includes(a),`${r.id}: missing stored ${a}`);
- for(const a of r.allergens){if(a==='shellfish'&&r.id==='ph_196')continue;assert(evid[a].test(text),`${r.id}: stored ${a} lacks ingredient evidence`)}
+ for(const a of supported)if(ingredientEvidence(a,text))assert(r.allergens.includes(a),`${r.id}: missing stored ${a}`);
+ for(const a of r.allergens)assert(ingredientEvidence(a,text),`${r.id}: stored ${a} lacks ingredient evidence`);
 }
 assert(recipes.find(r=>r.id==='ph_193')?.category==='Main Dishes','ph_193 Kapampangan Tamales must be a savory main dish');
 assert(!recipes.find(r=>r.id==='ph_196')?.allergens.includes('shellfish'),'ph_196 Camaru must not store Shellfish solely for cross-reactivity');
